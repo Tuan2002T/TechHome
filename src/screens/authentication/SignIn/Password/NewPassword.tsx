@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import ButtonCustom from '../../Custom/ButtonCustom'
-import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom'
+import ButtonCustom from '../../Custom/ButtonCustom.tsx'
+import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
 
 function NewPassword({ navigation }) {
   return (

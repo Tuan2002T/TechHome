@@ -3,29 +3,40 @@ import {
   StyleSheet,
   View,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  StyleProp,
+  ViewStyle
 } from 'react-native'
 import { TextInput } from 'react-native-paper'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-function TextInputPasswordCustom({
-  placeholder = 'Nhập mật khẩu',
+interface TextInputPasswordCustomProps {
+  label?: string
+  placeholderTextColor?: string
+  value: string
+  onChangeText: (text: string) => void
+  style?: StyleProp<ViewStyle>
+  [key: string]: any
+}
+
+const TextInputPasswordCustom: React.FC<TextInputPasswordCustomProps> = ({
+  label = 'Nhập mật khẩu',
   placeholderTextColor = '#A9A9A9',
   value,
   onChangeText,
   style,
   ...rest
-}) {
+}) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[styles.textinputContainer, style]}>
         <TextInput
-          placeholder={placeholder}
+          label={label}
           placeholderTextColor={placeholderTextColor}
           mode="outlined"
-          style={[styles.textinput, style]} // Kết hợp style từ props
+          style={[styles.textinput, style]}
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
@@ -33,7 +44,7 @@ function TextInputPasswordCustom({
           outlineColor="transparent"
           activeOutlineColor="transparent"
           cursorColor="#A9A9A9"
-          cursorWidth={1}
+          // cursorWidth={1}
           right={
             <TextInput.Icon
               icon={() => (
@@ -46,7 +57,7 @@ function TextInputPasswordCustom({
               onPress={() => setSecureTextEntry(!secureTextEntry)}
             />
           }
-          {...rest} // Truyền các props khác vào TextInput
+          {...rest}
         />
       </View>
     </TouchableWithoutFeedback>

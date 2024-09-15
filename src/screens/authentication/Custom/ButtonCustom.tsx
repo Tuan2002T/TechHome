@@ -14,7 +14,7 @@ function ButtonCustom({
   disabled,
   loading,
   ...restProps
-}) {
+}: any) {
   return (
     <View style={styles.buttoncustom}>
       <Button
@@ -38,9 +38,9 @@ const styles = StyleSheet.create({
   buttoncustom: {
     flex: 0,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    marginTop: 46
+    alignItems: 'center'
+    // backgroundColor: 'white',
+    // marginTop: 46
   },
   buttonContainer: {
     borderRadius: 100,

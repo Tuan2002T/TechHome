@@ -7,8 +7,8 @@ import {
   View
 } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import ButtonCustom from '../../Custom/ButtonCustom'
-import TextInputCustom from '../../Custom/TextInputCustom'
+import ButtonCustom from '../../Custom/ButtonCustom.tsx'
+import TextInputCustom from '../../Custom/TextInputCustom.tsx'
 import { TextInput } from 'react-native-paper'
 import { Button } from '@rneui/base'
 

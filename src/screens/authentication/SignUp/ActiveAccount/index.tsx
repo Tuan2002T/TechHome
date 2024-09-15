@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import TextInputCustom from '../../Custom/TextInputCustom'
-import ButtonCustom from '../../Custom/ButtonCustom'
-import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom'
+import TextInputCustom from '../../Custom/TextInputCustom.tsx'
+import ButtonCustom from '../../Custom/ButtonCustom.tsx'
+import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
 
 function ActiveAccount({ navigation }) {
   const [checked, setChecked] = useState(false)

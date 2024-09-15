@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import TextInputCustom from '../Custom/TextInputCustom'
-import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom'
+import TextInputCustom from '../Custom/TextInputCustom.tsx'
+import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
 import { Checkbox } from 'react-native-paper'
 import { Button } from '@rneui/base'
-import ButtonCustom from '../Custom/ButtonCustom'
+import ButtonCustom from '../Custom/ButtonCustom.tsx'
 
 function SignIn({ navigation }) {
   const [checked, setChecked] = useState(false)
@@ -42,7 +42,7 @@ function SignIn({ navigation }) {
       </View>
 
       <ButtonCustom
-        onPress={() => navigation.navigate('MyTabs')}
+        onPress={() => navigation.navigate('Tabs')}
         title="Đăng nhập"
       />
     </View>

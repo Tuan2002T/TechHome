@@ -3,23 +3,34 @@ import {
   StyleSheet,
   View,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  StyleProp,
+  ViewStyle
 } from 'react-native'
 import { TextInput } from 'react-native-paper'
 
-function TextInputCustom({
-  placeholder = 'Số điện thoại hoặc email',
+interface TextInputCustomProps {
+  placeholder?: string
+  placeholderTextColor?: string
+  value: string
+  onChangeText: (text: string) => void
+  style?: StyleProp<ViewStyle>
+  [key: string]: any // Để truyền các props khác
+}
+
+const TextInputCustom: React.FC<TextInputCustomProps> = ({
+  placeholder = 'Số điện thoại hoặc email',
   placeholderTextColor = '#A9A9A9',
   value,
   onChangeText,
   style,
   ...rest
-}) {
+}) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[styles.textinputContainer, style]}>
         <TextInput
-          placeholder={placeholder}
+          label={placeholder} // Dùng label thay vì placeholder
           placeholderTextColor={placeholderTextColor}
           mode="outlined"
           style={[styles.textinput, style]} // Kết hợp style từ props
@@ -29,7 +40,7 @@ function TextInputCustom({
           outlineColor="transparent"
           activeOutlineColor="transparent"
           cursorColor="#A9A9A9"
-          cursorWidth={1}
+          // cursorWidth={1}
           {...rest}
         />
       </View>
