@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
 import ButtonCustom from '../../authentication/Custom/ButtonCustom'
+import BillItem from './Component/table'
+import BillHistory from './Component/tablehistory'
 
 function Bill({ navigation }) {
   const options = [
@@ -12,7 +14,7 @@ function Bill({ navigation }) {
       accessibilityLabel: 'switch-one'
     },
     {
-      label: 'Đã thanh toán',
+      label: 'Lịch sử giao dịch',
       value: '1.5',
       testID: 'switch-one-thirty',
       accessibilityLabel: 'switch-one-thirty'
@@ -34,10 +36,12 @@ function Bill({ navigation }) {
           borderRadius={12}
           valuePadding={3}
           hasPadding
+          initial={0} // Chọn giá trị đầu tiên
           onPress={(value) => console.log(`Call onPress with value: ${value}`)}
           style={styles.switchSelector}
         />
       </View>
+      <BillItem />
       <View style={styles.pay}>
         <View>
           <Text style={{ color: '#94989B', marginBottom: 10 }}>
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
     marginLeft: 35
   },
   content: {
-    flex: 1,
+    // flex: 1,
     alignItems: 'center'
   },
   switchSelector: {
@@ -103,6 +107,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20
+  },
+  table: {
+    width: 1,
+    height: 30,
+    backgroundColor: 'white'
   }
 })
 

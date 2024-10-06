@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 import Bill from '../../screens/App/Bill'
 import Profile from '../../screens/App/Profile'
+import Service from '../../screens/App/Service'
 
 const Tab = createBottomTabNavigator()
 
@@ -119,7 +120,7 @@ function Tabs() {
       />
       <Tab.Screen
         name="Service"
-        component={Profile}
+        component={Service}
         options={{ headerShown: false }}
       />
       <Tab.Screen
