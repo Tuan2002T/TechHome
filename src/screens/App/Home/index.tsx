@@ -10,6 +10,7 @@ import {
   TV,
   Water
 } from '../Component/FacilitiesComponent.tsx'
+import { useSelector } from 'react-redux'
 
 const data = [
   { id: '1', icon: <TV width={40} height={40} /> },
@@ -26,6 +27,9 @@ function Home() {
   const renderItem = ({ item }: { item: { icon: JSX.Element } }) => (
     <View style={styles.item}>{item.icon}</View>
   )
+
+  const { userData, status, error } = useSelector((state) => state.auth)
+  console.log('userData', status, error)
   return (
     <View style={styles.container}>
       <View style={styles.header}>

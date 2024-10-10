@@ -4,11 +4,26 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../Custom/TextInputCustom.tsx'
 import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
 import { Checkbox } from 'react-native-paper'
-import { Button } from '@rneui/base'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
+import { useDispatch } from 'react-redux'
+import { login } from '../../../redux/Thunk/userThunk.js'
 
 function SignIn({ navigation }) {
   const [checked, setChecked] = useState(false)
+  const dispatch = useDispatch()
+  const [username, setUsername] = useState('mikej')
+  const [password, setPassword] = useState('pass3')
+
+  const handleLogin = async () => {
+    try {
+      await dispatch(login({ username, password })).unwrap()
+      navigation.navigate('Tabs')
+    } catch (error) {
+      // Xử lý lỗi
+      console.error(error)
+    }
+  }
+
   return (
     <View style={styles.container}>
       <MaterialIcons
@@ -20,8 +35,8 @@ function SignIn({ navigation }) {
       />
       <Text style={styles.title}>Đăng Nhập</Text>
 
-      <TextInputCustom />
-      <TextInputPasswordCustom />
+      <TextInputCustom value={username} onChangeText={setUsername} />
+      <TextInputPasswordCustom value={password} onChangeText={setPassword} />
       <View style={styles.checkbox}>
         <View style={styles.checkbox1}>
           <Checkbox
@@ -42,12 +57,13 @@ function SignIn({ navigation }) {
       </View>
 
       <ButtonCustom
-        onPress={() => navigation.navigate('Tabs')}
+        onPress={handleLogin} // Gọi hàm handleLogin khi nhấn nút
         title="Đăng nhập"
       />
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -80,4 +96,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
+
 export default SignIn

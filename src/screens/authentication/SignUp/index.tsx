@@ -1,13 +1,26 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../Custom/TextInputCustom.tsx'
 import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
 import { Checkbox } from 'react-native-paper'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
+import { getResidentNoActiveByIdcard } from '../../../api/API/user.js'
 
 function SignUp({ navigation }) {
-  const [checked, setChecked] = useState(false)
+  const [idcard, setIdcard] = useState('')
+  const handleActivateAccount = async () => {
+    try {
+      const residentData = await getResidentNoActiveByIdcard(idcard)
+      if (residentData) {
+        navigation.navigate('ActiveAccount', { residentData })
+      } else {
+        Alert.alert('Thông báo1', 'Không tìm thấy tài khoản')
+      }
+    } catch (error) {
+      Alert.alert('Thông báo', 'Có lỗi xảy ra')
+    }
+  }
   return (
     <View style={styles.container}>
       <MaterialIcons
@@ -22,14 +35,19 @@ function SignUp({ navigation }) {
         Nhập CMND/CCCD của người đứng tên trên hợp đồng
       </Text>
 
-      <TextInputCustom placeholder="Nhập CMND/CCCD" />
+      <TextInputCustom
+        placeholder="Nhập CMND/CCCD"
+        value={idcard}
+        onChangeText={setIdcard} // Cập nhật giá trị CMND/CCCD
+      />
       <ButtonCustom
-        onPress={() => navigation.navigate('ActiveAccount')}
+        onPress={handleActivateAccount} // Gọi hàm xử lý khi nhấn nút
         title="Kích hoạt"
       />
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -67,4 +85,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
+
 export default SignUp
