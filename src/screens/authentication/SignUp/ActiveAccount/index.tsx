@@ -1,22 +1,63 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import TextInputCustom from '../../Custom/TextInputCustom.tsx';
-import ButtonCustom from '../../Custom/ButtonCustom.tsx';
-import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import TextInputCustom from '../../Custom/TextInputCustom.tsx'
+import ButtonCustom from '../../Custom/ButtonCustom.tsx'
+import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
+import { activeResident } from '../../../../api/API/user.js'
+import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
+import Notification from '../../../../Notification/notification.js'
 
 function ActiveAccount({ navigation, route }) {
-  const residentData = route.params?.residentData;
+  const residentData = route.params?.residentData
 
-  // Sử dụng useState để lưu giá trị có thể chỉnh sửa
-  const [idcard, setIdcard] = useState(residentData?.idcard || '');
-  const [fullname, setFullname] = useState(residentData?.fullname || '');
-  const [phonenumber, setPhonenumber] = useState(residentData?.phonenumber || '');
-  const [email, setEmail] = useState(residentData?.email || '');
-  const [password, setPassword] = useState('');
+  const [idcard, setIdcard] = useState('')
+  const [fullname, setFullname] = useState('')
+  const [phonenumber, setPhonenumber] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
+  const closeNotification = () => {
+    setError(false)
+  }
+
+  // Sử dụng useEffect để tự động điền dữ liệu khi residentData thay đổi
+  useEffect(() => {
+    if (residentData) {
+      setIdcard(residentData.idcard)
+      setFullname(residentData.fullname)
+      setPhonenumber(residentData.phonenumber)
+      setEmail(residentData.email)
+    }
+  }, [residentData])
+
+  const handleActivate = async () => {
+    const activeData = {
+      email,
+      fullname,
+      idcard,
+      phonenumber,
+      password
+    }
+    console.log(activeData)
+    setLoading(true)
+    try {
+      const result = await activeResident(activeData)
+      setLoading(false)
+      navigation.goBack()
+    } catch (error) {
+      console.log(error)
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <View style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification loading={error} onClose={closeNotification} />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}
@@ -26,6 +67,12 @@ function ActiveAccount({ navigation, route }) {
       />
       <Text style={styles.title}>Kích hoạt tài khoản</Text>
       <Text style={styles.text}>Nhập thông tin tài khoản mật khẩu</Text>
+
+      <TextInputCustom
+        placeholder="Nhập tên"
+        value={fullname}
+        onChangeText={setFullname}
+      />
 
       <TextInputCustom
         placeholder="Nhập CMND/CCCD"
@@ -40,11 +87,6 @@ function ActiveAccount({ navigation, route }) {
         editable={false}
       />
       <TextInputCustom
-        placeholder="Nhập tên"
-        value={fullname}
-        onChangeText={setFullname}
-      />
-      <TextInputCustom
         placeholder="Nhập số điện thoại"
         value={phonenumber}
         onChangeText={setPhonenumber}
@@ -54,41 +96,38 @@ function ActiveAccount({ navigation, route }) {
         value={email}
         onChangeText={setEmail}
       />
-      <TextInputPasswordCustom
-        value={password}
-        onChangeText={setPassword}
-      />
+      <TextInputPasswordCustom value={password} onChangeText={setPassword} />
 
-      <ButtonCustom title="Xác nhận" />
+      <ButtonCustom title="Xác nhận" onPress={() => handleActivate()} />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   buttonLeft: {
     borderRadius: 100,
     borderWidth: 1,
     width: 41,
     marginTop: 75,
-    marginLeft: 40,
+    marginLeft: 40
   },
   title: {
     fontSize: 30,
     fontWeight: '300',
     color: 'black',
     marginLeft: 40,
-    marginTop: 70,
+    marginTop: 70
   },
   text: {
     fontSize: 12,
     color: '#94989B',
     marginLeft: 40,
-    marginBottom: 45,
-  },
-});
+    marginBottom: 45
+  }
+})
 
-export default ActiveAccount;
+export default ActiveAccount

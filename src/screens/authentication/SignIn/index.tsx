@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../Custom/TextInputCustom.tsx'
@@ -7,25 +7,39 @@ import { Checkbox } from 'react-native-paper'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
 import { useDispatch } from 'react-redux'
 import { login } from '../../../redux/Thunk/userThunk.js'
+import SpinnerLoading from '../../../Spinner/spinnerloading.js'
+import { useTranslation } from 'react-i18next'
+import Notification from '../../../Notification/notification.js'
 
 function SignIn({ navigation }) {
   const [checked, setChecked] = useState(false)
   const dispatch = useDispatch()
-  const [username, setUsername] = useState('mikej')
-  const [password, setPassword] = useState('pass3')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
+  const { t, i18n } = useTranslation()
   const handleLogin = async () => {
+    setLoading(true)
     try {
       await dispatch(login({ username, password })).unwrap()
       navigation.navigate('Tabs')
     } catch (error) {
-      // Xử lý lỗi
-      console.error(error)
+      setError(true)
+      console.log(error)
     }
+  }
+
+  const closeNotification = () => {
+    setError(false)
+    setLoading(false)
   }
 
   return (
     <View style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification loading={error} onClose={closeNotification} />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}
@@ -33,10 +47,18 @@ function SignIn({ navigation }) {
         size={38}
         color="#000000"
       />
-      <Text style={styles.title}>Đăng Nhập</Text>
+      <Text style={styles.title}>{t('login.login')}</Text>
 
-      <TextInputCustom value={username} onChangeText={setUsername} />
-      <TextInputPasswordCustom value={password} onChangeText={setPassword} />
+      <TextInputCustom
+        placeholder={t('login.username')}
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInputPasswordCustom
+        placeholder={t('login.password')}
+        value={password}
+        onChangeText={setPassword}
+      />
       <View style={styles.checkbox}>
         <View style={styles.checkbox1}>
           <Checkbox
@@ -46,20 +68,17 @@ function SignIn({ navigation }) {
               setChecked(!checked)
             }}
           />
-          <Text>Nhớ mật khẩu</Text>
+          <Text>{t('login.remember')}</Text>
         </View>
         <Text
           onPress={() => navigation.navigate('ForgotPassword')}
           style={{ textDecorationLine: 'underline' }}
         >
-          Quên mật khẩu
+          {t('login.forgot')}
         </Text>
       </View>
 
-      <ButtonCustom
-        onPress={handleLogin} // Gọi hàm handleLogin khi nhấn nút
-        title="Đăng nhập"
-      />
+      <ButtonCustom onPress={handleLogin} title={t('login.button')} />
     </View>
   )
 }

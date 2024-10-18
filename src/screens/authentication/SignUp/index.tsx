@@ -6,23 +6,35 @@ import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
 import { Checkbox } from 'react-native-paper'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
 import { getResidentNoActiveByIdcard } from '../../../api/API/user.js'
+import SpinnerLoading from '../../../Spinner/spinnerloading.js'
+import Notification from '../../../Notification/notification.js'
 
 function SignUp({ navigation }) {
   const [idcard, setIdcard] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const closeNotification = () => {
+    setError(false)
+  }
   const handleActivateAccount = async () => {
+    setLoading(true)
     try {
       const residentData = await getResidentNoActiveByIdcard(idcard)
       if (residentData) {
         navigation.navigate('ActiveAccount', { residentData })
       } else {
         Alert.alert('Thông báo1', 'Không tìm thấy tài khoản')
+        setError(true)
       }
     } catch (error) {
-      Alert.alert('Thông báo', 'Có lỗi xảy ra')
+      setLoading(false)
+      setError(true)
     }
   }
   return (
     <View style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification loading={error} onClose={closeNotification} />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}

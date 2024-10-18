@@ -11,10 +11,63 @@ import ButtonCustom from '../../Custom/ButtonCustom.tsx'
 import TextInputCustom from '../../Custom/TextInputCustom.tsx'
 import { TextInput } from 'react-native-paper'
 import { Button } from '@rneui/base'
+import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
+import { sendOTP, verifyOTP } from '../../../../api/API/user.js'
+import Notification from '../../../../Notification/notification.js'
 
 function ForgotPassword({ navigation }) {
+  const [to, setTo] = useState('urkascahhe@mailnesia.com')
+  const [loading, setLoading] = useState(false)
+
+  const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+  const [dataSend, setDataSend] = useState('')
+  const [otp, setOtp] = useState('')
+
+  const closeNotification = () => {
+    setError(false)
+  }
+
+  const send = async () => {
+    setLoading(true)
+    setNotification('Mã OTP đã được gửi')
+    try {
+      const data = await sendOTP(to)
+      setDataSend(data.response.id)
+      setError(true)
+    } catch (error) {
+      setError(true)
+      setNotification('Gửi mã OTP thất bại')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const verify = async () => {
+    setLoading(true)
+    try {
+      verifyData = {
+        id: dataSend,
+        otp: otp
+      }
+      const data = await verifyOTP(verifyData)
+      navigation.navigate('NewPassword', { data: verifyData })
+    } catch (error) {
+      setError(true)
+      setNotification('Xác thực thất bại')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <View style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}
@@ -24,7 +77,11 @@ function ForgotPassword({ navigation }) {
       />
       <Text style={styles.title}>Quên mật khẩu</Text>
 
-      <TextInputCustom placeholder="Nhập số điện thoại hoặc email" />
+      <TextInputCustom
+        placeholder="Nhập số điện thoại hoặc email"
+        value={to}
+        onChangeText={setTo}
+      />
 
       <View style={{ flexDirection: 'row', width: '100%' }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -39,6 +96,8 @@ function ForgotPassword({ navigation }) {
               activeOutlineColor="transparent"
               cursorColor="#A9A9A9"
               cursorWidth={1}
+              value={otp}
+              onChangeText={setOtp}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -48,13 +107,11 @@ function ForgotPassword({ navigation }) {
           buttonStyle={[styles.button]}
           containerStyle={[styles.buttonContainer]}
           titleStyle={[styles.titlebtn]}
+          onPress={() => send()}
         />
       </View>
 
-      <ButtonCustom
-        onPress={() => navigation.navigate('NewPassword')}
-        title="Tiếp theo"
-      />
+      <ButtonCustom onPress={() => verify()} title="Tiếp theo" />
     </View>
   )
 }

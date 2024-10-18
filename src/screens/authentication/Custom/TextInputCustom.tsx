@@ -15,7 +15,7 @@ interface TextInputCustomProps {
   value: string
   onChangeText: (text: string) => void
   style?: StyleProp<ViewStyle>
-  [key: string]: any // Để truyền các props khác
+  [key: string]: any 
 }
 
 const TextInputCustom: React.FC<TextInputCustomProps> = ({
@@ -30,17 +30,16 @@ const TextInputCustom: React.FC<TextInputCustomProps> = ({
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[styles.textinputContainer, style]}>
         <TextInput
-          label={placeholder} // Dùng label thay vì placeholder
+          placeholder={placeholder}
           placeholderTextColor={placeholderTextColor}
           mode="outlined"
-          style={[styles.textinput, style]} // Kết hợp style từ props
+          style={[styles.textinput, style]}
           value={value}
           onChangeText={onChangeText}
           underlineColor="transparent"
           outlineColor="transparent"
           activeOutlineColor="transparent"
           cursorColor="#A9A9A9"
-          // cursorWidth={1}
           {...rest}
         />
       </View>

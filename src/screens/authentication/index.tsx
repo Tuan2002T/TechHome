@@ -1,40 +1,61 @@
-import { Button } from '@rneui/themed'
-import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Button } from '@rneui/themed';
+import React from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import SwitchSelector from 'react-native-switch-selector';
 
 function Authentication({ navigation }) {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+  };
+
+  const languageOptions = [
+    { label: "Vi", value: "vi" },
+    { label: "En", value: "en" },
+  ];
+
   return (
     <View style={styles.container}>
       <Image source={require('../../img/Logo.png')} />
-      <Text style={styles.slogan}>Ứng dụng dành cho cư dân</Text>
+      <Text style={styles.slogan}>{t('welcome')}</Text>
       <Button
-        title="Đăng nhập"
+        title={t('button.login')}
         buttonStyle={styles.button}
         titleStyle={styles.titlebutton}
         onPress={() => {
-          navigation.navigate('SignIn')
+          navigation.navigate('SignIn');
         }}
       />
       <Button
-        title="Kích hoạt tài khoản"
+        title={t('button.active')}
         buttonStyle={styles.buttonactive}
         titleStyle={styles.titlebuttonactive}
         onPress={() => {
-          navigation.navigate('SignUp')
+          navigation.navigate('SignUp');
         }}
       />
+
+      <SwitchSelector
+        options={languageOptions}
+        initial={0} 
+        onPress={value => changeLanguage(value)}
+        textColor={'#7a44cf'}
+        selectedColor={'white'}
+        buttonColor={'#7a44cf'}
+        borderColor={'#7a44cf'}
+        style={styles.switchSelector}
+      />
     </View>
-  )
+  );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white'
-  },
-  image: {
-    width: 200,
-    height: 200
+    backgroundColor: 'white',
   },
   slogan: {
     fontSize: 15,
@@ -44,22 +65,23 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 20,
     borderRadius: 20,
-    bottom: 50,
-    marginBottom: 180
+    marginTop: 300,
+    position: 'absolute',
   },
   button: {
     backgroundColor: '#26938E',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    marginTop: 20,
+    marginTop: 200,
     width: 325,
-    height: 60
+    height: 60,
+
   },
   titlebutton: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   buttonactive: {
     backgroundColor: '#FFFFFF',
@@ -69,13 +91,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 325,
     height: 60,
-    borderWidth: 1
+    borderWidth: 1,
   },
   titlebuttonactive: {
     color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
-    borderColor: '#26938E'
-  }
-})
-export default Authentication
+  },
+  switchSelector: {
+    marginTop: 20,
+    width: 50,
+  },
+});
+
+export default Authentication;
