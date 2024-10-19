@@ -16,7 +16,7 @@ import { sendOTP, verifyOTP } from '../../../../api/API/user.js'
 import Notification from '../../../../Notification/notification.js'
 
 function ForgotPassword({ navigation }) {
-  const [to, setTo] = useState('urkascahhe@mailnesia.com')
+  const [to, setTo] = useState('david@example.com')
   const [loading, setLoading] = useState(false)
 
   const [error, setError] = useState(false)

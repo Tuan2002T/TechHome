@@ -8,26 +8,33 @@ import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
 import Notification from '../../../../Notification/notification.js'
 
 function NewPassword({ navigation, route }) {
-  console.log(route.params.data)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
 
   const closeNotification = () => {
     setError(false)
   }
-  const [notification, setNotification] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
 
   const forgot = async () => {
+    if (password !== confirmPassword) {
+      setPasswordError('Mật khẩu không khớp')
+      return
+    }
+
     setLoading(true)
+    setPasswordError('')
     try {
       const p = {
-        residentId: route.params.data.id,
+        residentId: String(route.params.data.id),
         password: password,
         otp: route.params.data.otp
       }
       const data = await forgotPassword(p)
+      navigation.navigate('SignIn')
     } catch (error) {
       setError(true)
       setNotification('Thay đổi mật khẩu thất bại')
@@ -64,13 +71,15 @@ function NewPassword({ navigation, route }) {
         onChangeText={setConfirmPassword}
       />
 
-      <ButtonCustom
-        onPress={() => navigation.navigate('SignIn')}
-        title="Xác nhận"
-      />
+      {passwordError ? (
+        <Text style={styles.errorText}>{passwordError}</Text>
+      ) : null}
+
+      <ButtonCustom onPress={forgot} title="Xác nhận" />
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -91,16 +100,13 @@ const styles = StyleSheet.create({
     marginTop: 70,
     marginBottom: 45
   },
-  checkbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginHorizontal: 30,
-    marginTop: 20
-  },
-  checkbox1: {
-    flexDirection: 'row',
-    alignItems: 'center'
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    textAlign: 'center'
   }
 })
+
 export default NewPassword

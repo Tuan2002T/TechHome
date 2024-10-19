@@ -14,10 +14,11 @@ import Notification from '../../../Notification/notification.js'
 function SignIn({ navigation }) {
   const [checked, setChecked] = useState(false)
   const dispatch = useDispatch()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('davidl')
+  const [password, setPassword] = useState('1')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
 
   const { t, i18n } = useTranslation()
   const handleLogin = async () => {
@@ -27,7 +28,9 @@ function SignIn({ navigation }) {
       navigation.navigate('Tabs')
     } catch (error) {
       setError(true)
-      console.log(error)
+      setNotification('Đăng nhập thất bại')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -39,7 +42,11 @@ function SignIn({ navigation }) {
   return (
     <View style={styles.container}>
       <SpinnerLoading loading={loading} />
-      <Notification loading={error} onClose={closeNotification} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}

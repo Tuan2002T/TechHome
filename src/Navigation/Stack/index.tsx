@@ -8,6 +8,7 @@ import ActiveAccount from '../../screens/authentication/SignUp/ActiveAccount'
 import NewPassword from '../../screens/authentication/SignIn/Password/NewPassword'
 import ForgotPassword from '../../screens/authentication/SignIn/Password/ForgotPassword'
 import Tabs from '../Tab'
+import Notification from '../../screens/App/Notification'
 
 const Stack = createStackNavigator()
 
@@ -47,6 +48,12 @@ function TabScreens() {
       <Stack.Screen
         name="Tabs"
         component={Tabs}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Notification"
+        component={Notification}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

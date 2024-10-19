@@ -1,7 +1,9 @@
 import React from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Fontisto from 'react-native-vector-icons/Fontisto'
-import ButtonCustom from '../../authentication/Custom/ButtonCustom.tsx'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { Button } from '@rneui/base'
 import {
   AirConditioner,
@@ -11,6 +13,7 @@ import {
   Water
 } from '../Component/FacilitiesComponent.tsx'
 import { useSelector } from 'react-redux'
+import FloatingActionComponent from '../Component/FloatingActionComponent.tsx'
 
 const data = [
   { id: '1', icon: <TV width={40} height={40} /> },
@@ -22,85 +25,110 @@ const data = [
   { id: '7', icon: <AirConditioner width={40} height={40} /> },
   { id: '8', icon: <MenuSquared width={40} height={40} /> }
 ]
-const numColumns = 4 // Số cột trong mỗi hàng
-function Home() {
-  const renderItem = ({ item }: { item: { icon: JSX.Element } }) => (
-    <View style={styles.item}>{item.icon}</View>
-  )
 
+function Home({ navigation }) {
   const { userData, status, error } = useSelector((state) => state.auth)
   console.log('userData', status, error)
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.name}>Xin chào, Trương Văn Tuấn</Text>
-        <Text style={styles.room}>Khu C - Tầng 19 - 100</Text>
-        <Fontisto
-          style={styles.notificationIcon}
-          name="bell"
-          size={27}
-          color="white"
-        />
-      </View>
-      <View style={styles.notification}>
-        <Text style={styles.headerNotification}>
-          Tổng thanh toán tháng 9/2024
-        </Text>
-        <Text style={styles.money}>1.000.000 vnđ</Text>
-        <View style={styles.cbbutton}>
-          <Button
-            containerStyle={styles.button}
-            type="outline"
-            buttonStyle={styles.button}
-            containerStyle={styles.buttonContainer}
-            titleStyle={styles.titlebutton}
-            title="Chi tiết"
-          />
-          <Button
-            containerStyle={styles.button}
-            type="outline"
-            buttonStyle={styles.button}
-            containerStyle={styles.buttonContainer}
-            titleStyle={styles.titlebutton}
-            title="Thanh toán"
+    <ScrollView style={styles.scrollbar}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.name}>Xin chào, Trương Văn Tuấn</Text>
+          {/* <Text style={styles.room}>Khu C - Tầng 19 - 100</Text> */}
+          <Fontisto
+            style={styles.notificationIcon}
+            name="bell"
+            size={27}
+            color="white"
           />
         </View>
+        <View style={styles.notification}>
+          <Text style={styles.headerNotification}>
+            Tổng thanh toán tháng 9/2024
+          </Text>
+          <Text style={styles.money}>1.000.000 vnđ</Text>
+          <View style={styles.cbbutton}>
+            <Button
+              containerStyle={styles.button}
+              type="outline"
+              buttonStyle={styles.button}
+              titleStyle={styles.titlebutton}
+              title="Chi tiết"
+            />
+            <Button
+              containerStyle={styles.button}
+              type="outline"
+              buttonStyle={styles.button}
+              titleStyle={styles.titlebutton}
+              title="Thanh toán"
+            />
+          </View>
+        </View>
+
+        <View style={styles.floatActions}>
+          <FloatingActionComponent
+            icon={<FontAwesomeIcon name="home" size={35} color="#26938E" />}
+            title="Căn hộ"
+            style={{}}
+            onPress={() => navigation.navigate('Home')}
+          />
+
+          <FloatingActionComponent
+            icon={<MaterialIcons name="payment" size={30} color="#FF5722" />}
+            title="Thanh toán"
+            style={{}}
+            onPress={() => navigation.navigate('Bill')}
+          />
+
+          <FloatingActionComponent
+            icon={<Fontisto name="bell" size={24} color="#FFC107" />}
+            title="Thông báo"
+            style={{}}
+            onPress={() => navigation.navigate('Notification')}
+          />
+
+          <FloatingActionComponent
+            icon={<EntypoIcon name="menu" size={35} color="#673AB7" />}
+            title="Dịch vụ"
+            style={{}}
+            onPress={() => navigation.navigate('Service')}
+          />
+        </View>
+
+        <View style={styles.listContainer}>
+          <Text style={styles.headerList}>Dịch vụ</Text>
+          <View style={styles.rowContainer}>
+            {data.map((item) => (
+              <View key={item.id} style={styles.item}>
+                {item.icon}
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.listContainer}>
+          <Text style={styles.headerList}>Tiện ích</Text>
+          <View style={styles.rowContainer}>
+            {data.map((item) => (
+              <View key={item.id} style={styles.item}>
+                {item.icon}
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
-      <View
-        style={{
-          width: '95%'
-        }}
-      >
-        <Text style={styles.headerList}>Dịch vụ</Text>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          numColumns={numColumns} // Hiển thị số cột
-        />
-      </View>
-      <View
-        style={{
-          width: '95%'
-        }}
-      >
-        <Text style={styles.headerList}>Tiện ích</Text>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          numColumns={numColumns} // Hiển thị số cột
-        />
-      </View>
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollbar: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: '#F7F7F7'
+  },
+  container: {
+    alignItems: 'center'
   },
   header: {
     width: '100%',
@@ -168,11 +196,19 @@ const styles = StyleSheet.create({
     color: '#94989B',
     fontSize: 15
   },
+  listContainer: {
+    width: '95%'
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
+  },
   item: {
-    flex: 1,
+    width: '22%', // Điều chỉnh giá trị này để thay đổi số cột
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10
+    margin: 5
   },
   headerList: {
     fontSize: 20,
@@ -181,6 +217,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 15,
     color: 'black'
+  },
+  floatActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    width: '100%',
+    paddingHorizontal: 10,
+    marginTop: 20
   }
 })
 

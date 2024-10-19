@@ -43,7 +43,7 @@ function Service({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.hearderText}>Hoá đơn</Text>
+        <Text style={styles.hearderText}>Dịch vụ và tiện ích</Text>
       </View>
 
       <View
@@ -56,7 +56,7 @@ function Service({ navigation }) {
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          numColumns={numColumns} // Hiển thị số cột
+          numColumns={numColumns}
         />
       </View>
       <View

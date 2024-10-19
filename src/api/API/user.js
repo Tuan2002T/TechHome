@@ -109,7 +109,7 @@ export const verifyOTP = async (data) => {
 
 export const forgotPassword = async (data) => {
   try {
-    const response = await axios.post(API.forgotPassword_url, data, {
+    const response = await axios.put(API.forgotPassword_url, data, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -117,10 +117,13 @@ export const forgotPassword = async (data) => {
     return response.data
   } catch (error) {
     if (error.response) {
+      console.error('API Error:', error.response.data)
       throw new Error(error.response.data.message || 'Something went wrong')
     } else if (error.request) {
+      console.error('No response received:', error.request)
       throw new Error('No response received from the server')
     } else {
+      console.error('Error in request setup:', error.message)
       throw new Error(error.message)
     }
   }
