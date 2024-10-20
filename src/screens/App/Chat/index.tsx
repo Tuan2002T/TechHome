@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
 import ButtonCustom from '../../authentication/Custom/ButtonCustom'
+import IoniconsIcon from 'react-native-vector-icons/Ionicons'
 function Chat({ navigation }) {
   const options = [
     {
-      label: 'Thanh toán',
+      label: 'Chờ xác nhận',
       value: '1',
       testID: 'switch-one',
       accessibilityLabel: 'switch-one'
     },
     {
-      label: 'Lịch sử giao dịch',
+      label: 'Lịch sử đánh giá',
       value: '1.5',
       testID: 'switch-one-thirty',
       accessibilityLabel: 'switch-one-thirty'
@@ -38,6 +39,7 @@ function Chat({ navigation }) {
           style={styles.switchSelector}
         />
       </View>
+      <IoniconsIcon name="add" size={35} color="white" style={styles.btnAdd} />
     </View>
   )
 }
@@ -88,6 +90,14 @@ const styles = StyleSheet.create({
     width: 1,
     height: 30,
     backgroundColor: 'white'
+  },
+  btnAdd: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#32AE63',
+    padding: 10,
+    borderRadius: 50
   }
 })
 

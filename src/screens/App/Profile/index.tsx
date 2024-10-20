@@ -107,7 +107,11 @@ function Profile({ navigation }) {
       <ButtonCustom
         title="Đăng xuất"
         buttonStyle={{ width: 260, backgroundColor: '#AE0000' }}
-        containerStyle={{ width: 260, backgroundColor: '#AE0000' }}
+        containerStyle={{
+          width: 260,
+          backgroundColor: '#AE0000',
+          marginTop: 30
+        }}
         titleStyle={{ color: 'white', fontSize: 15 }}
         onPress={() => {
           navigation.navigate('SignIn')

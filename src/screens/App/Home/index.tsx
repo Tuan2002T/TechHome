@@ -14,6 +14,7 @@ import {
 } from '../Component/FacilitiesComponent.tsx'
 import { useSelector } from 'react-redux'
 import FloatingActionComponent from '../Component/FloatingActionComponent.tsx'
+import SpendingChartComponent from './SpendingChart/SpendingChartComponent.tsx'
 
 const data = [
   { id: '1', icon: <TV width={40} height={40} /> },
@@ -71,7 +72,7 @@ function Home({ navigation }) {
             icon={<FontAwesomeIcon name="home" size={35} color="#26938E" />}
             title="Căn hộ"
             style={{}}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('ApartmentDetails')}
           />
 
           <FloatingActionComponent
@@ -95,7 +96,7 @@ function Home({ navigation }) {
             onPress={() => navigation.navigate('Service')}
           />
         </View>
-
+        <SpendingChartComponent />
         <View style={styles.listContainer}>
           <Text style={styles.headerList}>Dịch vụ</Text>
           <View style={styles.rowContainer}>
