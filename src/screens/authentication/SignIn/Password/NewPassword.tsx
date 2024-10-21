@@ -6,8 +6,10 @@ import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
 import { forgotPassword } from '../../../../api/API/user.js'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
 import Notification from '../../../../Notification/notification.js'
+import { useTranslation } from 'react-i18next'
 
 function NewPassword({ navigation, route }) {
+  const { t, i18n } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
@@ -20,8 +22,8 @@ function NewPassword({ navigation, route }) {
   }
 
   const forgot = async () => {
-    if (password !== confirmPassword) {
-      setPasswordError('Mật khẩu không khớp')
+    if (password !== confirmPassword || password === '') {
+      setPasswordError(`${t('forgotPassword.newPassword.passwordError')}`)
       return
     }
 
@@ -37,7 +39,7 @@ function NewPassword({ navigation, route }) {
       navigation.navigate('SignIn')
     } catch (error) {
       setError(true)
-      setNotification('Thay đổi mật khẩu thất bại')
+      setNotification(`${t('forgotPassword.newPassword.notificationError')}`)
     } finally {
       setLoading(false)
     }
@@ -58,15 +60,15 @@ function NewPassword({ navigation, route }) {
         size={38}
         color="#000000"
       />
-      <Text style={styles.title}>Mật khẩu mới</Text>
+      <Text style={styles.title}>{t('forgotPassword.newPassword.title')}</Text>
 
       <TextInputPasswordCustom
-        placeholder="Nhập mật khẩu mới"
+        placeholder={t('forgotPassword.newPassword.password')}
         value={password}
         onChangeText={setPassword}
       />
       <TextInputPasswordCustom
-        placeholder="Nhập lại mật khẩu mới"
+        placeholder={t('forgotPassword.newPassword.confirmPassword')}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
@@ -75,7 +77,10 @@ function NewPassword({ navigation, route }) {
         <Text style={styles.errorText}>{passwordError}</Text>
       ) : null}
 
-      <ButtonCustom onPress={forgot} title="Xác nhận" />
+      <ButtonCustom
+        onPress={forgot}
+        title={t('forgotPassword.newPassword.button')}
+      />
     </View>
   )
 }

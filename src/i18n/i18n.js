@@ -11,7 +11,7 @@ const resources = {
         active: 'Activate account'
       },
       login: {
-        login: 'Login',
+        title: 'Login',
         username: 'Phone number or email',
         password: 'Enter password',
         remember: 'Remember password',
@@ -23,6 +23,25 @@ const resources = {
         title1: 'Enter the ID/Passport of the contract holder',
         code: 'Enter ID/Passport',
         button: 'Activate'
+      },
+      forgotPassword: {
+        title: 'Forgot password',
+        phoneOrEmail: 'Enter phone number or email',
+        otp: 'Enter verification code',
+        sendOTP: 'Send OTP',
+        button: 'Next',
+        notificationSuccessSendOTP: 'OTP code has been sent',
+        notificationErrorSendOTP: 'Send OTP code failed',
+        notificationErrorOTP: 'OTP code is incorrect',
+        newPassword: {
+          title: 'Create new password',
+          password: 'Enter new password',
+          confirmPassword: 'Re-enter password',
+          button: 'Confirm',
+          passwordError: 'Password does not match',
+          notificationSuccess: 'Change password successfully',
+          notificationError: 'Change password failed'
+        }
       }
     }
   },
@@ -46,6 +65,25 @@ const resources = {
         title1: 'Nhập CMND/CCCD của người đứng tên trên hợp đồng',
         code: 'Nhập CCCD/CMND',
         button: 'Kích hoạt'
+      },
+      forgotPassword: {
+        title: 'Quên mật khẩu',
+        phoneOrEmail: 'Nhập số điện thoại hoặc email',
+        otp: 'Nhập mã xác nhận',
+        sendOTP: 'Gửi OTP',
+        button: 'Tiếp theo',
+        notificationSuccessSendOTP: 'Mã OTP đã gửi',
+        notificationErrorSendOTP: 'Gửi mã OTP thất bại',
+        notificationErrorOTP: 'Mã OTP không đúng',
+        newPassword: {
+          title: 'Mật khẩu mới',
+          password: 'Nhập mật khẩu mới',
+          confirmPassword: 'Nhập lại mật khẩu mới',
+          button: 'Xác nhận',
+          passwordError: 'Mật khẩu không khớp',
+          notificationSuccess: 'Đổi mật khẩu thành công',
+          notificationError: 'Đổi mật khẩu thất bại'
+        }
       }
     }
   }

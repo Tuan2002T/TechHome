@@ -8,8 +8,11 @@ import ButtonCustom from '../Custom/ButtonCustom.tsx'
 import { getResidentNoActiveByIdcard } from '../../../api/API/user.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import Notification from '../../../Notification/notification.js'
+import { useTranslation } from 'react-i18next'
 
 function SignUp({ navigation }) {
+  const { t, i18n } = useTranslation()
+
   const [idcard, setIdcard] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -42,19 +45,17 @@ function SignUp({ navigation }) {
         size={38}
         color="#000000"
       />
-      <Text style={styles.title}>Kích hoạt tài khoản</Text>
-      <Text style={styles.text}>
-        Nhập CMND/CCCD của người đứng tên trên hợp đồng
-      </Text>
+      <Text style={styles.title}>{t('active.title')}</Text>
+      <Text style={styles.text}>{t('active.title1')}</Text>
 
       <TextInputCustom
-        placeholder="Nhập CMND/CCCD"
+        placeholder={t('active.code')}
         value={idcard}
-        onChangeText={setIdcard} // Cập nhật giá trị CMND/CCCD
+        onChangeText={setIdcard}
       />
       <ButtonCustom
-        onPress={handleActivateAccount} // Gọi hàm xử lý khi nhấn nút
-        title="Kích hoạt"
+        onPress={handleActivateAccount}
+        title={t('active.button')}
       />
     </View>
   )

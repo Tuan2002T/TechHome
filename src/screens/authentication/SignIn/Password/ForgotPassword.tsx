@@ -14,8 +14,10 @@ import { Button } from '@rneui/base'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
 import { sendOTP, verifyOTP } from '../../../../api/API/user.js'
 import Notification from '../../../../Notification/notification.js'
+import { useTranslation } from 'react-i18next'
 
 function ForgotPassword({ navigation }) {
+  const { t, i18n } = useTranslation()
   const [to, setTo] = useState('david@example.com')
   const [loading, setLoading] = useState(false)
 
@@ -30,14 +32,14 @@ function ForgotPassword({ navigation }) {
 
   const send = async () => {
     setLoading(true)
-    setNotification('Mã OTP đã được gửi')
+    setNotification(`${t('forgotPassword.notificationSuccessSendOTP')}`)
     try {
       const data = await sendOTP(to)
       setDataSend(data.response.id)
       setError(true)
     } catch (error) {
       setError(true)
-      setNotification('Gửi mã OTP thất bại')
+      setNotification(`${t('forgotPassword.notificationErrorSendOTP')}`)
     } finally {
       setLoading(false)
     }
@@ -54,7 +56,7 @@ function ForgotPassword({ navigation }) {
       navigation.navigate('NewPassword', { data: verifyData })
     } catch (error) {
       setError(true)
-      setNotification('Xác thực thất bại')
+      setNotification(`${t('forgotPassword.notificationErrorOTP')}`)
     } finally {
       setLoading(false)
     }
@@ -75,10 +77,10 @@ function ForgotPassword({ navigation }) {
         size={38}
         color="#000000"
       />
-      <Text style={styles.title}>Quên mật khẩu</Text>
+      <Text style={styles.title}>{t('forgotPassword.title')}</Text>
 
       <TextInputCustom
-        placeholder="Nhập số điện thoại hoặc email"
+        placeholder={t('forgotPassword.phoneOrEmail')}
         value={to}
         onChangeText={setTo}
       />
@@ -87,7 +89,7 @@ function ForgotPassword({ navigation }) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={[styles.textinputContainer]}>
             <TextInput
-              placeholder="Nhập mã xác nhận"
+              placeholder={t('forgotPassword.otp')}
               placeholderTextColor="#A9A9A9"
               mode="outlined"
               style={[styles.textinput]}
@@ -103,7 +105,7 @@ function ForgotPassword({ navigation }) {
         </TouchableWithoutFeedback>
 
         <Button
-          title="Gửi OTP"
+          title={t('forgotPassword.sendOTP')}
           buttonStyle={[styles.button]}
           containerStyle={[styles.buttonContainer]}
           titleStyle={[styles.titlebtn]}
@@ -111,7 +113,10 @@ function ForgotPassword({ navigation }) {
         />
       </View>
 
-      <ButtonCustom onPress={() => verify()} title="Tiếp theo" />
+      <ButtonCustom
+        onPress={() => verify()}
+        title={t('forgotPassword.button')}
+      />
     </View>
   )
 }

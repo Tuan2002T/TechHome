@@ -54,7 +54,7 @@ function SignIn({ navigation }) {
         size={38}
         color="#000000"
       />
-      <Text style={styles.title}>{t('login.login')}</Text>
+      <Text style={styles.title}>{t('login.title')}</Text>
 
       <TextInputCustom
         placeholder={t('login.username')}

@@ -117,13 +117,10 @@ export const forgotPassword = async (data) => {
     return response.data
   } catch (error) {
     if (error.response) {
-      console.error('API Error:', error.response.data)
       throw new Error(error.response.data.message || 'Something went wrong')
     } else if (error.request) {
-      console.error('No response received:', error.request)
       throw new Error('No response received from the server')
     } else {
-      console.error('Error in request setup:', error.message)
       throw new Error(error.message)
     }
   }
