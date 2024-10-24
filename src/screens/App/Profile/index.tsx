@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native'
 import ButtonCustom from '../../authentication/Custom/ButtonCustom'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Fontisto from 'react-native-vector-icons/Fontisto'
@@ -10,6 +10,18 @@ import { Switch } from '@rneui/themed'
 
 function Profile({ navigation }) {
   const [value, setValue] = useState(false)
+  const [language, setLanguage] = useState('Tiếng Việt')
+  const [isModalVisible, setIsModalVisible] = useState(false)
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible)
+  }
+
+  const handleLanguageChange = (lang) => {
+    setLanguage(lang)
+    toggleModal()
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -50,20 +62,49 @@ function Profile({ navigation }) {
             onValueChange={() => setValue(!value)}
           />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="language" size={20} color="black" />
-            <Text style={styles.textSetting}>Ngôn ngữ</Text>
+        <TouchableOpacity onPress={toggleModal}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="language" size={20} color="black" />
+              <Text style={styles.textSetting}>Ngôn ngữ</Text>
+            </View>
+            <Text style={styles.textSettingForcus}>{language}</Text>
           </View>
-          <Text style={styles.textSettingForcus}>Tiếng Việt</Text>
-        </View>
+        </TouchableOpacity>
       </View>
+
+      {/* Modal for Language Selection */}
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Chọn ngôn ngữ</Text>
+            <TouchableOpacity onPress={() => handleLanguageChange('Tiếng Việt')}>
+              <Text style={styles.modalText}>Tiếng Việt</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleLanguageChange('English')}>
+              <Text style={styles.modalText}>English</Text>
+            </TouchableOpacity>
+
+            {/* Custom Close Button */}
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Đóng</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Other settings sections */}
       <View style={styles.setting}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="help-circle-outline" size={25} color="black" />
@@ -122,22 +163,64 @@ function Profile({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  // Modal and Close Button Styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 5, // To add shadow effect on Android
+    shadowColor: '#000', // To add shadow effect on iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  modalText: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#2089dc',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+
+  // Other Styles
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#F7F7F9'
+    backgroundColor: '#F7F7F9',
   },
   header: {
     width: '100%',
     height: 180,
-    backgroundColor: '#FEAE73'
+    backgroundColor: '#FEAE73',
   },
   hearderText: {
     fontSize: 25,
     color: 'white',
     fontWeight: 'bold',
     marginTop: 65,
-    marginLeft: 35
+    marginLeft: 35,
   },
   profile: {
     width: '85%',
@@ -147,23 +230,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   avatar: {
     width: 70,
     height: 70,
-    borderRadius: 50
+    borderRadius: 50,
   },
   textName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 15,
-    color: 'black'
+    color: 'black',
   },
   textPhone: {
     fontSize: 14,
     color: 'gray',
-    marginLeft: 15
+    marginLeft: 15,
   },
   setting: {
     width: '85%',
@@ -171,17 +254,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginTop: 20,
     padding: 15,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   textSetting: {
+    marginLeft: 20,
     fontSize: 16,
     color: 'black',
-    marginLeft: 10
+    fontWeight: '600',
   },
   textSettingForcus: {
     fontSize: 16,
-    color: '#2089dc'
-  }
+    color: 'black',
+    fontWeight: '600',
+  },
 })
 
 export default Profile

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   message: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center'
   },
   button: {
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 20
   }
 })
 
