@@ -29,7 +29,7 @@ const data = [
 
 function Home({ navigation }) {
   const { userData, status, error } = useSelector((state) => state.auth)
-  console.log('userData', status, error)
+  console.log(userData, status, error)
 
   return (
     <ScrollView style={styles.scrollbar}>

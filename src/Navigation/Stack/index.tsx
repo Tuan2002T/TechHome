@@ -10,6 +10,7 @@ import ForgotPassword from '../../screens/authentication/SignIn/Password/ForgotP
 import Tabs from '../Tab'
 import Notification from '../../screens/App/Notification'
 import ApartmentDetails from '../../screens/App/ApartmentDetails'
+import BookService from '../../screens/App/Service/BookServide'
 
 const Stack = createStackNavigator()
 
@@ -61,6 +62,12 @@ function TabScreens() {
       <Stack.Screen
         name="ApartmentDetails"
         component={ApartmentDetails}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="BookService"
+        component={BookService}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

@@ -14,8 +14,8 @@ import Notification from '../../../Notification/notification.js'
 function SignIn({ navigation }) {
   const [checked, setChecked] = useState(false)
   const dispatch = useDispatch()
-  const [username, setUsername] = useState('davidl')
-  const [password, setPassword] = useState('1')
+  const [username, setUsername] = useState('leminhcuong')
+  const [password, setPassword] = useState('pass3')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')

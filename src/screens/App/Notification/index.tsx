@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -9,98 +9,61 @@ import {
 } from 'react-native'
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
-// Dữ liệu thông báo mẫu
-const notificationsData = [
-  {
-    id: '1',
-    title: 'Tin nhắn mới từ David',
-    description: 'Bạn có một tin nhắn mới từ David.',
-    date: new Date()
-  },
-  {
-    id: '2',
-    title: 'Thông báo sự kiện',
-    description: 'Thông báo về sự kiện vào ngày mai.',
-    date: new Date(Date.now() - 86400000)
-  }, // Hôm qua
-  {
-    id: '3',
-    title: 'Yêu cầu kết bạn mới',
-    description: 'Bạn đã nhận được một yêu cầu kết bạn mới.',
-    date: new Date(Date.now() - 86400000)
-  }, // Hôm qua
-  {
-    id: '4',
-    title: 'Bảo trì hệ thống',
-    description: 'Thông báo bảo trì hệ thống vào cuối tuần này.',
-    date: new Date(Date.now() - 172800000)
-  }, // Hai hôm trước
-  {
-    id: '5',
-    title: 'Khảo sát hôm nay',
-    description: 'Đừng quên tham gia khảo sát hôm nay!',
-    date: new Date(Date.now() - 259200000)
-  }, // Ba hôm trước
-  {
-    id: '6',
-    title: 'Thông báo từ nhóm hỗ trợ',
-    description: 'Thông báo mới từ nhóm hỗ trợ.',
-    date: new Date(Date.now() - 604800000)
-  }, // Một tuần trước
-  {
-    id: '7',
-    title: 'Tin nhắn mới từ David',
-    description: 'Bạn có một tin nhắn mới từ David.',
-    date: new Date()
-  },
-  {
-    id: '8',
-    title: 'Thông báo sự kiện',
-    description: 'Thông báo về sự kiện vào ngày mai.',
-    date: new Date(Date.now() - 86400000)
-  }, // Hôm qua
-  {
-    id: '9',
-    title: 'Yêu cầu kết bạn mới',
-    description: 'Bạn đã nhận được một yêu cầu kết bạn mới.',
-    date: new Date(Date.now() - 86400000)
-  }, // Hôm qua
-  {
-    id: '10',
-    title: 'Bảo trì hệ thống',
-    description: 'Thông báo bảo trì hệ thống vào cuối tuần này.',
-    date: new Date(Date.now() - 172800000)
-  }, // Hai hôm trước
-  {
-    id: '11',
-    title: 'Khảo sát hôm nay',
-    description: 'Đừng quên tham gia khảo sát hôm nay!',
-    date: new Date(Date.now() - 259200000)
-  }, // Ba hôm trước
-  {
-    id: '12',
-    title: 'Thông báo từ nhóm hỗ trợ',
-    description: 'Thông báo mới từ nhóm hỗ trợ.',
-    date: new Date(Date.now() - 604800000)
-  }
-]
+import { getAllNotification } from '../../../api/API/notification'
+import { useSelector } from 'react-redux'
 
 const Notification = ({ navigation }) => {
+  const { userData } = useSelector((state) => state.auth)
+  const [notificationsData, setNotificationsData] = useState([])
+
+  useEffect(() => {
+    const allNotifications = async () => {
+      try {
+        const response = await getAllNotification(userData.token)
+        console.log(response)
+
+        setNotificationsData(response)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const checkReadNotifications = async () => {
+      try {
+        notificationsData.forEach(async (notification) => {
+          if (notification.ResidentNotifications.status === true) {
+            setReadNotifications([
+              ...readNotifications,
+              notification.notificationId
+            ])
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        allNotifications()
+      }
+    }
+    allNotifications()
+    checkReadNotifications()
+  }, [])
+
   const [readNotifications, setReadNotifications] = useState([])
 
   const toggleRead = (id) => {
     if (readNotifications.includes(id)) {
-      setReadNotifications(
-        readNotifications.filter((notificationId) => notificationId !== id)
-      )
+      // setReadNotifications(
+      //   readNotifications.filter((notificationId) => notificationId !== id)
+      // )
     } else {
       setReadNotifications([...readNotifications, id])
     }
   }
 
   const markAllAsRead = () => {
-    const allIds = notificationsData.map((notification) => notification.id)
+    const allIds = notificationsData.map(
+      (notification) => notification.notificationId
+    )
     setReadNotifications(allIds)
   }
 
@@ -131,43 +94,44 @@ const Notification = ({ navigation }) => {
 
   const renderNotifications = () => {
     return notificationsData.reduce((acc, notification) => {
-      const dateLabel = getDateLabel(notification.date)
+      const dateLabel = getDateLabel(notification.createdAt)
       const notificationView = (
         <TouchableOpacity
-          key={notification.id}
+          key={notification.notificationId}
           style={styles.notificationItem}
-          onPress={() => toggleRead(notification.id)}
+          onPress={() => toggleRead(notification.notificationId)}
         >
           <View style={styles.notificationContent}>
             <Ionicons
               name={
-                readNotifications.includes(notification.id)
+                readNotifications.includes(notification.notificationId)
                   ? 'checkmark-done'
                   : 'checkmark-sharp'
               }
               size={20}
               color={
-                readNotifications.includes(notification.id) ? '#4CAF50' : '#999'
+                readNotifications.includes(notification.notificationId)
+                  ? '#4CAF50'
+                  : '#999'
               }
             />
             <View style={styles.notificationTextContainer}>
               <Text
                 style={[
                   styles.notificationTitle,
-                  readNotifications.includes(notification.id) && styles.read
+                  readNotifications.includes(notification.notificationId) &&
+                    styles.read
                 ]}
               >
-                {notification.title}
+                {notification.notificationTitle}
               </Text>
               <Text style={styles.notificationDescription}>
-                {notification.description}
+                {notification.notificationBody}
               </Text>
             </View>
           </View>
         </TouchableOpacity>
       )
-
-      // Kiểm tra nếu ngày đã có trong accumulator
       if (!acc[dateLabel]) {
         acc[dateLabel] = []
       }

@@ -6,6 +6,9 @@ const get_resident_no_active_by_idcard_url = `${API_URL}/getResidentNoActiveById
 const sendOTP_url = `${API_URL}/sendOTP`
 const verifyOTP_url = `${API_URL}/verifyOTP`
 const forgotPassword_url = `${API_URL}/forgotPassword`
+const getAllNotification_url = `${API_URL}/getAllNotifications`
+const readNotification_url = `${API_URL}/readNotification`
+const readAllNotification_url = `${API_URL}/readAllNotification`
 // Xuất đối tượng chứa các URL
 export default {
   login_url,
@@ -13,5 +16,8 @@ export default {
   get_resident_no_active_by_idcard_url,
   sendOTP_url,
   verifyOTP_url,
-  forgotPassword_url
+  forgotPassword_url,
+  getAllNotification_url,
+  readNotification_url,
+  readAllNotification_url
 }

@@ -21,8 +21,6 @@ export const loginResident = async (loginData) => {
 }
 
 export const activeResident = async (activeData) => {
-  console.log(activeData)
-
   try {
     const response = await axios.put(API.active_url, activeData, {
       headers: {
