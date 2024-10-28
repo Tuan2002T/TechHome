@@ -5,31 +5,18 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { Button } from '@rneui/base'
-import {
-  AirConditioner,
-  LightningBolt,
-  MenuSquared,
-  TV,
-  Water
-} from '../Component/FacilitiesComponent.tsx'
+
 import { useSelector } from 'react-redux'
 import FloatingActionComponent from '../Component/FloatingActionComponent.tsx'
 import SpendingChartComponent from './SpendingChart/SpendingChartComponent.tsx'
+import { NavigationProp } from '@react-navigation/native'
 
-const data = [
-  { id: '1', icon: <TV width={40} height={40} /> },
-  { id: '2', icon: <Water width={40} height={40} /> },
-  { id: '3', icon: <AirConditioner width={40} height={40} /> },
-  { id: '4', icon: <LightningBolt width={40} height={40} /> },
-  { id: '5', icon: <TV width={40} height={40} /> },
-  { id: '6', icon: <Water width={40} height={40} /> },
-  { id: '7', icon: <AirConditioner width={40} height={40} /> },
-  { id: '8', icon: <MenuSquared width={40} height={40} /> }
-]
+interface HomeProps {
+  navigation: NavigationProp<any>
+}
 
-function Home({ navigation }) {
-  const { userData, status, error } = useSelector((state) => state.auth)
-  console.log(userData, status, error)
+const Home: React.FC<HomeProps> = ({ navigation }) => {
+  const { userData, status, error } = useSelector((state: any) => state.auth)
 
   return (
     <ScrollView style={styles.scrollbar}>
@@ -90,34 +77,13 @@ function Home({ navigation }) {
           />
 
           <FloatingActionComponent
-            icon={<EntypoIcon name="menu" size={35} color="#673AB7" />}
-            title="Dịch vụ"
+            icon={<FontAwesomeIcon name="send" size={30} color="#673AB7" />}
+            title="Gửi ý kiến"
             style={{}}
-            onPress={() => navigation.navigate('Service')}
+            onPress={() => navigation.navigate('Feedback')}
           />
         </View>
         <SpendingChartComponent />
-        <View style={styles.listContainer}>
-          <Text style={styles.headerList}>Dịch vụ</Text>
-          <View style={styles.rowContainer}>
-            {data.map((item) => (
-              <View key={item.id} style={styles.item}>
-                {item.icon}
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.listContainer}>
-          <Text style={styles.headerList}>Tiện ích</Text>
-          <View style={styles.rowContainer}>
-            {data.map((item) => (
-              <View key={item.id} style={styles.item}>
-                {item.icon}
-              </View>
-            ))}
-          </View>
-        </View>
       </View>
     </ScrollView>
   )

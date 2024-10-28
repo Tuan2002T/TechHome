@@ -9,6 +9,7 @@ const forgotPassword_url = `${API_URL}/forgotPassword`
 const getAllNotification_url = `${API_URL}/getAllNotifications`
 const readNotification_url = `${API_URL}/readNotification`
 const readAllNotification_url = `${API_URL}/readAllNotification`
+const getResidentApartmentInfo_url = `${API_URL}/getResidentApartmentInfo`
 // Xuất đối tượng chứa các URL
 export default {
   login_url,
@@ -19,5 +20,6 @@ export default {
   forgotPassword_url,
   getAllNotification_url,
   readNotification_url,
-  readAllNotification_url
+  readAllNotification_url,
+  getResidentApartmentInfo_url
 }

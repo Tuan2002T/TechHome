@@ -6,12 +6,17 @@ import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
 import { Checkbox } from 'react-native-paper'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
 import { useDispatch } from 'react-redux'
-import { login } from '../../../redux/Thunk/userThunk.js'
+import { login, residentApartmentInfo } from '../../../redux/Thunk/userThunk.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import { useTranslation } from 'react-i18next'
 import Notification from '../../../Notification/notification.js'
+import { NavigationProp } from '@react-navigation/native'
 
-function SignIn({ navigation }) {
+interface SignInProps {
+  navigation: NavigationProp<any>
+}
+
+const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [checked, setChecked] = useState(false)
   const dispatch = useDispatch()
   const [username, setUsername] = useState('leminhcuong')
@@ -20,11 +25,15 @@ function SignIn({ navigation }) {
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
 
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const handleLogin = async () => {
     setLoading(true)
     try {
-      await dispatch(login({ username, password })).unwrap()
+      const response = await dispatch(login({ username, password })).unwrap()
+
+      const token = response.token
+
+      await dispatch(residentApartmentInfo(token)).unwrap()
       navigation.navigate('Tabs')
     } catch (error) {
       setError(true)

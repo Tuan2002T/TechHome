@@ -1,300 +1,230 @@
-import React, { useState } from 'react';
-import { 
-  FlatList, 
-  Modal, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  View 
-} from 'react-native';
-import SwitchSelector from 'react-native-switch-selector';
-import { SpeedDial } from '@rneui/themed';
+import React, { useState } from 'react'
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
+import SwitchSelector from 'react-native-switch-selector'
+import { SpeedDial } from '@rneui/themed'
 
-function Chat() {
-  const [open, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('1');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedBuilding, setSelectedBuilding] = useState('');
-  const [selectedFloor, setSelectedFloor] = useState('');
-  const [selectedRoom, setSelectedRoom] = useState('');
-  const [feedback, setFeedback] = useState('');
+function ChatList() {
+  const [selectedOption, setSelectedOption] = useState('common')
+  const [open, setOpen] = useState(false)
 
-  const pendingRequests = [
-    { id: '1', content: 'Yêu cầu sửa điện', time: '12:00 - 21/10/2024' },
-    { id: '2', content: 'Yêu cầu sửa ống nước', time: '09:30 - 22/10/2024' },
-  ];
+  const commonChats = [
+    {
+      id: '1',
+      title: 'Chat chung cư',
+      lastMessage: 'Thông báo về lịch bảo trì thang máy tháng 10',
+      time: '12:00',
+      unread: 3
+    },
+    {
+      id: '2',
+      title: 'Phòng 1503',
+      lastMessage: 'Nhờ bảo vệ hỗ trợ đưa xe lên hầm',
+      time: '11:30',
+      unread: 0
+    }
+  ]
 
-  const historyRequests = [
-    { id: '1', content: 'Sửa máy lạnh', time: '14:00 - 20/10/2024', status: 'Đã giải quyết' },
-    { id: '2', content: 'Thay bóng đèn', time: '10:00 - 18/10/2024', status: 'Đã giải quyết' },
-  ];
+  const adminChats = [
+    {
+      id: '1',
+      title: 'Ban quản lý',
+      lastMessage: 'Cảm ơn bạn đã phản ánh. Chúng tôi sẽ xử lý ngay',
+      time: '14:20',
+      unread: 1
+    }
+  ]
 
   const options = [
-    { label: 'Đang chờ xử lý', value: '1' },
-    { label: 'Lịch sử', value: '1.5' },
-  ];
+    { label: 'Chung', value: 'common' },
+    { label: 'Ban quản lý', value: 'admin' }
+  ]
 
-  const renderItem = ({ item }) => (
-    <View style={styles.requestItem}>
-      <Text style={styles.requestContent}>{item.content}</Text>
-      <Text style={styles.requestTime}>{item.time}</Text>
-      {item.status && <Text style={styles.requestStatus}>{item.status}</Text>}
-    </View>
-  );
-
-  const handleAddFeedback = () => {
-    // Logic để xử lý gửi ý kiến
-    console.log('Gửi ý kiến:', {
-      building: selectedBuilding,
-      floor: selectedFloor,
-      room: selectedRoom,
-      feedback,
-    });
-    // Đóng modal sau khi gửi
-    setModalVisible(false);
-    // Reset form
-    setSelectedBuilding('');
-    setSelectedFloor('');
-    setSelectedRoom('');
-    setFeedback('');
-    setOpen(!open)
-  };
+  const renderChatItem = ({ item }) => (
+    <TouchableOpacity style={styles.chatItem}>
+      <View style={styles.avatarContainer}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>{item.title[0]}</Text>
+        </View>
+      </View>
+      <View style={styles.chatInfo}>
+        <View style={styles.chatHeader}>
+          <Text style={styles.chatTitle}>{item.title}</Text>
+          <Text style={styles.chatTime}>{item.time}</Text>
+        </View>
+        <View style={styles.chatFooter}>
+          <Text style={styles.lastMessage} numberOfLines={1}>
+            {item.lastMessage}
+          </Text>
+          {item.unread > 0 && (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadText}>{item.unread}</Text>
+            </View>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  )
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Ý kiến đánh giá</Text>
+        <Text style={styles.headerText}>Tin nhắn</Text>
       </View>
+
       <View style={styles.content}>
         <SwitchSelector
           options={options}
-          textColor={'black'}
-          buttonColor={'#32AE63'}
-          selectedColor={'white'}
-          borderColor={'#32AE63'}
-          borderRadius={12}
-          valuePadding={3}
-          hasPadding
           initial={0}
           onPress={(value) => setSelectedOption(value)}
+          textColor={'#32AE63'}
+          selectedColor={'white'}
+          buttonColor={'#32AE63'}
+          borderColor={'#32AE63'}
+          hasPadding
           style={styles.switchSelector}
         />
-        {selectedOption === '1' ? (
-          <FlatList
-            data={pendingRequests}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            style={styles.list}
-          />
-        ) : (
-          <FlatList
-            data={historyRequests}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            style={styles.list}
-          />
-        )}
+
+        <FlatList
+          data={selectedOption === 'common' ? commonChats : adminChats}
+          renderItem={renderChatItem}
+          keyExtractor={(item) => item.id}
+          style={styles.chatList}
+        />
       </View>
 
       <SpeedDial
         isOpen={open}
-        icon={{ name: 'edit', color: '#fff' }}
+        icon={{ name: 'message', color: '#fff' }}
         openIcon={{ name: 'close', color: '#fff' }}
         onOpen={() => setOpen(!open)}
         onClose={() => setOpen(!open)}
-        overlayColor="rgba(0, 0, 0, 0.6)"
-        buttonStyle={{
-          backgroundColor: '#32AE63',
-          borderRadius: 30,
-        }}
+        buttonStyle={styles.speedDial}
       >
         <SpeedDial.Action
-          icon={{ name: 'add', color: '#fff' }}
-          title="Add"
-          onPress={() => setModalVisible(true)}
-          buttonStyle={{
-            backgroundColor: '#32AE63',
-            borderRadius: 25,
-          }}
-        />
-        <SpeedDial.Action
-          icon={{ name: 'delete', color: '#fff' }}
-          title="Delete"
-          onPress={() => console.log('Delete Something')}
-          buttonStyle={{
-            backgroundColor: '#32AE63',
-            borderRadius: 25,
-          }}
+          icon={{ name: 'report-problem', color: '#fff' }}
+          title="Gửi phản ánh"
+          onPress={() => console.log('Send feedback')}
+          buttonStyle={styles.speedDialAction}
         />
       </SpeedDial>
-
-      {/* Modal để gửi ý kiến */}
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Gửi ý kiến</Text>
-            <Text>Chọn Tòa nhà:</Text>
-            <TextInput
-              style={styles.input}
-              value={selectedBuilding}
-              onChangeText={setSelectedBuilding}
-              placeholder="Nhập Tòa nhà"
-            />
-            <Text>Chọn Tầng:</Text>
-            <TextInput
-              style={styles.input}
-              value={selectedFloor}
-              onChangeText={setSelectedFloor}
-              placeholder="Nhập Tầng"
-            />
-            <Text>Chọn Phòng:</Text>
-            <TextInput
-              style={styles.input}
-              value={selectedRoom}
-              onChangeText={setSelectedRoom}
-              placeholder="Nhập Phòng"
-            />
-            <Text>Nội dung:</Text>
-            <TextInput
-              style={styles.textArea}
-              value={feedback}
-              onChangeText={setFeedback}
-              placeholder="Nhập nội dung ý kiến"
-              multiline
-              numberOfLines={4}
-            />
-            <TouchableOpacity onPress={handleAddFeedback} style={styles.submitButton}>
-              <Text style={styles.submitButtonText}>Gửi</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setModalVisible(false), setOpen(!open)}} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Đóng</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F9',
+    backgroundColor: '#F7F7F9'
   },
   header: {
     width: '100%',
     height: 150,
     backgroundColor: '#32AE63',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   headerText: {
     fontSize: 25,
     color: 'white',
     fontWeight: 'bold',
-    marginLeft: 35,
+    marginLeft: 35
   },
   content: {
-    alignItems: 'center',
-    marginTop: 20,
+    flex: 1,
+    alignItems: 'center'
   },
   switchSelector: {
     width: '90%',
-    marginTop: 20,
+    marginTop: 20
   },
-  list: {
-    width: '90%',
-    marginTop: 20,
+  chatList: {
+    width: '100%',
+    marginTop: 20
   },
-  requestItem: {
-    backgroundColor: 'white',
+  chatItem: {
+    flexDirection: 'row',
     padding: 15,
-    borderRadius: 10,
+    backgroundColor: 'white',
+    marginHorizontal: 20,
     marginBottom: 10,
+    borderRadius: 12,
     elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2
   },
-  requestContent: {
+  avatarContainer: {
+    marginRight: 15
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#32AE63',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  avatarText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  chatInfo: {
+    flex: 1
+  },
+  chatHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5
+  },
+  chatTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333'
   },
-  requestTime: {
+  chatTime: {
+    fontSize: 12,
+    color: '#888'
+  },
+  chatFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  lastMessage: {
     fontSize: 14,
-    color: '#888',
-    marginTop: 5,
-  },
-  requestStatus: {
-    fontSize: 14,
-    color: '#32AE63',
-    marginTop: 5,
-  },
-  modalContainer: {
+    color: '#666',
     flex: 1,
+    marginRight: 10
+  },
+  unreadBadge: {
+    backgroundColor: '#32AE63',
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 20, 
+    paddingHorizontal: 8
   },
-  modalContent: {
-    width: '90%', 
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 25,
-    elevation: 10,
+  unreadText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold'
   },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#32AE63', 
-  },
-  modalLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 5,
-    color: '#333',
-  },
-  input: {
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 10, 
-    marginBottom: 15,
-    paddingHorizontal: 10,
-  },
-  textArea: {
-    height: 100,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    textAlignVertical: 'top',
-  },
-  submitButton: {
+  speedDial: {
     backgroundColor: '#32AE63',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 10,
+    borderRadius: 30
   },
-  submitButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    backgroundColor: '#d9534f',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
+  speedDialAction: {
+    backgroundColor: '#32AE63',
+    borderRadius: 25
+  }
+})
 
-export default Chat;
+export default ChatList

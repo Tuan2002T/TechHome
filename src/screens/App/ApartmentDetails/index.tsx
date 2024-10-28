@@ -1,20 +1,72 @@
 import { Tab, TabView } from '@rneui/themed'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { NavigationProp } from '@react-navigation/native'
+import { getResidentApartmentInfo } from '../../../api/API/info '
+import { useSelector } from 'react-redux'
 
-function ApartmentDetails({ navigation }) {
+interface Vehicle {
+  id: string
+  number: string
+  type: string
+}
+
+interface Resident {
+  id: string
+  phone: string
+  idCard: string
+  fullname: string
+  vehicles: Vehicle[]
+}
+
+interface Apartment {
+  id: string
+  type: string
+  number: string
+  residents: Resident[]
+}
+
+interface Floor {
+  id: string
+  number: number
+}
+
+interface Building {
+  id: string
+  name: string
+  address: string
+}
+
+interface ApartmentDetails {
+  apartment: Apartment
+  floor: Floor
+  building: Building
+}
+
+interface ApartmentDetailsProps {
+  navigation: NavigationProp<any>
+}
+
+const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
   const [index, setIndex] = useState(0)
+  const { userData } = useSelector((state: any) => state.auth)
+  const apartmentDetailsData = useSelector(
+    (state: any) => state.apartmentDetails.apartmentDetails
+  )
+  const [apartmentDetails, setApartmentDetails] = useState<ApartmentDetails>()
 
-  // Hàm xóa thành viên
+  useEffect(() => {
+    setApartmentDetails(apartmentDetailsData)
+  }, [])
+
   const handleDeleteMember = (name) => {
     console.log(`Xóa thành viên: ${name}`)
   }
 
-  // Hàm xóa phương tiện
   const handleDeleteVehicle = (vehicle) => {
     console.log(`Xóa phương tiện: ${vehicle}`)
   }
@@ -53,19 +105,28 @@ function ApartmentDetails({ navigation }) {
                 {/* Chi tiết thông tin căn hộ */}
                 <View style={styles.cardBodyContent}>
                   <Text style={styles.cardBodyContentTitle}>Mã căn hộ:</Text>
-                  <Text style={styles.cardBodyContentText}>ID12321</Text>
+                  <Text style={styles.cardBodyContentText}>
+                    {apartmentDetails?.apartment.number}
+                  </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
                   <Text style={styles.cardBodyContentTitle}>Loại căn hộ:</Text>
-                  <Text style={styles.cardBodyContentText}>Studio</Text>
+                  <Text style={styles.cardBodyContentText}>
+                    {apartmentDetails?.apartment.type}
+                  </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
                   <Text style={styles.cardBodyContentTitle}>Toà nhà:</Text>
-                  <Text style={styles.cardBodyContentText}>B</Text>
+                  <Text style={styles.cardBodyContentText}>
+                    {apartmentDetails?.building.name}
+                  </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
                   <Text style={styles.cardBodyContentTitle}>Tầng:</Text>
-                  <Text style={styles.cardBodyContentText}>19</Text>
+                  <Text style={styles.cardBodyContentText}>
+                    {' '}
+                    {apartmentDetails?.floor.number}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -77,26 +138,18 @@ function ApartmentDetails({ navigation }) {
               </View>
               <View style={styles.cardBody}>
                 {/* Card cho từng thành viên */}
-                <View style={styles.memberCard}>
-                  <Text style={styles.memberName}>Nguyễn Văn A</Text>
-                  <Text style={styles.memberRole}>Chủ hộ</Text>
-                  <Text style={styles.memberPhone}>0901234567</Text>
-                  <TouchableOpacity
-                    onPress={() => handleDeleteMember('Nguyễn Văn A')}
-                  >
-                    <Ionicons name="trash-outline" size={20} color="red" />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.memberCard}>
-                  <Text style={styles.memberName}>Nguyễn Thị B</Text>
-                  <Text style={styles.memberRole}>Vợ</Text>
-                  <Text style={styles.memberPhone}>0901234568</Text>
-                  <TouchableOpacity
-                    onPress={() => handleDeleteMember('Nguyễn Thị B')}
-                  >
-                    <Ionicons name="trash-outline" size={20} color="red" />
-                  </TouchableOpacity>
-                </View>
+                {apartmentDetails?.apartment.residents.map((resident) => (
+                  <View style={styles.memberCard} key={resident.id}>
+                    <Text style={styles.memberName}>{resident.fullname}</Text>
+                    <Text style={styles.memberRole}>{resident.idCard}</Text>
+                    <Text style={styles.memberPhone}>{resident.phone}</Text>
+                    <TouchableOpacity
+                      onPress={() => handleDeleteMember(resident.fullname)}
+                    >
+                      <Ionicons name="trash-outline" size={20} color="red" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
               </View>
             </View>
           </View>
