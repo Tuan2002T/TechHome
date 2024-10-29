@@ -9,7 +9,7 @@ import {
 import SwitchSelector from 'react-native-switch-selector'
 import { SpeedDial } from '@rneui/themed'
 
-function ChatList() {
+function ChatList({ navigation }) {
   const [selectedOption, setSelectedOption] = useState('common')
   const [open, setOpen] = useState(false)
 
@@ -46,7 +46,10 @@ function ChatList() {
   ]
 
   const renderChatItem = ({ item }) => (
-    <TouchableOpacity style={styles.chatItem}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('ChatMessage')}
+      style={styles.chatItem}
+    >
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{item.title[0]}</Text>
@@ -98,7 +101,7 @@ function ChatList() {
         />
       </View>
 
-      <SpeedDial
+      {/* <SpeedDial
         isOpen={open}
         icon={{ name: 'message', color: '#fff' }}
         openIcon={{ name: 'close', color: '#fff' }}
@@ -112,7 +115,7 @@ function ChatList() {
           onPress={() => console.log('Send feedback')}
           buttonStyle={styles.speedDialAction}
         />
-      </SpeedDial>
+      </SpeedDial> */}
     </View>
   )
 }
@@ -126,38 +129,49 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 150,
     backgroundColor: '#32AE63',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    elevation: 5
   },
   headerText: {
-    fontSize: 25,
+    fontSize: 26,
     color: 'white',
-    fontWeight: 'bold',
-    marginLeft: 35
+    fontWeight: 'bold'
   },
   content: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: 20
   },
   switchSelector: {
     width: '90%',
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 25,
+    overflow: 'hidden'
   },
   chatList: {
     width: '100%',
-    marginTop: 20
+    paddingHorizontal: 20
   },
   chatItem: {
     flexDirection: 'row',
     padding: 15,
     backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 10,
-    borderRadius: 12,
-    elevation: 2,
+    marginBottom: 12,
+    borderRadius: 15,
     shadowColor: '#000',
+    shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2
+    shadowRadius: 3,
+    elevation: 2
   },
   avatarContainer: {
     marginRight: 15
@@ -168,7 +182,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: '#32AE63',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderColor: 'white',
+    borderWidth: 2
   },
   avatarText: {
     color: 'white',
@@ -184,12 +200,12 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   chatTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#333'
   },
   chatTime: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#888'
   },
   chatFooter: {
@@ -204,7 +220,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   unreadBadge: {
-    backgroundColor: '#32AE63',
+    backgroundColor: '#FF6B6B',
     borderRadius: 12,
     minWidth: 24,
     height: 24,

@@ -12,6 +12,7 @@ import Notification from '../../screens/App/Notification'
 import ApartmentDetails from '../../screens/App/ApartmentDetails'
 import BookService from '../../screens/App/Service/BookServide'
 import Feedback from '../../screens/App/Feedback'
+import ChatMessage from '../../screens/App/ChatMessage'
 
 const Stack = createStackNavigator()
 
@@ -75,6 +76,12 @@ function TabScreens() {
       <Stack.Screen
         name="Feedback"
         component={Feedback}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ChatMessage"
+        component={ChatMessage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

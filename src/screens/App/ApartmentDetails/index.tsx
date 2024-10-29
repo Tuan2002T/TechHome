@@ -20,7 +20,6 @@ interface Resident {
   phone: string
   idCard: string
   fullname: string
-  vehicles: Vehicle[]
 }
 
 interface Apartment {
@@ -45,6 +44,7 @@ interface ApartmentDetails {
   apartment: Apartment
   floor: Floor
   building: Building
+  vehicle: Vehicle
 }
 
 interface ApartmentDetailsProps {
@@ -70,6 +70,8 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
   const handleDeleteVehicle = (vehicle) => {
     console.log(`Xóa phương tiện: ${vehicle}`)
   }
+
+  console.log(apartmentDetails)
 
   return (
     <View style={styles.container}>
@@ -156,29 +158,30 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
         </TabView.Item>
 
         <TabView.Item style={styles.tabViewItem}>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <MaterialIcons name="directions-car" size={30} color="#26938E" />
-              <Text style={styles.cardText}>Phương tiện đăng ký</Text>
-            </View>
-            <View style={styles.cardBody}>
-              {/* Card cho từng phương tiện */}
-              <View style={styles.vehicleCard}>
-                <Text style={styles.vehicleName}>Xe hơi</Text>
-                <Text style={styles.vehicleType}>Loại: SUV</Text>
-                <Text style={styles.vehiclePlate}>Biển số: 1234AB</Text>
-                <TouchableOpacity onPress={() => handleDeleteVehicle('Xe hơi')}>
-                  <Ionicons name="trash-outline" size={20} color="red" />
-                </TouchableOpacity>
+          <View>
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <MaterialIcons
+                  name="directions-car"
+                  size={30}
+                  color="#26938E"
+                />
+                <Text style={styles.cardText}>Phương tiện đăng ký</Text>
               </View>
-
-              <View style={styles.vehicleCard}>
-                <Text style={styles.vehicleName}>Xe máy</Text>
-                <Text style={styles.vehicleType}>Loại: Sport</Text>
-                <Text style={styles.vehiclePlate}>Biển số: 5678CD</Text>
-                <TouchableOpacity onPress={() => handleDeleteVehicle('Xe máy')}>
-                  <Ionicons name="trash-outline" size={20} color="red" />
-                </TouchableOpacity>
+              <View style={styles.cardBody}>
+                {/* Chi tiết thông tin căn hộ */}
+                <View style={styles.cardBodyContent}>
+                  <Text style={styles.cardBodyContentTitle}>Loại xe:</Text>
+                  <Text style={styles.cardBodyContentText}>
+                    {apartmentDetails?.vehicle.type}
+                  </Text>
+                </View>
+                <View style={styles.cardBodyContent}>
+                  <Text style={styles.cardBodyContentTitle}>Biển số:</Text>
+                  <Text style={styles.cardBodyContentText}>
+                    {apartmentDetails?.apartment.number}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
