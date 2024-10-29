@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Image,
+  Keyboard
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
@@ -17,19 +19,41 @@ const ChatMessage = () => {
       text: 'I have a question about the product features.',
       isUser: true
     },
-    { id: '3', text: 'Sure, what would you like to know?', isUser: false }
+    { id: '3', text: 'Sure, what would you like to know?', isUser: false },
+    { id: '4', text: 'Sure, what would you like to know?', isUser: false },
+    { id: '5', text: 'Sure, what would you like to know?', isUser: false },
+    { id: '6', text: 'Sure, what would you like to know?', isUser: false }
   ])
   const [inputText, setInputText] = useState('')
+  const flatListRef = useRef(null)
 
   const sendMessage = () => {
     if (inputText.trim() !== '') {
-      setMessages([
-        ...messages,
-        { id: String(messages.length + 1), text: inputText, isUser: true }
-      ])
+      setMessages((prevMessages) => {
+        const newMessages = [
+          ...prevMessages,
+          { id: String(prevMessages.length + 1), text: inputText, isUser: true }
+        ]
+        // Cuộn xuống tin nhắn mới nhất ngay sau khi cập nhật
+        flatListRef.current.scrollToEnd({ animated: true })
+        return newMessages
+      })
       setInputText('')
     }
   }
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        flatListRef.current.scrollToEnd({ animated: true })
+      }
+    )
+
+    return () => {
+      keyboardDidShowListener.remove()
+    }
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -37,21 +61,50 @@ const ChatMessage = () => {
         <Text style={styles.headerText}>Chat</Text>
       </View>
       <FlatList
+        ref={flatListRef}
+        showsVerticalScrollIndicator={false}
         data={messages}
         keyExtractor={(item) => item.id}
         style={styles.chatContainer}
         contentContainerStyle={styles.chatContent}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View
-            style={[
-              styles.messageContainer,
-              item.isUser ? styles.userMessage : styles.assistantMessage
-            ]}
+            style={{
+              flexDirection: item.isUser ? 'row-reverse' : 'row',
+              alignItems: 'flex-end'
+            }}
           >
-            <Text style={styles.messageText}>{item.text}</Text>
+            {!item.isUser &&
+              (index === messages.length - 1 || messages[index + 1].isUser) && (
+                <Image
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 25,
+                    marginRight: 8,
+                    marginBottom: 4
+                  }}
+                  source={{
+                    uri: 'https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474014Xlf/anh-gai-xinh-cute-de-thuong-hot-girl-17.jpg'
+                  }}
+                />
+              )}
+            <View
+              style={[
+                styles.messageContainer,
+                item.isUser ? styles.userMessage : styles.assistantMessage,
+                !item.isUser &&
+                  !(
+                    index === messages.length - 1 || messages[index + 1].isUser
+                  ) && { marginLeft: 40 }
+              ]}
+            >
+              <Text style={styles.messageText}>{item.text}</Text>
+            </View>
           </View>
         )}
       />
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -88,8 +141,7 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 16
+    paddingHorizontal: 15
   },
   chatContent: {
     flexGrow: 1,
@@ -103,12 +155,12 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#26938E',
+    backgroundColor: '#83c5be',
     color: 'white'
   },
   assistantMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#ffe5ec',
     color: '#333'
   },
   messageText: {
