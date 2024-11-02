@@ -10,6 +10,7 @@ const getAllNotification_url = `${API_URL}/getAllNotifications`
 const readNotification_url = `${API_URL}/readNotification`
 const readAllNotification_url = `${API_URL}/readAllNotification`
 const getResidentApartmentInfo_url = `${API_URL}/getResidentApartmentInfo`
+const getAllComplaints_url = `${API_URL}/getAllComplaints`
 // Xuất đối tượng chứa các URL
 export default {
   login_url,
@@ -21,5 +22,6 @@ export default {
   getAllNotification_url,
   readNotification_url,
   readAllNotification_url,
-  getResidentApartmentInfo_url
+  getResidentApartmentInfo_url,
+  getAllComplaints_url
 }

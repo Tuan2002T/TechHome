@@ -10,8 +10,12 @@ import { login, residentApartmentInfo } from '../../../redux/Thunk/userThunk.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import { useTranslation } from 'react-i18next'
 import Notification from '../../../Notification/notification.js'
-import { NavigationProp } from '@react-navigation/native'
+import { CommonActions, NavigationProp } from '@react-navigation/native'
 
+interface SignInData {
+  username: string
+  password: string
+}
 interface SignInProps {
   navigation: NavigationProp<any>
 }
@@ -19,29 +23,37 @@ interface SignInProps {
 const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [checked, setChecked] = useState(false)
   const dispatch = useDispatch()
-  const [username, setUsername] = useState('leminhcuong')
-  const [password, setPassword] = useState('pass3')
+  const [signInData, setSignInData] = useState<SignInData>({
+    username: 'leminhcuong',
+    password: 'pass3',
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
 
   const { t } = useTranslation()
+
   const handleLogin = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await dispatch(login({ username, password })).unwrap()
+      const response = await dispatch(login(signInData)).unwrap();
+      const token = response.token;
 
-      const token = response.token
+      await dispatch(residentApartmentInfo(token)).unwrap();
 
-      await dispatch(residentApartmentInfo(token)).unwrap()
-      navigation.navigate('Tabs')
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Tabs' }],
+        })
+      );
     } catch (error) {
-      setError(true)
-      setNotification('Đăng nhập thất bại')
+      setError(true);
+      setNotification('Đăng nhập thất bại');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const closeNotification = () => {
     setError(false)
@@ -67,22 +79,20 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
 
       <TextInputCustom
         placeholder={t('login.username')}
-        value={username}
-        onChangeText={setUsername}
+        value={signInData.username}
+        onChangeText={(text) => setSignInData({ ...signInData, username: text })}
       />
       <TextInputPasswordCustom
         placeholder={t('login.password')}
-        value={password}
-        onChangeText={setPassword}
+        value={signInData.password}
+        onChangeText={(text) => setSignInData({ ...signInData, password: text })}
       />
       <View style={styles.checkbox}>
         <View style={styles.checkbox1}>
           <Checkbox
             color="#999999"
             status={checked ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setChecked(!checked)
-            }}
+            onPress={() => setChecked(!checked)}
           />
           <Text>{t('login.remember')}</Text>
         </View>

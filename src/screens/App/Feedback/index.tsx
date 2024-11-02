@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FlatList,
   Modal,
@@ -11,12 +11,15 @@ import {
 import SwitchSelector from 'react-native-switch-selector'
 import { SpeedDial } from '@rneui/themed'
 import { NavigationProp } from '@react-navigation/native'
+import { getAllComplaints } from '../../../api/API/complaint'
+import { useSelector } from 'react-redux'
 
 interface FeedbackProps {
   navigation: NavigationProp<any>
 }
 
 const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
+  const { userData, status, error } = useSelector((state: any) => state.auth)
   const [open, setOpen] = useState(false)
   const [selectedOption, setSelectedOption] = useState('1')
   const [modalVisible, setModalVisible] = useState(false)
@@ -24,6 +27,20 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   const [selectedFloor, setSelectedFloor] = useState('')
   const [selectedRoom, setSelectedRoom] = useState('')
   const [feedback, setFeedback] = useState('')
+
+  useEffect(() => {
+    const getComplaints = async () => {
+      try {
+        const response = await getAllComplaints(userData.token)
+        console.log('Response:', response)
+      } catch (error) {
+        console.error('Error:', error)
+      } finally {
+      }
+    }
+
+    getComplaints()
+  }, [])
 
   const pendingRequests = [
     { id: '1', content: 'Yêu cầu sửa điện', time: '12:00 - 21/10/2024' },
