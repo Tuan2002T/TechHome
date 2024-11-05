@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FlatList,
   StyleSheet,
@@ -8,10 +8,26 @@ import {
 } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
 import { SpeedDial } from '@rneui/themed'
+import { NavigationProp } from '@react-navigation/native'
+import { getAllChats } from '../../../api/API/chat'
+import { useSelector } from 'react-redux'
 
-function ChatList({ navigation }) {
+interface ChatListProps {
+  navigation: NavigationProp<any>
+}
+
+const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState('common')
   const [open, setOpen] = useState(false)
+  const { userData, status, error } = useSelector((state: any) => state.auth)
+
+  useEffect(() => {
+    const getChats = async () => {
+      const response = await getAllChats(userData.token)
+      console.log(response)
+    }
+    getChats()
+  }, [])
 
   const commonChats = [
     {

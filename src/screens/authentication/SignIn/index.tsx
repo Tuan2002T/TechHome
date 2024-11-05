@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import {
+  PermissionsAndroid,
+  Platform,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../Custom/TextInputCustom.tsx'
 import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
@@ -12,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import Notification from '../../../Notification/notification.js'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
 import requestUserPermission from '../../../FireBase/NotificationPush.js'
+import { socket } from '../../../Socket/socket.js'
 
 interface SignInData {
   username: string
@@ -26,7 +33,7 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const dispatch = useDispatch()
   const [signInData, setSignInData] = useState<SignInData>({
     username: 'leminhcuong',
-    password: 'pass3',
+    password: 'pass3'
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -35,26 +42,28 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const { t } = useTranslation()
 
   const handleLogin = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const response = await dispatch(login(signInData)).unwrap();
-      const token = response.token;
+      const response = await dispatch(login(signInData)).unwrap()
+      const token = response.token
 
-      await dispatch(residentApartmentInfo(token)).unwrap();
+      await dispatch(residentApartmentInfo(token)).unwrap()
+
+      socket.emit('userOnline', response.user.userId)
 
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Tabs' }],
+          routes: [{ name: 'Tabs' }]
         })
-      );
+      )
     } catch (error) {
-      setError(true);
-      setNotification('Đăng nhập thất bại');
+      setError(true)
+      setNotification('Đăng nhập thất bại')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const closeNotification = () => {
     setError(false)
@@ -63,6 +72,26 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
 
   useEffect(() => {
     requestUserPermission()
+    const requestNotificationPermission = async () => {
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          {
+            title: 'Yêu cầu quyền gửi thông báo',
+            message: 'Ứng dụng cần quyền để gửi thông báo cho bạn.',
+            buttonPositive: 'Đồng ý'
+          }
+        )
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Quyền thông báo đã được cấp')
+        } else {
+          console.log('Quyền thông báo đã bị từ chối')
+        }
+      }
+    }
+
+    requestNotificationPermission()
   }, [])
 
   return (
@@ -85,12 +114,16 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
       <TextInputCustom
         placeholder={t('login.username')}
         value={signInData.username}
-        onChangeText={(text) => setSignInData({ ...signInData, username: text })}
+        onChangeText={(text) =>
+          setSignInData({ ...signInData, username: text })
+        }
       />
       <TextInputPasswordCustom
         placeholder={t('login.password')}
         value={signInData.password}
-        onChangeText={(text) => setSignInData({ ...signInData, password: text })}
+        onChangeText={(text) =>
+          setSignInData({ ...signInData, password: text })
+        }
       />
       <View style={styles.checkbox}>
         <View style={styles.checkbox1}>

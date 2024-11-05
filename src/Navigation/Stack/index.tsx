@@ -13,10 +13,14 @@ import ApartmentDetails from '../../screens/App/ApartmentDetails'
 import BookService from '../../screens/App/Service/BookServide'
 import Feedback from '../../screens/App/Feedback'
 import ChatMessage from '../../screens/App/ChatMessage'
+import { socket } from '../../Socket/socket'
 
 const Stack = createStackNavigator()
 
 function TabScreens() {
+  React.useEffect(() => {
+    socket.emit('connection')
+  }, [])
   return (
     <Stack.Navigator>
       <Stack.Screen

@@ -1,4 +1,6 @@
 const API_URL = 'http://192.168.2.23:3000/resident'
+const API_CHAT_URL = 'http://192.168.2.23:3000/chat'
+const API_SOCKET = 'http://192.168.2.23:3000'
 
 const login_url = `${API_URL}/login`
 const active_url = `${API_URL}/active`
@@ -11,6 +13,8 @@ const readNotification_url = `${API_URL}/readNotification`
 const readAllNotification_url = `${API_URL}/readAllNotification`
 const getResidentApartmentInfo_url = `${API_URL}/getResidentApartmentInfo`
 const getAllComplaints_url = `${API_URL}/getAllComplaints`
+const getAllChats_url = `${API_CHAT_URL}/getAllChats`
+const getAllMessagesByChatId_url = `${API_CHAT_URL}/getAllMessagesByChatId`
 // Xuất đối tượng chứa các URL
 export default {
   login_url,
@@ -23,5 +27,8 @@ export default {
   readNotification_url,
   readAllNotification_url,
   getResidentApartmentInfo_url,
-  getAllComplaints_url
+  getAllComplaints_url,
+  getAllChats_url,
+  getAllMessagesByChatId_url,
+  API_SOCKET
 }

@@ -10,6 +10,7 @@ async function requestUserPermission() {
     console.log('Authorization status:', authStatus);
     const token = await messaging().getToken();
     console.log(token);
+    return token;
 
   }
 }
