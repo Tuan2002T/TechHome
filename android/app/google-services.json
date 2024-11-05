@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "680234272933",
+    "project_id": "techhome-55dfa",
+    "storage_bucket": "techhome-55dfa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680234272933:android:ef036330935cc98e9fa54c",
+        "android_client_info": {
+          "package_name": "com.techhome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEYHwlB3iTp3glQbNhRySBki9nz8_3C3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

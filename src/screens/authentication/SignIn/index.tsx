@@ -11,6 +11,7 @@ import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import { useTranslation } from 'react-i18next'
 import Notification from '../../../Notification/notification.js'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
+import requestUserPermission from '../../../FireBase/NotificationPush.js'
 
 interface SignInData {
   username: string
@@ -59,6 +60,10 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
     setError(false)
     setLoading(false)
   }
+
+  useEffect(() => {
+    requestUserPermission()
+  }, [])
 
   return (
     <View style={styles.container}>
