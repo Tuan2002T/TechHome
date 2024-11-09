@@ -7,84 +7,68 @@ import {
   View
 } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
-import { SpeedDial } from '@rneui/themed'
 import { NavigationProp } from '@react-navigation/native'
 import { getAllChats } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 
+interface ChatList {
+  chatId: number
+  chatName: string
+  chatType: string
+  chatDate: string
+}
 interface ChatListProps {
   navigation: NavigationProp<any>
 }
 
 const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState('common')
-  const [open, setOpen] = useState(false)
-  const { userData, status, error } = useSelector((state: any) => state.auth)
+  const [chats, setChats] = useState<ChatList[]>([])
+  const { userData } = useSelector((state: any) => state.auth)
 
   useEffect(() => {
     const getChats = async () => {
       const response = await getAllChats(userData.token)
-      console.log(response)
+      setChats(response)
     }
     getChats()
   }, [])
-
-  const commonChats = [
-    {
-      id: '1',
-      title: 'Chat chung cư',
-      lastMessage: 'Thông báo về lịch bảo trì thang máy tháng 10',
-      time: '12:00',
-      unread: 3
-    },
-    {
-      id: '2',
-      title: 'Phòng 1503',
-      lastMessage: 'Nhờ bảo vệ hỗ trợ đưa xe lên hầm',
-      time: '11:30',
-      unread: 0
-    }
-  ]
-
-  const adminChats = [
-    {
-      id: '1',
-      title: 'Ban quản lý',
-      lastMessage: 'Cảm ơn bạn đã phản ánh. Chúng tôi sẽ xử lý ngay',
-      time: '14:20',
-      unread: 1
-    }
-  ]
 
   const options = [
     { label: 'Chung', value: 'common' },
     { label: 'Ban quản lý', value: 'admin' }
   ]
 
+  const filteredChats = chats.filter((chat) =>
+    selectedOption === 'common'
+      ? chat.chatType === 'apartment'
+      : chat.chatType === 'admin'
+  )
+
   const renderChatItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate('ChatMessage')}
+      onPress={() =>
+        navigation.navigate('ChatMessage', { chatId: item.chatId })
+      }
       style={styles.chatItem}
     >
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{item.title[0]}</Text>
+          <Text style={styles.avatarText}>{item.chatName[0]}</Text>
         </View>
       </View>
       <View style={styles.chatInfo}>
         <View style={styles.chatHeader}>
-          <Text style={styles.chatTitle}>{item.title}</Text>
-          <Text style={styles.chatTime}>{item.time}</Text>
+          <Text style={styles.chatTitle}>{item.chatName}</Text>
+          <Text style={styles.chatTime}>
+            {new Date(item.chatDate).toLocaleTimeString()}
+          </Text>
         </View>
         <View style={styles.chatFooter}>
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {item.lastMessage}
+            {/* Placeholder for last message */}
+            Tin nhắn mới
           </Text>
-          {item.unread > 0 && (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadText}>{item.unread}</Text>
-            </View>
-          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -110,28 +94,12 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
         />
 
         <FlatList
-          data={selectedOption === 'common' ? commonChats : adminChats}
+          data={filteredChats}
           renderItem={renderChatItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.chatId.toString()}
           style={styles.chatList}
         />
       </View>
-
-      {/* <SpeedDial
-        isOpen={open}
-        icon={{ name: 'message', color: '#fff' }}
-        openIcon={{ name: 'close', color: '#fff' }}
-        onOpen={() => setOpen(!open)}
-        onClose={() => setOpen(!open)}
-        buttonStyle={styles.speedDial}
-      >
-        <SpeedDial.Action
-          icon={{ name: 'report-problem', color: '#fff' }}
-          title="Gửi phản ánh"
-          onPress={() => console.log('Send feedback')}
-          buttonStyle={styles.speedDialAction}
-        />
-      </SpeedDial> */}
     </View>
   )
 }

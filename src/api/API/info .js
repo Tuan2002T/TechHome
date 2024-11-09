@@ -3,8 +3,6 @@ import API from '../../config/API_URL'
 
 export const getResidentApartmentInfo = async (token) => {
   try {
-    console.log('token123', token)
-
     const response = await axios.get(API.getResidentApartmentInfo_url, {
       headers: {
         'Content-Type': 'application/json',
