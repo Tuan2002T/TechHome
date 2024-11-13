@@ -15,7 +15,12 @@ export const getAllChats = async (token) => {
   }
 }
 
-export const getAllMessagesByChatId = async (token, chatId) => {
+export const getAllMessagesByChatId = async (
+  token,
+  chatId,
+  offset = 0,
+  limit = 10
+) => {
   try {
     const response = await axios.get(
       `${API_URL.getAllMessagesByChatId_url}/${chatId}`,
@@ -23,6 +28,10 @@ export const getAllMessagesByChatId = async (token, chatId) => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
+        },
+        params: {
+          offset,
+          limit
         }
       }
     )

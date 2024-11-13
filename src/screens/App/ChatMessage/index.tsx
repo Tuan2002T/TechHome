@@ -18,6 +18,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { getAllMessagesByChatId, sendMessages } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 import { NavigationProp, RouteProp } from '@react-navigation/native'
+import { socket } from '../../../Socket/socket'
 
 interface Files {
   fileId: number
@@ -46,15 +47,29 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   const flatListRef = useRef<any>(null)
 
   useEffect(() => {
+    socket.emit('joinChat', route.params.chatId)
     const getMessages = async () => {
       const response = await getAllMessagesByChatId(
         userData.token,
-        route.params.chatId
+        route.params.chatId,
+        0,
+        10
       )
-      setMessages(response)
+      console.log(response)
+
+      setMessages(response.messages)
     }
     getMessages()
   }, [])
+
+  useEffect(() => {
+    socket.on('receiveMessage', (message: Messages) => {
+      console.log('ở đây');
+
+      setMessages((prevMessages) => [...prevMessages, message])
+      flatListRef.current.scrollToEnd({ animated: true })
+    })
+  }, [socket])
 
   const sendMessage = async () => {
     try {
@@ -63,6 +78,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         route.params.chatId,
         inputText
       )
+      socket.emit('sendMessage', response, route.params.chatId);
       setMessages((prevMessages) => [...prevMessages, response])
       setInputText('')
       flatListRef.current.scrollToEnd({ animated: true })
@@ -180,7 +196,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => {navigation.goBack()
+          socket.emit('outChat', route.params.chatId)
+          }}
         >
           <Icon name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
