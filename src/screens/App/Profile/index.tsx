@@ -16,8 +16,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Switch } from '@rneui/themed'
 import { socket } from '../../../Socket/socket'
 import { useSelector } from 'react-redux'
+import { NavigationProp } from '@react-navigation/native'
 
-function Profile({ navigation }) {
+interface ProfileProps {
+  navigation: NavigationProp<any>
+}
+
+const Profile = ({ navigation }: ProfileProps) => {
   const { userData } = useSelector((state: any) => state.auth)
   const [value, setValue] = useState(false)
   const [language, setLanguage] = useState('Tiếng Việt')
@@ -50,10 +55,13 @@ function Profile({ navigation }) {
         </View>
       </View>
       <View style={styles.setting}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('EditProfile')}
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+        >
           <AntDesign name="profile" size={20} color="black" />
           <Text style={styles.textSetting}>Chỉnh sửa thông tin hồ sơ</Text>
-        </View>
+        </TouchableOpacity>
         <View
           style={{
             flexDirection: 'row',

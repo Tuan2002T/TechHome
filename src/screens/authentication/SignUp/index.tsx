@@ -7,7 +7,7 @@ import { Checkbox } from 'react-native-paper'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
 import { getResidentNoActiveByIdcard } from '../../../api/API/user.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
-import Notification from '../../../Notification/notification.js'
+import Notification from '../../../Modal/Notification/notification.js'
 import { useTranslation } from 'react-i18next'
 
 function SignUp({ navigation }) {

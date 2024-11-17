@@ -6,7 +6,7 @@ import ButtonCustom from '../../Custom/ButtonCustom.tsx'
 import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
 import { activeResident } from '../../../../api/API/user.js'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
-import Notification from '../../../../Notification/notification.js'
+import Notification from '../../../../Modal/Notification/notification.js'
 
 function ActiveAccount({ navigation, route }) {
   const residentData = route.params?.residentData

@@ -123,3 +123,35 @@ export const forgotPassword = async (data) => {
     }
   }
 }
+
+export const update = async (data, token) => {
+  try {
+    const formData = new FormData()
+
+    if (data.fullname) formData.append('fullname', data.fullname)
+    if (data.email) formData.append('email', data.email)
+    if (data.password) formData.append('password', data.password)
+    if (data.idcard) formData.append('idcard', data.idcard)
+    if (data.phonenumber) formData.append('phonenumber', data.phonenumber)
+    if (data.username) formData.append('username', data.username)
+
+    if (data.file) {
+      formData.append('file', {
+        uri: data.file.uri,
+        name: data.file.name,
+        type: data.file.type
+      })
+    }
+
+    const response = await axios.put(API.update_url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}

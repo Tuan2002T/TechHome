@@ -14,6 +14,7 @@ import BookService from '../../screens/App/Service/BookServide'
 import Feedback from '../../screens/App/Feedback'
 import ChatMessage from '../../screens/App/ChatMessage'
 import { socket } from '../../Socket/socket'
+import EditProfile from '../../screens/App/Profile/EditProfile'
 
 const Stack = createStackNavigator()
 
@@ -86,6 +87,11 @@ function TabScreens() {
       <Stack.Screen
         name="ChatMessage"
         component={ChatMessage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

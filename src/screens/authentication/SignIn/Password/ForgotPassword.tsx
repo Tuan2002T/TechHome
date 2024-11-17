@@ -13,7 +13,7 @@ import { TextInput } from 'react-native-paper'
 import { Button } from '@rneui/base'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
 import { sendOTP, verifyOTP } from '../../../../api/API/user.js'
-import Notification from '../../../../Notification/notification.js'
+import Notification from '../../../../Modal/Notification/notification.js'
 import { useTranslation } from 'react-i18next'
 
 function ForgotPassword({ navigation }) {

@@ -19,6 +19,8 @@ import { getAllMessagesByChatId, sendMessages } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 import { NavigationProp, RouteProp } from '@react-navigation/native'
 import { socket } from '../../../Socket/socket'
+import pickFile, { openCamera } from '../../../file/PickFile'
+import PickMedia from '../../../Modal/Media/PickMedia'
 
 interface Files {
   fileId: number
@@ -37,7 +39,7 @@ interface Messages {
 
 interface ChatMessageProps {
   navigation: NavigationProp<any>
-  route: RouteProp<any> & { params: { chatId: number } }
+  route: RouteProp<any, any>
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
@@ -45,6 +47,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   const [messages, setMessages] = useState<Messages[]>([])
   const [inputText, setInputText] = useState('')
   const flatListRef = useRef<any>(null)
+  const [isPickMediaOpen, setPickMediaOpen] = useState(false)
+
+  const openPickMedia = () => {
+    setPickMediaOpen(true)
+  }
+
+  const closePickMedia = () => {
+    setPickMediaOpen(false)
+  }
+
+  const handleCameraPress = () => {
+    openCamera()
+    closePickMedia()
+  }
+
+  const handleGalleryPress = () => {
+    console.log('Chọn từ Thư Viện')
+    closePickMedia()
+  }
 
   useEffect(() => {
     socket.emit('joinChat', route.params.chatId)
@@ -64,7 +85,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     socket.on('receiveMessage', (message: Messages) => {
-      console.log('ở đây');
+      console.log('ở đây')
 
       setMessages((prevMessages) => [...prevMessages, message])
       flatListRef.current.scrollToEnd({ animated: true })
@@ -78,7 +99,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         route.params.chatId,
         inputText
       )
-      socket.emit('sendMessage', response, route.params.chatId);
+      socket.emit('sendMessage', response, route.params.chatId)
       setMessages((prevMessages) => [...prevMessages, response])
       setInputText('')
       flatListRef.current.scrollToEnd({ animated: true })
@@ -193,11 +214,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <PickMedia
+        open={isPickMediaOpen}
+        onClose={closePickMedia}
+        onCameraPress={handleCameraPress}
+        onGalleryPress={handleGalleryPress}
+      />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => {navigation.goBack()
-          socket.emit('outChat', route.params.chatId)
+          onPress={() => {
+            navigation.goBack()
+            socket.emit('outChat', route.params.chatId)
           }}
         >
           <Icon name="chevron-left" size={20} color="white" />
@@ -219,10 +247,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       />
 
       <View style={styles.inputContainer}>
-        <TouchableOpacity style={styles.attachmentButton}>
+        <TouchableOpacity
+          style={styles.attachmentButton}
+          onPress={() => openPickMedia()}
+        >
           <FontAwesomeIcon name="camera" size={20} color="#666" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.attachmentButton}>
+        <TouchableOpacity
+          style={styles.attachmentButton}
+          onPress={() => pickFile()}
+        >
           <EntypoIcon name="attachment" size={20} color="#666" />
         </TouchableOpacity>
         <TextInput

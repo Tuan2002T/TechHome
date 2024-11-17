@@ -5434,6 +5434,13 @@ react-native-animated-spinkit@^1.5.2:
   resolved "https://registry.npmjs.org/react-native-animated-spinkit/-/react-native-animated-spinkit-1.5.2.tgz"
   integrity sha512-YCQGR3HzEQvyaAnepiyf/hv88Sta3UIZ2CFZPtFqwu+VbFJfMgjJZniOx4157TuR5AAYajEJP9Fgy+JLIU3jzQ==
 
+react-native-document-picker@^9.3.1:
+  version "9.3.1"
+  resolved "https://registry.npmjs.org/react-native-document-picker/-/react-native-document-picker-9.3.1.tgz"
+  integrity sha512-Vcofv9wfB0j67zawFjfq9WQPMMzXxOZL9kBmvWDpjVuEcVK73ndRmlXHlkeFl5ZHVsv4Zb6oZYhqm9u5omJOPA==
+  dependencies:
+    invariant "^2.2.4"
+
 react-native-gesture-handler@^2.19.0, "react-native-gesture-handler@>= 1.0.0":
   version "2.19.0"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.19.0.tgz"
@@ -5450,6 +5457,11 @@ react-native-gifted-charts@^1.4.44:
   integrity sha512-xBcKloxwjUVVJTUHHWu+85KZ0ZMje1H59du4v9TzSxvAYQtjwR2GETcisjtDi9U13NSybsgcn8P/limxLvuLIw==
   dependencies:
     gifted-charts-core "0.1.44"
+
+react-native-image-picker@^7.1.2:
+  version "7.1.2"
+  resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.1.2.tgz"
+  integrity sha512-b5y5nP60RIPxlAXlptn2QwlIuZWCUDWa/YPUVjgHc0Ih60mRiOg1PSzf0IjHSLeOZShCpirpvSPGnDExIpTRUg==
 
 react-native-linear-gradient@*, react-native-linear-gradient@^2.8.3:
   version "2.8.3"
@@ -5477,7 +5489,7 @@ react-native-ratings@^8.1.0:
   dependencies:
     lodash "^4.17.15"
 
-react-native-reanimated@^3.15.1:
+react-native-reanimated@*, react-native-reanimated@^3.15.1:
   version "3.15.1"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.15.1.tgz"
   integrity sha512-DbBeUUExtJ1x1nfE94I8qgDgWjq5ztM3IO/+XFO+agOkPeVpBs5cRnxHfJKrjqJ2MgwhJOUDmtHxo+tDsoeitg==
@@ -5552,6 +5564,11 @@ react-native-vector-icons@*, react-native-vector-icons@^10.1.0, react-native-vec
   dependencies:
     prop-types "^15.7.2"
     yargs "^16.1.1"
+
+react-native-vision-camera@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-4.6.1.tgz"
+  integrity sha512-USp7g+Q/H7nzIS2XBJTWVdzZArxgZu+IFafgswVzxdmr0iSpLjLUtoUp+SUWxZ+nLhJriYYvqg8hfZrJtnpnlw==
 
 react-native@*, react-native@>=0.57, react-native@>=0.59.0, react-native@0.75.2:
   version "0.75.2"

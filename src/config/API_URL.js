@@ -4,6 +4,7 @@ const API_SOCKET = 'http://192.168.2.23:3000'
 
 const login_url = `${API_URL}/login`
 const active_url = `${API_URL}/active`
+const update_url = `${API_URL}/update`
 const get_resident_no_active_by_idcard_url = `${API_URL}/getResidentNoActiveByIdcard`
 const sendOTP_url = `${API_URL}/sendOTP`
 const verifyOTP_url = `${API_URL}/verifyOTP`
@@ -20,6 +21,7 @@ const sendMessages_url = `${API_CHAT_URL}/sendMessages`
 export default {
   login_url,
   active_url,
+  update_url,
   get_resident_no_active_by_idcard_url,
   sendOTP_url,
   verifyOTP_url,
