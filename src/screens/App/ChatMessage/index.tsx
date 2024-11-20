@@ -10,17 +10,22 @@ import {
   Keyboard,
   Platform,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  Linking
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { getAllMessagesByChatId, sendMessages } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 import { NavigationProp, RouteProp } from '@react-navigation/native'
 import { socket } from '../../../Socket/socket'
 import pickFile, { openCamera } from '../../../file/PickFile'
 import PickMedia from '../../../Modal/Media/PickMedia'
+import Video from 'react-native-video'
+import SpinnerLoading from '../../../Spinner/spinnerloading'
+import Notification from '../../../Modal/Notification/notification'
 
 interface Files {
   fileId: number
@@ -48,6 +53,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   const [inputText, setInputText] = useState('')
   const flatListRef = useRef<any>(null)
   const [isPickMediaOpen, setPickMediaOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+
+  const closeNotification = () => {
+    setError(false)
+    setLoading(false)
+  }
 
   const openPickMedia = () => {
     setPickMediaOpen(true)
@@ -70,23 +83,28 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   useEffect(() => {
     socket.emit('joinChat', route.params.chatId)
     const getMessages = async () => {
-      const response = await getAllMessagesByChatId(
-        userData.token,
-        route.params.chatId,
-        0,
-        10
-      )
-      console.log(response)
-
-      setMessages(response.messages)
-    }
+      setLoading(true)
+      try {
+        const response = await getAllMessagesByChatId(
+          userData.token,
+          route.params.chatId,
+          0,
+          100
+        );
+        setMessages(response.messages);
+        setLoading(false)
+      } catch (error) {
+        setError(true)
+        setNotification('Lấy tin nhắn thất bại')
+      }finally {
+        setLoading(false)
+      }
+    };
     getMessages()
   }, [])
 
   useEffect(() => {
     socket.on('receiveMessage', (message: Messages) => {
-      console.log('ở đây')
-
       setMessages((prevMessages) => [...prevMessages, message])
       flatListRef.current.scrollToEnd({ animated: true })
     })
@@ -94,20 +112,30 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   const sendMessage = async () => {
     try {
+      setLoading(true);
       const response = await sendMessages(
         userData.token,
         route.params.chatId,
         inputText
-      )
-      socket.emit('sendMessage', response, route.params.chatId)
-      setMessages((prevMessages) => [...prevMessages, response])
-      setInputText('')
-      flatListRef.current.scrollToEnd({ animated: true })
-      console.log(response)
+      );
+      
+      if (response && response.success) {
+        socket.emit('sendMessage', response, route.params.chatId);
+        setMessages((prevMessages) => [...prevMessages, response]);
+        setInputText('');
+        flatListRef.current.scrollToEnd({ animated: true });
+      } else {
+        setError(true);
+        setNotification('Gửi tin nhắn thất bại');
+      }
     } catch (error) {
-      console.log(error)
+      setError(true);
+      setNotification('Gửi tin nhắn thất bại');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+  
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -131,6 +159,52 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  const handleFilePress = (fileUrl: string) => {
+    Linking.openURL(fileUrl)
+  }
+
+  const renderFileContent = (file: Files) => {
+    if (file.fileType.includes('image')) {
+      return (
+        <Image
+          key={file.fileId}
+          source={{ uri: file.fileUrl }}
+          style={styles.messageImage}
+          resizeMode="cover"
+        />
+      )
+    } else if (file.fileType.includes('video')) {
+      return (
+        <View key={file.fileId} style={styles.videoContainer}>
+          <Video
+            source={{ uri: file.fileUrl }}
+            style={styles.videoPlayer}
+            controls={true}
+            paused={true}
+            resizeMode="cover"
+            poster="https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+          />
+          <View style={styles.videoOverlay}>
+            <MaterialIcon name="play-circle-filled" size={50} color="white" />
+          </View>
+        </View>
+      )
+    } else {
+      return (
+        <TouchableOpacity
+          key={file.fileId}
+          style={styles.documentContainer}
+          onPress={() => handleFilePress(file.fileUrl)}
+        >
+          <EntypoIcon name="document" size={24} color="#666" />
+          <Text style={styles.documentText} numberOfLines={1}>
+            {file.fileName}
+          </Text>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   const renderMessage = ({ item, index }: any) => {
     const isCurrentUser = checkUser(item.senderId)
     const isLastMessage = index === messages.length - 1
@@ -141,8 +215,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       index === 0 || messages[index - 1].senderId !== item.senderId
     const isLastInSequence =
       isLastMessage || nextMessageSenderId !== item.senderId
-    const isImage =
-      item.Files.length > 0 && item.Files[0].fileType.includes('image')
 
     return (
       <View style={styles.messageWrapper}>
@@ -182,22 +254,23 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
               !isFirstInSequence && !isLastInSequence && styles.middleMessage
             ]}
           >
-            <Text
-              style={[
-                styles.messageText,
-                isCurrentUser && styles.userMessageText
-              ]}
-            >
-              {item.content}
-            </Text>
-            {isImage &&
-              item.Files.map((file) => (
-                <Image
-                  key={file.fileId}
-                  source={{ uri: file.fileUrl }}
-                  style={{ width: 100, height: 100 }}
-                />
-              ))}
+            {item.content && (
+              <Text
+                style={[
+                  styles.messageText,
+                  isCurrentUser && styles.userMessageText
+                ]}
+              >
+                {item.content}
+              </Text>
+            )}
+
+            {item.Files && item.Files.length > 0 && (
+              <View style={styles.filesContainer}>
+                {item.Files.map((file) => renderFileContent(file))}
+              </View>
+            )}
+
             <Text
               style={[
                 styles.timeText,
@@ -214,6 +287,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <PickMedia
         open={isPickMediaOpen}
         onClose={closePickMedia}
@@ -292,7 +371,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F7F9'
-    // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
   },
   header: {
     flexDirection: 'row',
@@ -324,7 +402,7 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   chatContent: {
     paddingVertical: 15
@@ -356,7 +434,31 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 1
+    shadowRadius: 1,
+    gap: 4
+  },
+  messageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    marginVertical: 4
+  },
+  filesContainer: {
+    marginTop: 4,
+    gap: 8
+  },
+  documentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    padding: 8,
+    borderRadius: 8,
+    gap: 8
+  },
+  documentText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#666'
   },
   userMessage: {
     backgroundColor: '#26938E',
@@ -432,7 +534,17 @@ const styles = StyleSheet.create({
   },
   sendButtonDisabled: {
     backgroundColor: '#E5E5E5'
-  }
+  },
+  videoContainer: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    overflow: 'hidden'
+  },
+  videoPlayer: {
+    width: '100%',
+    height: '100%'
+  },
 })
 
 export default ChatMessage

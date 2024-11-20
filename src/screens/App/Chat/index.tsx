@@ -10,6 +10,8 @@ import SwitchSelector from 'react-native-switch-selector'
 import { NavigationProp } from '@react-navigation/native'
 import { getAllChats } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
+import SpinnerLoading from '../../../Spinner/spinnerloading'
+import Notification from '../../../Modal/Notification/notification'
 
 interface ChatList {
   chatId: number
@@ -22,28 +24,47 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+  const closeNotification = () => {
+    setError(false)
+    setLoading(false)
+  }
+
   const [selectedOption, setSelectedOption] = useState('common')
   const [chats, setChats] = useState<ChatList[]>([])
   const { userData } = useSelector((state: any) => state.auth)
 
   useEffect(() => {
     const getChats = async () => {
-      const response = await getAllChats(userData.token)
-      setChats(response)
+      setLoading(true)
+      try {
+        const response = await getAllChats(userData.token)
+        setChats(response) // Cập nhật dữ liệu nếu thành công
+      } catch (error) {
+        setError(true)
+        setNotification('Lấy danh sách cuộc trò chuyện thất bại')
+      } finally {
+        setLoading(false)
+      }
     }
     getChats()
-  }, [])
+  }, [userData.token])
+
+  // Kiểm tra nếu chats có dữ liệu thì mới lọc, tránh lỗi khi chưa có dữ liệu
+  const filteredChats = chats?.length
+    ? chats.filter((chat) =>
+        selectedOption === 'common'
+          ? chat.chatType === 'apartment'
+          : chat.chatType === 'admin'
+      )
+    : []
 
   const options = [
     { label: 'Chung', value: 'common' },
     { label: 'Ban quản lý', value: 'admin' }
   ]
-
-  const filteredChats = chats.filter((chat) =>
-    selectedOption === 'common'
-      ? chat.chatType === 'apartment'
-      : chat.chatType === 'admin'
-  )
 
   const renderChatItem = ({ item }) => (
     <TouchableOpacity
@@ -76,6 +97,12 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <View style={styles.header}>
         <Text style={styles.headerText}>Tin nhắn</Text>
       </View>

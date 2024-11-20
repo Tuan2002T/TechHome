@@ -19,7 +19,7 @@ export const getAllMessagesByChatId = async (
   token,
   chatId,
   offset = 0,
-  limit = 10
+  limit = 20
 ) => {
   try {
     const response = await axios.get(
@@ -45,11 +45,6 @@ export const sendMessages = async (token, chatId, message) => {
   try {
     const formData = new FormData()
     formData.append('message', message)
-
-    // Nếu bạn có tệp, bạn có thể thêm chúng vào `formData`
-    // Ví dụ:
-    // formData.append("Files", file);
-
     const response = await axios.post(
       `${API_URL.sendMessages_url}/${chatId}`,
       formData,
@@ -62,9 +57,6 @@ export const sendMessages = async (token, chatId, message) => {
     )
     return response.data
   } catch (error) {
-    console.error(
-      'Error sending message:',
-      error.response ? error.response.data : error.message
-    )
+    console.log(error)
   }
 }

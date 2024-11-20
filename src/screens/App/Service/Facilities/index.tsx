@@ -11,38 +11,35 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { NavigationProp } from '@react-navigation/native'
 
-interface Service {
-  id: number
+interface Facility {
+  id: string
+  icon: JSX.Element
   name: string
   description: string
-  price: string
-  contact: string
-  availability: string
   location: string
-  estimatedTime: string
-  warranty: string
-  notes: string
+  availability: string
+  contact: string
 }
 
-interface ServiceInfoRow {
+interface FacilityInfoRow {
   icon: string
   title: string
   value: string
 }
 
-interface BookServiceProps {
+interface FacilitiesProps {
   navigation: NavigationProp<any>
   route: {
     params: {
-      item: Service
+      item: Facility
     }
   }
 }
 
-export default function BookService({ navigation, route }: BookServiceProps) {
-  const [service, setService] = React.useState<Service>(route.params.item)
+export default function Facilities({ navigation, route }: FacilitiesProps) {
+  const [facility, setFacility] = React.useState<Facility>(route.params.item)
 
-  const ServiceInfoRow = ({ icon, title, value }: ServiceInfoRow) => (
+  const FacilityInfoRow = ({ icon, title, value }: FacilityInfoRow) => (
     <View style={styles.infoRow}>
       <FeatherIcon
         name={icon}
@@ -69,58 +66,32 @@ export default function BookService({ navigation, route }: BookServiceProps) {
         >
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chi tiết dịch vụ</Text>
+        <Text style={styles.headerTitle}>Chi tiết cơ sở vật chất</Text>
       </View>
 
       <View style={styles.card}>
-        <View style={styles.iconContainer}>
-          <FeatherIcon name="package" size={50} color="#32AE63" />
-        </View>
+        <View style={styles.iconContainer}>{facility.icon}</View>
 
-        <Text style={styles.title}>{service.name}</Text>
-        <Text style={styles.price}>{service.price}</Text>
-
-        <Text style={styles.description}>{service.description}</Text>
+        <Text style={styles.title}>{facility.name}</Text>
+        <Text style={styles.description}>{facility.description}</Text>
 
         <View style={styles.infoContainer}>
-          <ServiceInfoRow
-            icon="phone"
-            title="Liên hệ"
-            value={service.contact}
-          />
-          <ServiceInfoRow
-            icon="clock"
-            title="Giờ làm việc"
-            value={service.availability}
-          />
-          <ServiceInfoRow
+          <FacilityInfoRow
             icon="map-pin"
             title="Địa điểm"
-            value={service.location}
+            value={facility.location}
           />
-          <ServiceInfoRow
-            icon="calendar"
-            title="Thời gian dự kiến"
-            value={service.estimatedTime}
+          <FacilityInfoRow
+            icon="clock"
+            title="Giờ làm việc"
+            value={facility.availability}
           />
-          <ServiceInfoRow
-            icon="shield"
-            title="Bảo hành"
-            value={service.warranty}
-          />
-          <ServiceInfoRow
-            icon="file-text"
-            title="Ghi chú"
-            value={service.notes}
+          <FacilityInfoRow
+            icon="phone"
+            title="Liên hệ"
+            value={facility.contact}
           />
         </View>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => alert(`Đã đặt dịch vụ: ${service.name}`)}
-        >
-          <Text style={styles.buttonText}>Đặt dịch vụ</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   )
@@ -177,11 +148,6 @@ const styles = StyleSheet.create({
     color: '#32AE63',
     textAlign: 'center'
   },
-  price: {
-    fontSize: 20,
-    color: '#32AE63',
-    marginBottom: 15
-  },
   description: {
     fontSize: 16,
     textAlign: 'center',
@@ -213,23 +179,5 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 14,
     color: '#555'
-  },
-  button: {
-    backgroundColor: '#32AE63',
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 30,
-    marginTop: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center'
   }
 })
