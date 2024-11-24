@@ -16,6 +16,7 @@ import ChatMessage from '../../screens/App/ChatMessage'
 import { socket } from '../../Socket/socket'
 import EditProfile from '../../screens/App/Profile/EditProfile'
 import Facilities from '../../screens/App/Service/Facilities'
+import Payment from '../../screens/App/Payment'
 
 const Stack = createStackNavigator()
 
@@ -98,6 +99,11 @@ function TabScreens() {
       <Stack.Screen
         name="Facilities"
         component={Facilities}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

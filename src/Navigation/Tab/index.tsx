@@ -78,7 +78,7 @@ function Tabs() {
             )
           } else if (rn === 'Service') {
             label = focused ? (
-              <Text style={{ color: 'black', fontSize: 12 }}>Service</Text> // Change color for Service
+              <Text style={{ color: 'black', fontSize: 12 }}>Service</Text>
             ) : (
               <Text style={{ color: 'gray', fontSize: 12 }}>Service</Text>
             )

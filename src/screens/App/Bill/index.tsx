@@ -1,25 +1,63 @@
-import React, { useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
 import ButtonCustom from '../../authentication/Custom/ButtonCustom'
-import BillItem from './Component/table'
-import BillHistory from './Component/tablehistory'
+import { getAllBills } from '../../../api/API/bill'
+import { useSelector } from 'react-redux'
+import { NavigationProp } from '@react-navigation/native'
+import TableBill from './Component/table'
+import TableBillHistory from './Component/tablehistory'
 
-function Bill({ navigation }) {
+interface BillProps {
+  navigation: NavigationProp<any>
+}
+
+interface BillItem {
+  billId: string
+  billStatus: string
+  billAmount: number
+  billDate: string
+  billName: string
+  serviceBookingId: string
+}
+
+const Bill: React.FC<BillProps> = ({ navigation }) => {
+  const { userData } = useSelector((state: any) => state.auth)
+  const [bills, setBills] = useState<BillItem[]>([])
+  const [history, setHistory] = useState<BillItem[]>([])
+  const [selectedOption, setSelectedOption] = useState('1')
+
+  const [selectedItems, setSelectedItems] = useState<BillItem[]>([])
+
+  const handleSelectionChange = (items: BillItem[]) => {
+    console.log(items)
+
+    setSelectedItems(items)
+  }
+
   const options = [
-    {
-      label: 'Thanh toán',
-      value: '1',
-      testID: 'switch-one',
-      accessibilityLabel: 'switch-one'
-    },
-    {
-      label: 'Lịch sử giao dịch',
-      value: '1.5',
-      testID: 'switch-one-thirty',
-      accessibilityLabel: 'switch-one-thirty'
-    }
+    { label: 'Thanh toán', value: '1' },
+    { label: 'Lịch sử giao dịch', value: '1.5' }
   ]
+
+  const getBills = async () => {
+    try {
+      const response = await getAllBills(userData.token)
+      const unpaidBills = response.filter(
+        (item) => item.billStatus === 'UNPAID'
+      )
+      const paidBills = response.filter((item) => item.billStatus === 'PAID')
+
+      setBills(unpaidBills)
+      setHistory(paidBills)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getBills()
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -36,12 +74,18 @@ function Bill({ navigation }) {
           borderRadius={12}
           valuePadding={3}
           hasPadding
-          initial={0} // Chọn giá trị đầu tiên
-          onPress={(value) => console.log(`Call onPress with value: ${value}`)}
+          initial={0}
+          onPress={(value) => {
+            setSelectedOption(value)
+          }}
           style={styles.switchSelector}
         />
       </View>
-      <BillItem />
+      {selectedOption === '1' ? (
+        <TableBill data={bills} onSelectionChange={handleSelectionChange} />
+      ) : (
+        <TableBillHistory data={history} />
+      )}
       <View style={styles.pay}>
         <View>
           <Text style={{ color: '#94989B', marginBottom: 10 }}>
@@ -52,13 +96,9 @@ function Bill({ navigation }) {
           </Text>
         </View>
         <ButtonCustom
+          onPress={() => navigation.navigate('Payment')}
           title="Thanh toán"
-          buttonStyle={{
-            width: 140,
-            height: 40,
-            borderRadius: 100,
-            backgroundColor: '#26938E'
-          }}
+          buttonStyle={styles.payButton}
           titleStyle={{ color: 'white', fontSize: 15 }}
         />
       </View>
@@ -84,7 +124,6 @@ const styles = StyleSheet.create({
     marginLeft: 35
   },
   content: {
-    // flex: 1,
     alignItems: 'center'
   },
   switchSelector: {
@@ -108,10 +147,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20
   },
-  table: {
-    width: 1,
-    height: 30,
-    backgroundColor: 'white'
+  payButton: {
+    width: 140,
+    height: 40,
+    borderRadius: 100,
+    backgroundColor: '#26938E'
   }
 })
 

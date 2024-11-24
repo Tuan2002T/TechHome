@@ -16,7 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Switch } from '@rneui/themed'
 import { socket } from '../../../Socket/socket'
 import { useSelector } from 'react-redux'
-import { NavigationProp } from '@react-navigation/native'
+import { CommonActions, NavigationProp } from '@react-navigation/native'
 
 interface ProfileProps {
   navigation: NavigationProp<any>
@@ -175,7 +175,12 @@ const Profile = ({ navigation }: ProfileProps) => {
         }}
         titleStyle={{ color: 'white', fontSize: 15 }}
         onPress={() => {
-          navigation.navigate('SignIn')
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'Authentication' }]
+            })
+          )
           const userId = userData.user.userId
           socket.emit('userOffline', { userId })
         }}
@@ -185,7 +190,6 @@ const Profile = ({ navigation }: ProfileProps) => {
 }
 
 const styles = StyleSheet.create({
-  // Modal and Close Button Styles
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -198,8 +202,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     alignItems: 'center',
-    elevation: 5, // To add shadow effect on Android
-    shadowColor: '#000', // To add shadow effect on iOS
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4
@@ -225,8 +229,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16
   },
-
-  // Other Styles
   container: {
     flex: 1,
     alignItems: 'center',

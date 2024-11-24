@@ -20,7 +20,8 @@ const sendMessages_url = `${API_CHAT_URL}/sendMessages`
 const getAllBuildingServices_url = `${API_URL}/getAllBuildingServices`
 const getAllBuidlingsAndFloorsAndApartments_url = `${API_URL}/getAllBuidlingsAndFloorsAndApartments`
 const sendComplaint_url = `${API_URL}/sendComplaint`
-// Xuất đối tượng chứa các URL
+const getAllBills_url = `${API_URL}/getAllBills`
+
 export default {
   login_url,
   active_url,
@@ -40,5 +41,6 @@ export default {
   getAllBuildingServices_url,
   getAllBuidlingsAndFloorsAndApartments_url,
   sendComplaint_url,
+  getAllBills_url,
   API_SOCKET
 }

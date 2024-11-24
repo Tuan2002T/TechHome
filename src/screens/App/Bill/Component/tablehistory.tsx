@@ -3,19 +3,16 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
 interface BillItem {
-  id: string
-  feeType: string
-  month: string
-  amount: string
+  billId: string
+  billName: string
+  billDate: string
+  billAmount: string
+}
+interface TableBillHistoryProps {
+  data: BillItem[]
 }
 
-const data: BillItem[] = [
-  { id: '1', feeType: 'Phí điện', month: '09/2024', amount: '1.000.000' },
-  { id: '2', feeType: 'Phí nước', month: '09/2024', amount: '300.000' },
-  { id: '3', feeType: 'Phí dịch vụ', month: '09/2024', amount: '500.000' }
-]
-
-const TableBillHistory: React.FC = () => {
+const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: boolean
   }>({})
@@ -29,11 +26,27 @@ const TableBillHistory: React.FC = () => {
 
   const renderItem = ({ item }: { item: BillItem }) => (
     <View style={styles.row}>
-      <Text style={[styles.feeType, styles.text]}>{item.feeType}</Text>
-      <Text style={[styles.month, styles.text]}>{item.month}</Text>
-      <Text style={[styles.amount, styles.text]}>{item.amount}</Text>
+      <Text style={[styles.feeType, styles.text]}>{item.billName}</Text>
+      <Text style={[styles.month, styles.text]}>
+        {formatDate(item.billDate)}
+      </Text>
+      <Text style={[styles.amount, styles.text]}>{item.billAmount}</Text>
+      <View>
+        <Checkbox
+          color="#32AE63"
+          uncheckedColor="#BDBDBD"
+          status={selectedItems[item.id] ? 'checked' : 'unchecked'}
+          onPress={() => toggleCheckBox(item.id)}
+          disabled={true}
+        />
+      </View>
     </View>
   )
+
+  const formatDate = (date: string) => {
+    const d = new Date(date)
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+  }
 
   return (
     <View style={styles.container}>
@@ -79,10 +92,10 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   feeType: {
-    width: '40%'
+    width: '35%'
   },
   month: {
-    width: '25%'
+    width: '30%'
   },
   amount: {
     width: '25%'

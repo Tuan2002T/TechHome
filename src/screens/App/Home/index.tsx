@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
@@ -20,6 +20,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.scrollbar}>
+      <StatusBar barStyle="light-content" backgroundColor="#26938E" />
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.name}>Xin chào, Trương Văn Tuấn</Text>

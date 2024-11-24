@@ -41,7 +41,7 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
       setLoading(true)
       try {
         const response = await getAllChats(userData.token)
-        setChats(response) // Cập nhật dữ liệu nếu thành công
+        setChats(response)
       } catch (error) {
         setError(true)
         setNotification('Lấy danh sách cuộc trò chuyện thất bại')
@@ -52,7 +52,6 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
     getChats()
   }, [userData.token])
 
-  // Kiểm tra nếu chats có dữ liệu thì mới lọc, tránh lỗi khi chưa có dữ liệu
   const filteredChats = chats?.length
     ? chats.filter((chat) =>
         selectedOption === 'common'
@@ -143,8 +142,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingTop: 20,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 3 },
