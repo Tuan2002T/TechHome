@@ -18,6 +18,8 @@ const getAllChats_url = `${API_CHAT_URL}/getAllChats`
 const getAllMessagesByChatId_url = `${API_CHAT_URL}/getAllMessagesByChatId`
 const sendMessages_url = `${API_CHAT_URL}/sendMessages`
 const getAllBuildingServices_url = `${API_URL}/getAllBuildingServices`
+const getAllBuidlingsAndFloorsAndApartments_url = `${API_URL}/getAllBuidlingsAndFloorsAndApartments`
+const sendComplaint_url = `${API_URL}/sendComplaint`
 // Xuất đối tượng chứa các URL
 export default {
   login_url,
@@ -36,5 +38,7 @@ export default {
   getAllMessagesByChatId_url,
   sendMessages_url,
   getAllBuildingServices_url,
+  getAllBuidlingsAndFloorsAndApartments_url,
+  sendComplaint_url,
   API_SOCKET
 }

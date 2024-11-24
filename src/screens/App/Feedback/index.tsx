@@ -11,86 +11,133 @@ import {
 import SwitchSelector from 'react-native-switch-selector'
 import { SpeedDial } from '@rneui/themed'
 import { NavigationProp } from '@react-navigation/native'
-import { getAllComplaints } from '../../../api/API/complaint'
+import {
+  getAllBuidlingsAndFloorsAndApartments,
+  getAllComplaints,
+  sendComplaint
+} from '../../../api/API/complaint'
 import { useSelector } from 'react-redux'
+import DropDown from '../../authentication/Custom/DropDownPicker'
 
+interface Building {
+  buildingId: string
+  buildingName: string
+}
+
+interface Floor {
+  floorId: string
+  floorNumber: string
+  buildingId: string
+}
+
+interface Apartment {
+  apartmentId: string
+  apartmentNumber: string
+  floorId: string
+}
+
+interface Complaint {
+  complainId: string
+  complaintTitle: string
+  complaintDate: string
+  complaintStatus: string
+}
 interface FeedbackProps {
   navigation: NavigationProp<any>
 }
 
 const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
-  const { userData, status, error } = useSelector((state: any) => state.auth)
+  const { userData } = useSelector((state: any) => state.auth)
   const [open, setOpen] = useState(false)
   const [selectedOption, setSelectedOption] = useState('1')
   const [modalVisible, setModalVisible] = useState(false)
-  const [selectedBuilding, setSelectedBuilding] = useState('')
-  const [selectedFloor, setSelectedFloor] = useState('')
-  const [selectedRoom, setSelectedRoom] = useState('')
-  const [feedback, setFeedback] = useState('')
-
+  const [complaints, setComplaints] = useState<Complaint[]>([])
+  const [buildings, setBuildings] = useState<Building[]>([])
+  const [floors, setFloors] = useState<Floor[]>([])
+  const [apartments, setApartments] = useState<Apartment[]>([])
+  const [complaintTitle, setComplaintTitle] = useState('')
+  const [complaintDescription, setComplaintDescription] = useState('')
+  const [idBuilding, setIdBuilding] = useState()
+  const [idFloor, setIdFloor] = useState()
+  const [idApartment, setIdApartment] = useState()
   useEffect(() => {
     const getComplaints = async () => {
       try {
         const response = await getAllComplaints(userData.token)
-        console.log('Response:', response)
+        setComplaints(response)
       } catch (error) {
         console.error('Error:', error)
       } finally {
       }
     }
+    const complaintsBuidingsFloorsApartments = async () => {
+      try {
+        const response = await getAllBuidlingsAndFloorsAndApartments(
+          userData.token
+        )
 
+        setBuildings(response.buildings)
+        setFloors(response.floors)
+        setApartments(response.apartments)
+      } catch (error) {
+        console.error('Error:', error)
+      } finally {
+      }
+    }
     getComplaints()
+    complaintsBuidingsFloorsApartments()
   }, [])
 
-  const pendingRequests = [
-    { id: '1', content: 'Yêu cầu sửa điện', time: '12:00 - 21/10/2024' },
-    { id: '2', content: 'Yêu cầu sửa ống nước', time: '09:30 - 22/10/2024' }
-  ]
+  const handleSendComplaint = async () => {
+    try {
+      const data = {
+        complaintTitle: complaintTitle,
+        complaintDescription: complaintDescription,
+        buildingId: idBuilding,
+        floorId: idFloor,
+        apartmentId: idApartment
+      }
+      const response = await sendComplaint(userData.token, data)
+      setComplaints([...complaints, response])
 
-  const historyRequests = [
-    {
-      id: '1',
-      content: 'Sửa máy lạnh',
-      time: '14:00 - 20/10/2024',
-      status: 'Đã giải quyết'
-    },
-    {
-      id: '2',
-      content: 'Thay bóng đèn',
-      time: '10:00 - 18/10/2024',
-      status: 'Đã giải quyết'
+      handleAddFeedback()
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
     }
-  ]
+  }
 
   const options = [
     { label: 'Đang chờ xử lý', value: '1' },
     { label: 'Lịch sử', value: '1.5' }
   ]
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = date.getFullYear()
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${day}/${month}/${year} ${hours}:${minutes}`
+  }
 
   const renderItem = ({ item }) => (
     <View style={styles.requestItem}>
-      <Text style={styles.requestContent}>{item.content}</Text>
-      <Text style={styles.requestTime}>{item.time}</Text>
-      {item.status && <Text style={styles.requestStatus}>{item.status}</Text>}
+      <Text style={styles.requestContent}>{item.complaintTitle}</Text>
+      <Text style={styles.requestTime}>{formatDate(item.complaintDate)}</Text>
+      {item.complaintStatus && (
+        <Text style={styles.requestStatus}>{item.complaintStatus}</Text>
+      )}
     </View>
   )
 
   const handleAddFeedback = () => {
-    // Logic để xử lý gửi ý kiến
-    console.log('Gửi ý kiến:', {
-      building: selectedBuilding,
-      floor: selectedFloor,
-      room: selectedRoom,
-      feedback
-    })
-    // Đóng modal sau khi gửi
     setModalVisible(false)
-    // Reset form
-    setSelectedBuilding('')
-    setSelectedFloor('')
-    setSelectedRoom('')
-    setFeedback('')
-    setOpen(!open)
+    setIdBuilding(undefined)
+    setIdFloor(undefined)
+    setIdApartment(undefined)
+    setComplaintTitle('')
+    setComplaintDescription('')
   }
 
   return (
@@ -114,14 +161,21 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
         />
         {selectedOption === '1' ? (
           <FlatList
-            data={pendingRequests}
+            data={complaints.filter(
+              (item) => item.complaintStatus === 'Pending'
+            )}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item) => item.complainId}
             style={styles.list}
           />
         ) : (
           <FlatList
-            data={historyRequests}
+            data={
+              complaints.filter((item) => item.complaintStatus !== 'Pending') ||
+              []
+            }
+            showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             style={styles.list}
@@ -144,7 +198,9 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
         <SpeedDial.Action
           icon={{ name: 'add', color: '#fff' }}
           title="Add"
-          onPress={() => setModalVisible(true)}
+          onPress={() => {
+            setModalVisible(true), setOpen(!open)
+          }}
           buttonStyle={{
             backgroundColor: '#32AE63',
             borderRadius: 25
@@ -167,44 +223,77 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Gửi ý kiến</Text>
             <Text>Chọn Tòa nhà:</Text>
-            <TextInput
+            <DropDown
+              value={idBuilding}
               style={styles.input}
-              value={selectedBuilding}
-              onChangeText={setSelectedBuilding}
-              placeholder="Nhập Tòa nhà"
+              zIndex={3000}
+              onValueChange={(value) => {
+                setIdBuilding(value)
+                setFloors(floors.filter((floor) => floor.buildingId === value))
+              }}
+              items={
+                buildings.map((building) => ({
+                  label: building.buildingName,
+                  value: building.buildingId
+                })) || []
+              }
             />
             <Text>Chọn Tầng:</Text>
-            <TextInput
+            <DropDown
+              value={idFloor}
               style={styles.input}
-              value={selectedFloor}
-              onChangeText={setSelectedFloor}
-              placeholder="Nhập Tầng"
+              zIndex={2000}
+              onValueChange={(value) => {
+                setIdFloor(value)
+              }}
+              items={
+                floors.map((floor) => ({
+                  label: floor.floorNumber,
+                  value: floor.floorId
+                })) || []
+              }
             />
-            <Text>Chọn Phòng:</Text>
+            <Text>Chọn số phòng:</Text>
+            <DropDown
+              value={idApartment}
+              style={styles.input}
+              zIndex={1000}
+              onValueChange={(value) => {
+                setIdApartment(value)
+                console.log(parseInt(value))
+              }}
+              items={
+                apartments.map((apartment) => ({
+                  label: apartment.apartmentNumber,
+                  value: apartment.apartmentId
+                })) || []
+              }
+            />
+            <Text>Tiêu đề:</Text>
             <TextInput
               style={styles.input}
-              value={selectedRoom}
-              onChangeText={setSelectedRoom}
+              value={complaintTitle}
+              onChangeText={setComplaintTitle}
               placeholder="Nhập Phòng"
             />
             <Text>Nội dung:</Text>
             <TextInput
               style={styles.textArea}
-              value={feedback}
-              onChangeText={setFeedback}
+              value={complaintDescription}
+              onChangeText={setComplaintDescription}
               placeholder="Nhập nội dung ý kiến"
               multiline
               numberOfLines={4}
             />
             <TouchableOpacity
-              onPress={handleAddFeedback}
+              onPress={handleSendComplaint}
               style={styles.submitButton}
             >
               <Text style={styles.submitButtonText}>Gửi</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                setModalVisible(false), setOpen(!open)
+                setModalVisible(false)
               }}
               style={styles.closeButton}
             >
@@ -236,11 +325,11 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
+    height: '80%'
   },
   switchSelector: {
-    width: '90%',
-    marginTop: 20
+    width: '90%'
   },
   list: {
     width: '90%',
