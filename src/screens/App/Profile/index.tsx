@@ -15,8 +15,10 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Switch } from '@rneui/themed'
 import { socket } from '../../../Socket/socket'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
+import { clearPersistedData } from '../../../redux/Persist/data'
+import { setRememberMe } from '../../../redux/Slice/userSlice'
 
 interface ProfileProps {
   navigation: NavigationProp<any>
@@ -27,6 +29,7 @@ const Profile = ({ navigation }: ProfileProps) => {
   const [value, setValue] = useState(false)
   const [language, setLanguage] = useState('Tiếng Việt')
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const dispatch = useDispatch()
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible)
@@ -183,6 +186,8 @@ const Profile = ({ navigation }: ProfileProps) => {
           )
           const userId = userData.user.userId
           socket.emit('userOffline', { userId })
+          clearPersistedData()
+          dispatch(setRememberMe(false))
         }}
       />
     </View>

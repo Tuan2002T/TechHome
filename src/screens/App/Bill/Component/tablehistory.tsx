@@ -24,19 +24,27 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
     }))
   }
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount)
+  }
   const renderItem = ({ item }: { item: BillItem }) => (
     <View style={styles.row}>
       <Text style={[styles.feeType, styles.text]}>{item.billName}</Text>
       <Text style={[styles.month, styles.text]}>
         {formatDate(item.billDate)}
       </Text>
-      <Text style={[styles.amount, styles.text]}>{item.billAmount}</Text>
+      <Text style={[styles.amount, styles.text]}>
+        {formatCurrency(item.billAmount)}
+      </Text>
       <View>
         <Checkbox
           color="#32AE63"
           uncheckedColor="#BDBDBD"
-          status={selectedItems[item.id] ? 'checked' : 'unchecked'}
-          onPress={() => toggleCheckBox(item.id)}
+          status={selectedItems[item.billId] ? 'checked' : 'unchecked'}
+          onPress={() => toggleCheckBox(item.billId)}
           disabled={true}
         />
       </View>
@@ -58,7 +66,7 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.billId}
       />
     </View>
   )

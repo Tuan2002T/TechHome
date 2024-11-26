@@ -86,3 +86,26 @@ export const sendComplaint = async (token, data) => {
     }
   }
 }
+
+export const deleteComplaint = async (token, complaintId) => {
+  try {
+    const response = await axios.delete(
+      `${API.deleteComplaint_url}/${complaintId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response)
+    } else if (error.request) {
+      console.log(error.request)
+    } else {
+      console.log(error.message)
+    }
+  }
+}

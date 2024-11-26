@@ -19,7 +19,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 
 const { width } = Dimensions.get('window')
 
-const Payment = ({ navigation }) => {
+const Payment = ({ navigation, route }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [qrValue, setQrValue] = useState('')
   const [modalTitle, setModalTitle] = useState('')

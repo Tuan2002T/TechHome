@@ -1,11 +1,15 @@
 import { Button } from '@rneui/themed'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import SwitchSelector from 'react-native-switch-selector'
+import { useSelector } from 'react-redux'
+import { socket } from '../../Socket/socket'
 
 function Authentication({ navigation }) {
   const { t, i18n } = useTranslation()
+  const { userData } = useSelector((state: any) => state.auth)
+
 
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang)
@@ -15,6 +19,17 @@ function Authentication({ navigation }) {
     { label: 'Vi', value: 'vi' },
     { label: 'En', value: 'en' }
   ]
+
+  const rememberMe = useSelector((state: any) => state.auth.rememberMe)
+
+  console.log(rememberMe)
+
+  useEffect(() => {
+    if (rememberMe) {
+      socket.emit('userOnline', userData.user.userId)
+      navigation.navigate('Tabs')
+    }
+  }, [])
 
   return (
     <View style={styles.container}>

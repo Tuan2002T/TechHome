@@ -39,14 +39,19 @@ const TableBill: React.FC<TableBillProps> = ({ data, onSelectionChange }) => {
     return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
   }
 
-  // Render các item trong FlatList
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(amount);
+  };
   const renderItem = ({ item }: { item: BillItem }) => (
     <View style={styles.row}>
       <Text style={[styles.feeType, styles.text]}>{item.billName}</Text>
       <Text style={[styles.month, styles.text]}>
         {formatDate(item.billDate)}
       </Text>
-      <Text style={[styles.amount, styles.text]}>{item.billAmount}</Text>
+      <Text style={[styles.amount, styles.text]}>{formatCurrency(item.billAmount)}</Text>
       <View>
         <Checkbox
           color="#32AE63"

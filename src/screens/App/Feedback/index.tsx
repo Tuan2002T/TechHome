@@ -18,7 +18,6 @@ import {
 } from '../../../api/API/complaint'
 import { useSelector } from 'react-redux'
 import DropDown from '../../authentication/Custom/DropDownPicker'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 interface Building {
   buildingId: string
@@ -61,7 +60,6 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   const [idBuilding, setIdBuilding] = useState()
   const [idFloor, setIdFloor] = useState()
   const [idApartment, setIdApartment] = useState()
-  const [isDeleteComplaint, setIsDeleteComplaint] = useState(false)
   useEffect(() => {
     const getComplaints = async () => {
       try {
@@ -125,22 +123,10 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.requestItem}>
-      <View>
-        <Text style={styles.requestContent}>{item.complaintTitle}</Text>
-        <Text style={styles.requestTime}>{formatDate(item.complaintDate)}</Text>
-        {item.complaintStatus && (
-          <Text style={styles.requestStatus}>{item.complaintStatus}</Text>
-        )}
-      </View>
-      {isDeleteComplaint && (
-        <TouchableOpacity
-          onPress={() => {
-            // handleDeleteComplaint(item.complainId)
-            console.log('Delete')
-          }}
-        >
-          <MaterialIcons name="delete" size={30} color="#d9534f" />
-        </TouchableOpacity>
+      <Text style={styles.requestContent}>{item.complaintTitle}</Text>
+      <Text style={styles.requestTime}>{formatDate(item.complaintDate)}</Text>
+      {item.complaintStatus && (
+        <Text style={styles.requestStatus}>{item.complaintStatus}</Text>
       )}
     </View>
   )
@@ -197,44 +183,41 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
         )}
       </View>
 
-      {!isDeleteComplaint && (
-        <SpeedDial
-          isOpen={open}
-          icon={{ name: 'edit', color: '#fff' }}
-          openIcon={{ name: 'close', color: '#fff' }}
-          onOpen={() => setOpen(!open)}
-          onClose={() => setOpen(!open)}
-          overlayColor="rgba(0, 0, 0, 0.6)"
+      <SpeedDial
+        isOpen={open}
+        icon={{ name: 'edit', color: '#fff' }}
+        openIcon={{ name: 'close', color: '#fff' }}
+        onOpen={() => setOpen(!open)}
+        onClose={() => setOpen(!open)}
+        overlayColor="rgba(0, 0, 0, 0.6)"
+        buttonStyle={{
+          backgroundColor: '#32AE63',
+          borderRadius: 30
+        }}
+      >
+        <SpeedDial.Action
+          icon={{ name: 'add', color: '#fff' }}
+          title="Add"
+          onPress={() => {
+            setModalVisible(true), setOpen(!open)
+          }}
           buttonStyle={{
             backgroundColor: '#32AE63',
-            borderRadius: 30
+            borderRadius: 25
           }}
-        >
-          <SpeedDial.Action
-            icon={{ name: 'add', color: '#fff' }}
-            title="Add"
-            onPress={() => {
-              setModalVisible(true), setOpen(!open)
-            }}
-            buttonStyle={{
-              backgroundColor: '#32AE63',
-              borderRadius: 25
-            }}
-          />
-          <SpeedDial.Action
-            icon={{ name: 'delete', color: '#fff' }}
-            title="Delete"
-            onPress={() => {
-              setIsDeleteComplaint(true), setOpen(!open)
-            }}
-            buttonStyle={{
-              backgroundColor: '#32AE63',
-              borderRadius: 25
-            }}
-          />
-        </SpeedDial>
-      )}
+        />
+        <SpeedDial.Action
+          icon={{ name: 'delete', color: '#fff' }}
+          title="Delete"
+          onPress={() => console.log('Delete Something')}
+          buttonStyle={{
+            backgroundColor: '#32AE63',
+            borderRadius: 25
+          }}
+        />
+      </SpeedDial>
 
+      {/* Modal để gửi ý kiến */}
       <Modal transparent={true} visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -357,10 +340,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    elevation: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    elevation: 2
   },
   requestContent: {
     fontSize: 16,

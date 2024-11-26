@@ -20,10 +20,14 @@ const sendMessages_url = `${API_CHAT_URL}/sendMessages`
 const getAllBuildingServices_url = `${API_URL}/getAllBuildingServices`
 const getAllBuidlingsAndFloorsAndApartments_url = `${API_URL}/getAllBuidlingsAndFloorsAndApartments`
 const sendComplaint_url = `${API_URL}/sendComplaint`
+const deleteComplaint_url = `${API_URL}/deleteComplaint`
 const getAllBills_url = `${API_URL}/getAllBills`
+const refreshToken_url = `${API_URL}/refreshToken`
+const createPayment_url = `${API_URL}/createPayment`
 
 export default {
   login_url,
+  refreshToken_url,
   active_url,
   update_url,
   get_resident_no_active_by_idcard_url,
@@ -42,5 +46,7 @@ export default {
   getAllBuidlingsAndFloorsAndApartments_url,
   sendComplaint_url,
   getAllBills_url,
+  deleteComplaint_url,
+  createPayment_url,
   API_SOCKET
 }

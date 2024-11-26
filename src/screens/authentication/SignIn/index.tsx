@@ -19,6 +19,8 @@ import Notification from '../../../Modal/Notification/notification.js'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
 import requestUserPermission from '../../../FireBase/NotificationPush.js'
 import { socket } from '../../../Socket/socket.js'
+import DropDown from '../Custom/DropDownPicker.tsx'
+import { setRememberMe } from '../../../redux/Slice/userSlice.js'
 
 interface SignInData {
   username: string
@@ -38,6 +40,7 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
+  const [selectedFruit, setSelectedFruit] = useState(null)
 
   const { t } = useTranslation()
 
@@ -48,6 +51,8 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
       const token = response.token
 
       await dispatch(residentApartmentInfo(token)).unwrap()
+
+      dispatch(setRememberMe(checked))
 
       socket.emit('userOnline', response.user.userId)
 
@@ -141,6 +146,33 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
           {t('login.forgot')}
         </Text>
       </View>
+      {/* <DropDown
+        value={selectedFruit}
+        style={styles.input}
+        onValueChange={(value) => setSelectedFruit(value)}
+        items={[
+          { label: 'Apple', value: 'apple' },
+          { label: 'Banana', value: 'banana' },
+          { label: 'Pear', value: 'pear' },
+          { label: 'Orange', value: 'orange' },
+          { label: 'Grape', value: 'grape' },
+          { label: 'Mango', value: 'mango' },
+          { label: 'Pineapple', value: 'pineapple' },
+          { label: 'Strawberry', value: 'strawberry' },
+          { label: 'Blueberry', value: 'blueberry' },
+          { label: 'Peach', value: 'peach' },
+          { label: 'Watermelon', value: 'watermelon' },
+          { label: 'Cherry', value: 'cherry' },
+          { label: 'Apricot', value: 'apricot' },
+          { label: 'Plum', value: 'plum' },
+          { label: 'Lemon', value: 'lemon' },
+          { label: 'Kiwi', value: 'kiwi' },
+          { label: 'Papaya', value: 'papaya' },
+          { label: 'Melon', value: 'melon' },
+          { label: 'Coconut', value: 'coconut' },
+          { label: 'Dragonfruit', value: 'dragonfruit' }
+        ]}
+      /> */}
 
       <ButtonCustom onPress={handleLogin} title={t('login.button')} />
     </View>

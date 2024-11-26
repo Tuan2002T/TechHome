@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux'
 import { NavigationProp } from '@react-navigation/native'
 import TableBill from './Component/table'
 import TableBillHistory from './Component/tablehistory'
+import { createPayment } from '../../../api/API/payment'
+import SpinnerLoading from '../../../Spinner/spinnerloading'
+import Notification from '../../../Modal/Notification/notification'
 
 interface BillProps {
   navigation: NavigationProp<any>
@@ -22,16 +25,24 @@ interface BillItem {
 }
 
 const Bill: React.FC<BillProps> = ({ navigation }) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+
+  const closeNotification = () => {
+    setError(false)
+    setLoading(false)
+  }
   const { userData } = useSelector((state: any) => state.auth)
   const [bills, setBills] = useState<BillItem[]>([])
   const [history, setHistory] = useState<BillItem[]>([])
   const [selectedOption, setSelectedOption] = useState('1')
-
+  const [total, setTotal] = useState(0)
+  const [sumTotal, setSumTotal] = useState(0)
   const [selectedItems, setSelectedItems] = useState<BillItem[]>([])
 
   const handleSelectionChange = (items: BillItem[]) => {
-    console.log(items)
-
+    setTotal(items.reduce((acc, item) => acc + Number(item.billAmount || 0), 0))
     setSelectedItems(items)
   }
 
@@ -48,6 +59,11 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
       )
       const paidBills = response.filter((item) => item.billStatus === 'PAID')
 
+      const totalUnpaid = unpaidBills.reduce(
+        (acc, item) => acc + Number(item.billAmount || 0),
+        0
+      )
+      setSumTotal(totalUnpaid)
       setBills(unpaidBills)
       setHistory(paidBills)
     } catch (error) {
@@ -59,8 +75,43 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
     getBills()
   }, [])
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount)
+  }
+
+  const handleCreatePayment = async () => {
+    setLoading(true)
+    try {
+      const data = { billIds: selectedItems.map((item) => item.billId) }
+      const response = await createPayment(userData.token, data)
+      console.log(response)
+
+      setLoading(false)
+      if (response) {
+        navigation.navigate('Payment', { response })
+      } else {
+        setError(true)
+        setNotification('Tạo thanh toán thất bại')
+      }
+    } catch (error) {
+      setError(true)
+      setNotification('Tạo thanh toán thất bại')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <View style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <View style={styles.header}>
         <Text style={styles.hearderText}>Hoá đơn</Text>
       </View>
@@ -89,14 +140,14 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
       <View style={styles.pay}>
         <View>
           <Text style={{ color: '#94989B', marginBottom: 10 }}>
-            Tổng nợ dư: 1.000.000đ
+            Tổng nợ dư:{formatCurrency(sumTotal)}
           </Text>
           <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
-            Tạm tính: 300.000đ
+            Tạm tính: {formatCurrency(total)}
           </Text>
         </View>
         <ButtonCustom
-          onPress={() => navigation.navigate('Payment')}
+          onPress={() => handleCreatePayment()}
           title="Thanh toán"
           buttonStyle={styles.payButton}
           titleStyle={{ color: 'white', fontSize: 15 }}

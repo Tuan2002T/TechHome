@@ -155,3 +155,30 @@ export const update = async (data, token) => {
     console.log(error)
   }
 }
+
+export const refreshToken = async (refreshToken) => {
+  try {
+    const response = await axios.post(
+      API.refreshToken_url,
+      {
+        refreshToken: refreshToken
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.log('Error refreshing token:', error)
+    if (error.response) {
+      console.log(error.response.data)
+    } else if (error.request) {
+      console.log(error.request)
+    } else {
+      console.log(error.message)
+    }
+  }
+}
