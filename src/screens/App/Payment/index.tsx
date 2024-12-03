@@ -16,22 +16,80 @@ import QRCode from 'react-native-qrcode-svg'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import IconFA from 'react-native-vector-icons/FontAwesome5'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { NavigationProp } from '@react-navigation/native'
+import { cancelledPayment } from '../../../api/API/payment'
+import { useSelector } from 'react-redux'
 
 const { width } = Dimensions.get('window')
 
+interface PaymentLink {
+  bin: string
+  accountNumber: string
+  accountName: string
+  amount: number
+  description: string
+  orderCode: number
+  currency: string
+  paymentLinkId: string
+  status: string
+  checkoutUrl: string
+  qrCode: string
+}
+
+interface Service {
+  id: number
+  name: string
+  description: string
+  price: string
+  contact: string
+  availability: string
+  location: string
+  estimatedTime: string
+  warranty: string
+  notes: string
+}
+
+interface PaymentProps {
+  navigation: NavigationProp<any>
+  route: {
+    params: {
+      item: PaymentLink
+    }
+  }
+}
+
 const Payment = ({ navigation, route }) => {
+  const { userData } = useSelector((state: any) => state.auth)
   const [modalVisible, setModalVisible] = useState(false)
   const [qrValue, setQrValue] = useState('')
   const [modalTitle, setModalTitle] = useState('')
+  const [paymentLink, setPaymentLink] = useState<PaymentLink>(
+    route.params.response.paymentLink
+  )
+  console.log(route.params.response.paymentLink)
 
   const paymentDetails = {
-    recipientName: 'Ban Quản Lý Chung Cư',
-    amount: '2,000,000 VND',
-    content: 'Thanh toán phí dịch vụ tháng 11',
+    recipientName: paymentLink.accountName,
+    amount: paymentLink.amount,
+    content: paymentLink.description,
     bankName: 'Vietcombank',
-    accountNumber: '0451000123456',
-    qrContent:
-      'Nội dung chuyển khoản: TT tháng 11 - chung cư ABC\nNgân hàng: Vietcombank\nSố tài khoản: 0451000123456\nNgười nhận: Ban Quản Lý Chung Cư\nSố tiền: 2,000,000 VND'
+    accountNumber: paymentLink.accountNumber,
+    qrContent: paymentLink.qrCode
+  }
+
+  const handleCancelledPayment = async () => {
+    try {
+      const response = await cancelledPayment(
+        userData.token,
+        paymentLink.orderCode
+      )
+      console.log('Cancelled Payment:', response)
+      if (response) {
+        navigation.navigate('Home')
+      }
+    } catch (error) {
+      console.log('Error:', error)
+    }
   }
 
   const handleCopy = async (content, title) => {
@@ -115,12 +173,12 @@ const Payment = ({ navigation, route }) => {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.backBtn}
           onPress={() => navigation.goBack()}
         >
           <Icon name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Text style={styles.headerTitle}>Thanh Toán</Text>
       </View>
       <View style={styles.content}>
@@ -158,7 +216,7 @@ const Payment = ({ navigation, route }) => {
           <TouchableOpacity
             style={styles.copyQrButton}
             onPress={() =>
-              handleCopy(paymentDetails.qrContent, 'Nội dung chuyển khoản')
+              handleCopy(paymentDetails.content, 'Nội dung chuyển khoản')
             }
           >
             <Icon name="content-copy" size={20} color="#fff" />
@@ -166,7 +224,6 @@ const Payment = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Payment Details */}
         <View style={styles.detailsCard}>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Người nhận</Text>
@@ -188,6 +245,31 @@ const Payment = ({ navigation, route }) => {
           </View>
         </View>
       </View>
+      <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={() => {
+          Alert.alert(
+            'Hủy thanh toán',
+            'Bạn có chắc chắn muốn hủy thanh toán này?',
+            [
+              {
+                text: 'Hủy',
+                style: 'cancel'
+              },
+              {
+                text: 'Đồng ý',
+                onPress: () => {
+                  handleCancelledPayment()
+                  navigation.goBack()
+                }
+              }
+            ],
+            { cancelable: false }
+          )
+        }}
+      >
+        <Text style={styles.cancelButtonText}>Hủy Thanh Toán</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
@@ -201,7 +283,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    backgroundColor: '#4A90E2'
+    backgroundColor: '#4A90E2',
+    justifyContent: 'center'
   },
   backBtn: {
     padding: 8
@@ -391,6 +474,23 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     marginLeft: 8
+  },
+  cancelButton: {
+    paddingVertical: 15,
+    width: '60%',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    backgroundColor: '#E74C3C',
+    borderRadius: 15,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    marginBottom: 60
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16
   }
 })
 

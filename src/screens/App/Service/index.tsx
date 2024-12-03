@@ -125,7 +125,7 @@ const dataServices = [
   {
     id: '8',
     icon: <MenuSquared width={40} height={40} />,
-    name: 'Menu',
+    name: 'Thêm',
     description:
       'Danh sách tổng hợp các dịch vụ tiện ích khác dành riêng cho cư dân, bao gồm tư vấn và hỗ trợ đặc biệt.',
     price: 'Theo yêu cầu',
@@ -292,6 +292,7 @@ const Service: React.FC<ServiceProps> = ({ navigation }) => {
                 onPress={() =>
                   navigation.navigate('BookService', {
                     item: {
+                      id: item.id,
                       name: item.name,
                       description: item.description,
                       price: item.price,

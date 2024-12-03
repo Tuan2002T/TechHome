@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   FlatList,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, useFocusEffect } from '@react-navigation/native'
 import { getAllChats } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
@@ -36,22 +36,32 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
   const [chats, setChats] = useState<ChatList[]>([])
   const { userData } = useSelector((state: any) => state.auth)
 
-  useEffect(() => {
-    const getChats = async () => {
-      setLoading(true)
-      try {
-        const response = await getAllChats(userData.token)
-        setChats(response)
-      } catch (error) {
-        setError(true)
-        setNotification('Lấy danh sách cuộc trò chuyện thất bại')
-      } finally {
-        setLoading(false)
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Tab Chat đã được focus')
+      getChats()
+      return () => {
+        console.log('Tab Chat mất focus')
       }
-    }
+    }, [])
+  )
+
+  useEffect(() => {
     getChats()
   }, [userData.token])
 
+  const getChats = async () => {
+    setLoading(true)
+    try {
+      const response = await getAllChats(userData.token)
+      setChats(response)
+    } catch (error) {
+      setError(true)
+      setNotification('Lấy danh sách cuộc trò chuyện thất bại')
+    } finally {
+      setLoading(false)
+    }
+  }
   const filteredChats = chats?.length
     ? chats.filter((chat) =>
         selectedOption === 'common'
@@ -68,7 +78,10 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
   const renderChatItem = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('ChatMessage', { chatId: item.chatId })
+        navigation.navigate('ChatMessage', {
+          chatId: item.chatId,
+          chatName: item.chatType
+        })
       }
       style={styles.chatItem}
     >

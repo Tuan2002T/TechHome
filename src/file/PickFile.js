@@ -13,8 +13,8 @@ const pickFiles = async () => {
       ],
       allowMultiSelection: true
     })
-
-    return res.map((file) => ({
+    return res.map((file, index) => ({
+      id: `${Date.now()}-${index}`,
       uri: file.uri,
       name: file.name,
       type: file.type,

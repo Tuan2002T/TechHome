@@ -1,33 +1,32 @@
 import axios from 'axios'
 import API from '../../config/API_URL'
 
-export const createPayment = async (token, data) => {
+export const getAllBookings = async (token) => {
   try {
-    const response = await axios.post(API.createPayment_url, data, {
+    const response = await axios.get(API.getAllBookings_url, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       }
     })
+
     return response.data
   } catch (error) {
     if (error.response) {
-      console.log(error.response.data)
+      console.log(error.response.data.message || 'Something went wrong')
     } else if (error.request) {
-      console.log('No response received from the server')
+      console.log(error.response.data.message || 'Something went wrong')
     } else {
-      console.log(error.message)
+      console.log(error.response.data.message || 'Something went wrong')
     }
   }
 }
 
-export const cancelledPayment = async (token, orderCode) => {
+export const bookingService = async (token, serviceId) => {
   try {
     const response = await axios.post(
-      API.cancelledPayment_url,
-      {
-        orderCode: orderCode
-      },
+      `${API.bookingService_url}/${serviceId}`,
+      {},
       {
         headers: {
           'Content-Type': 'application/json',
@@ -35,12 +34,11 @@ export const cancelledPayment = async (token, orderCode) => {
         }
       }
     )
-    console.log(response)
 
     return response.data
   } catch (error) {
     if (error.response) {
-      console.log(error.response.data)
+      console.log(error.response.data.message || 'Something went wrong')
     } else if (error.request) {
       console.log('No response received from the server')
     } else {

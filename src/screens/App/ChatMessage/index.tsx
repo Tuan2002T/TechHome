@@ -17,7 +17,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { getAllMessagesByChatId, sendMessages } from '../../../api/API/chat'
+import AntDesignIcon from 'react-native-vector-icons/AntDesign'
+import {
+  deleteMessage,
+  getAllMessagesByChatId,
+  sendMessages
+} from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 import { NavigationProp, RouteProp } from '@react-navigation/native'
 import { socket } from '../../../Socket/socket'
@@ -26,12 +31,17 @@ import PickMedia from '../../../Modal/Media/PickMedia'
 import Video from 'react-native-video'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
+import { ScrollView } from 'react-native-gesture-handler'
+import MessageActionModal from '../../../Modal/ActionMessage/ActionMessage'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 interface Files {
+  id: string
   fileId: number
   fileName: string
   fileType: string
   fileUrl: string
+  fileSize: number
 }
 interface Messages {
   messageId: number
@@ -56,6 +66,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
+  const [listMedia, setListMedia] = useState<Files[]>([])
 
   const closeNotification = () => {
     setError(false)
@@ -80,6 +91,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     closePickMedia()
   }
 
+  const handlePickFile = async () => {
+    const file = await pickFile()
+    console.log(file)
+    if (!file) return
+    setListMedia((prevList) => [...prevList, file[0]])
+  }
+
+  const removeQueueMedia = (id) => {
+    setListMedia((prevList) => prevList.filter((item) => item.id !== id))
+  }
+
   useEffect(() => {
     socket.emit('joinChat', route.params.chatId)
     const getMessages = async () => {
@@ -90,16 +112,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
           route.params.chatId,
           0,
           100
-        );
-        setMessages(response.messages);
+        )
+        setMessages(response.messages)
         setLoading(false)
       } catch (error) {
         setError(true)
         setNotification('Lấy tin nhắn thất bại')
-      }finally {
+      } finally {
         setLoading(false)
       }
-    };
+    }
     getMessages()
   }, [])
 
@@ -108,34 +130,41 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       setMessages((prevMessages) => [...prevMessages, message])
       flatListRef.current.scrollToEnd({ animated: true })
     })
+    socket.on('deleteMessage', (messageId) => {
+      setMessages((prevMessages) =>
+        prevMessages.filter((item) => item.messageId !== messageId)
+      )
+    })
   }, [socket])
 
   const sendMessage = async () => {
+    const message = {
+      inputText,
+      files: listMedia
+    }
     try {
-      setLoading(true);
       const response = await sendMessages(
         userData.token,
         route.params.chatId,
-        inputText
-      );
-      
-      if (response && response.success) {
-        socket.emit('sendMessage', response, route.params.chatId);
-        setMessages((prevMessages) => [...prevMessages, response]);
-        setInputText('');
-        flatListRef.current.scrollToEnd({ animated: true });
+        message
+      )
+
+      if (response) {
+        socket.emit('sendMessage', response, route.params.chatId)
+        setMessages((prevMessages) => [...prevMessages, response])
+        setInputText('')
+        setListMedia([])
+        flatListRef.current.scrollToEnd({ animated: true })
       } else {
-        setError(true);
-        setNotification('Gửi tin nhắn thất bại');
+        setError(true)
+        setNotification('Gửi tin nhắn thất bại')
       }
     } catch (error) {
-      setError(true);
-      setNotification('Gửi tin nhắn thất bại');
+      setError(true)
+      setNotification('Gửi tin nhắn thất bại')
     } finally {
-      setLoading(false);
     }
-  };
-  
+  }
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -196,7 +225,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
           style={styles.documentContainer}
           onPress={() => handleFilePress(file.fileUrl)}
         >
-          <EntypoIcon name="document" size={24} color="#666" />
+          <AntDesignIcon name="filetext1" size={24} color="#666" />
           <Text style={styles.documentText} numberOfLines={1}>
             {file.fileName}
           </Text>
@@ -217,7 +246,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       isLastMessage || nextMessageSenderId !== item.senderId
 
     return (
-      <View style={styles.messageWrapper}>
+      <TouchableOpacity
+        onLongPress={() => {
+          setModalVisible(true)
+          setMessageAction(item.messageId)
+          toggleModal()
+        }}
+        style={styles.messageWrapper}
+      >
         <View
           style={[
             styles.messageRow,
@@ -281,8 +317,44 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
             </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
+  }
+
+  const [modalVisible, setModalVisible] = useState(false)
+  const [mesageAction, setMessageAction] = useState()
+
+  const toggleModal = () => setModalVisible(!modalVisible)
+  const closeModal = () => setModalVisible(false)
+
+  const handleDeleteMessage = async () => {
+    try {
+      const response = await deleteMessage({
+        token: userData.token,
+        messageId: mesageAction
+      })
+
+      setMessages((prevMessages) =>
+        prevMessages.filter((item) => item.messageId !== mesageAction)
+      )
+
+      socket.emit('deleteMessage', route.params.chatId, mesageAction)
+
+      closeModal()
+    } catch (error) {
+      console.error('Lỗi khi xóa tin nhắn:', error)
+    }
+  }
+
+  const checkMessage = () => {
+    closeModal()
+  }
+
+  const saveMessage = () => {
+    Clipboard.setString(
+      messages.filter((item) => item.messageId === mesageAction)[0].content
+    )
+    closeModal()
   }
 
   return (
@@ -325,6 +397,56 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         renderItem={renderMessage}
       />
 
+      <FlatList
+        style={{
+          padding: 8,
+          maxHeight: 50,
+          borderRadius: 8,
+          backgroundColor: 'transparent',
+          position: 'absolute',
+          bottom: 70,
+          left: 0,
+          right: 0,
+          zIndex: 10
+        }}
+        horizontal
+        data={listMedia}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              marginHorizontal: 4,
+              paddingHorizontal: 8
+            }}
+          >
+            <Text
+              key={index}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{
+                fontSize: 16,
+                color: 'black',
+                padding: 8,
+                borderRadius: 8,
+                marginHorizontal: 4
+              }}
+            >
+              {item.name}
+            </Text>
+            <AntDesignIcon
+              onPress={() => removeQueueMedia(item.id)}
+              name="closecircle"
+              size={16}
+              color="black"
+            />
+          </View>
+        )}
+      />
+
       <View style={styles.inputContainer}>
         <TouchableOpacity
           style={styles.attachmentButton}
@@ -334,7 +456,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.attachmentButton}
-          onPress={() => pickFile()}
+          onPress={() => handlePickFile()}
         >
           <EntypoIcon name="attachment" size={20} color="#666" />
         </TouchableOpacity>
@@ -351,18 +473,34 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         <TouchableOpacity
           style={[
             styles.sendButton,
-            !inputText.trim() && styles.sendButtonDisabled
+            !inputText.trim() &&
+              listMedia.length === 0 &&
+              styles.sendButtonDisabled
           ]}
           onPress={sendMessage}
-          disabled={!inputText.trim()}
+          disabled={!inputText.trim() && listMedia.length === 0}
         >
           <Icon
             name="paper-plane"
             size={20}
-            color={inputText.trim() ? 'white' : '#A5A5A5'}
+            color={
+              inputText.trim() || listMedia.length >= 0 ? 'white' : '#A5A5A5'
+            }
           />
         </TouchableOpacity>
       </View>
+      <MessageActionModal
+        modalVisible={modalVisible}
+        toggleModal={toggleModal}
+        closeModal={closeModal}
+        deleteMessage={handleDeleteMessage}
+        checkMessage={checkMessage}
+        saveMessage={saveMessage}
+        userId={
+          messages.filter((item) => item.messageId === mesageAction)[0]
+            ?.senderId
+        }
+      />
     </SafeAreaView>
   )
 }
@@ -402,7 +540,7 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
   chatContent: {
     paddingVertical: 15
@@ -450,6 +588,7 @@ const styles = StyleSheet.create({
   documentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: 100,
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
     padding: 8,
     borderRadius: 8,
@@ -501,6 +640,14 @@ const styles = StyleSheet.create({
   assistantTimeText: {
     color: '#999'
   },
+  queue: {
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+    overflow: 'hidden'
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -544,7 +691,7 @@ const styles = StyleSheet.create({
   videoPlayer: {
     width: '100%',
     height: '100%'
-  },
+  }
 })
 
 export default ChatMessage

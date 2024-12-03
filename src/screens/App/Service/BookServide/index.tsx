@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -10,6 +10,12 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { NavigationProp } from '@react-navigation/native'
+import { createBill } from '../../../../api/API/bill'
+import { bookingService } from '../../../../api/API/bookingService'
+import { useSelector } from 'react-redux'
+import SpinnerLoading from '../../../../Spinner/spinnerloading'
+import Notification from '../../../../Modal/Notification/notification'
+import { createPayment } from '../../../../api/API/payment'
 
 interface Service {
   id: number
@@ -40,7 +46,49 @@ interface BookServiceProps {
 }
 
 export default function BookService({ navigation, route }: BookServiceProps) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+  const closeNotification = () => {
+    setError(false)
+    setLoading(false)
+    navigation.navigate('Payment')
+  }
+  const { userData } = useSelector((state: any) => state.auth)
+
   const [service, setService] = React.useState<Service>(route.params.item)
+
+  const handleBookingService = async () => {
+    setLoading(true);
+    try {
+      const bookingResponse = await bookingService(userData.token, service.id);
+      console.log('Booking Response:', bookingResponse);
+    
+      try {
+        const data = [bookingResponse.servicebookingid]
+        const paymentResponse = await createPayment(userData.token, data);
+        console.log('Payment Response:', paymentResponse);
+  
+        if (paymentResponse) {
+          navigation.navigate('Payment', { response: paymentResponse });
+          setNotification('Đặt dịch vụ thành công');
+        } else {
+          setError(true);
+          setNotification('Tạo thanh toán thất bại');
+        }
+      } catch (paymentError) {
+        console.error('Payment Error:', paymentError);
+        setError(true);
+        setNotification('Tạo thanh toán thất bại');
+      }
+    } catch (bookingError) {
+      console.error('Booking Error:', bookingError);
+      setError(true);
+      setNotification('Đặt dịch vụ thất bại');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const ServiceInfoRow = ({ icon, title, value }: ServiceInfoRow) => (
     <View style={styles.infoRow}>
@@ -62,6 +110,12 @@ export default function BookService({ navigation, route }: BookServiceProps) {
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
+      <SpinnerLoading loading={loading} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -117,7 +171,7 @@ export default function BookService({ navigation, route }: BookServiceProps) {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => alert(`Đã đặt dịch vụ: ${service.name}`)}
+          onPress={() => handleBookingService()}
         >
           <Text style={styles.buttonText}>Đặt dịch vụ</Text>
         </TouchableOpacity>

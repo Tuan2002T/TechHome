@@ -185,7 +185,7 @@ const Profile = ({ navigation }: ProfileProps) => {
             })
           )
           const userId = userData.user.userId
-          socket.emit('userOffline', { userId })
+          socket.emit('userOffline', userId)
           clearPersistedData()
           dispatch(setRememberMe(false))
         }}

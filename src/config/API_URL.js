@@ -1,6 +1,6 @@
-const API_URL = 'http://192.168.2.23:3000/resident'
-const API_CHAT_URL = 'http://192.168.2.23:3000/chat'
-const API_SOCKET = 'http://192.168.2.23:3000'
+const API_URL = 'https://42e1-116-111-184-229.ngrok-free.app/resident'
+const API_CHAT_URL = 'https://42e1-116-111-184-229.ngrok-free.app/chat'
+const API_SOCKET = 'https://42e1-116-111-184-229.ngrok-free.app'
 
 const login_url = `${API_URL}/login`
 const active_url = `${API_URL}/active`
@@ -17,6 +17,7 @@ const getAllComplaints_url = `${API_URL}/getAllComplaints`
 const getAllChats_url = `${API_CHAT_URL}/getAllChats`
 const getAllMessagesByChatId_url = `${API_CHAT_URL}/getAllMessagesByChatId`
 const sendMessages_url = `${API_CHAT_URL}/sendMessages`
+const deleteMessage_url = `${API_CHAT_URL}/deleteMessage`
 const getAllBuildingServices_url = `${API_URL}/getAllBuildingServices`
 const getAllBuidlingsAndFloorsAndApartments_url = `${API_URL}/getAllBuidlingsAndFloorsAndApartments`
 const sendComplaint_url = `${API_URL}/sendComplaint`
@@ -24,6 +25,8 @@ const deleteComplaint_url = `${API_URL}/deleteComplaint`
 const getAllBills_url = `${API_URL}/getAllBills`
 const refreshToken_url = `${API_URL}/refreshToken`
 const createPayment_url = `${API_URL}/createPayment`
+const cancelledPayment_url = `${API_URL}/cancelledPayment`
+const bookingService_url = `${API_URL}/bookingService`
 
 export default {
   login_url,
@@ -42,11 +45,14 @@ export default {
   getAllChats_url,
   getAllMessagesByChatId_url,
   sendMessages_url,
+  deleteMessage_url,
   getAllBuildingServices_url,
   getAllBuidlingsAndFloorsAndApartments_url,
   sendComplaint_url,
   getAllBills_url,
   deleteComplaint_url,
   createPayment_url,
+  bookingService_url,
+  cancelledPayment_url,
   API_SOCKET
 }
