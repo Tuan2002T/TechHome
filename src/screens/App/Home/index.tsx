@@ -16,15 +16,14 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ navigation }) => {
-  const { userData, status, error } = useSelector((state: any) => state.auth)
+  const { userData } = useSelector((state: any) => state.auth)
 
   return (
     <ScrollView style={styles.scrollbar}>
       <StatusBar barStyle="light-content" backgroundColor="#26938E" />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.name}>Xin chào, Trương Văn Tuấn</Text>
-          {/* <Text style={styles.room}>Khu C - Tầng 19 - 100</Text> */}
+          <Text style={styles.name}>Xin chào, {userData.user.fullname}</Text>
           <Fontisto
             style={styles.notificationIcon}
             name="bell"
@@ -34,7 +33,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         </View>
         <View style={styles.notification}>
           <Text style={styles.headerNotification}>
-            Tổng thanh toán tháng 9/2024
+            Tổng thanh toán tháng {new Date().getMonth() + 1}/
+            {new Date().getFullYear()}
           </Text>
           <Text style={styles.money}>1.000.000 vnđ</Text>
           <View style={styles.cbbutton}>
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   item: {
-    width: '22%', // Điều chỉnh giá trị này để thay đổi số cột
+    width: '22%',
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5

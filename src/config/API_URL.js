@@ -1,6 +1,6 @@
-const API_URL = 'https://42e1-116-111-184-229.ngrok-free.app/resident'
-const API_CHAT_URL = 'https://42e1-116-111-184-229.ngrok-free.app/chat'
-const API_SOCKET = 'https://42e1-116-111-184-229.ngrok-free.app'
+const API_URL = 'https://0cec-116-111-184-229.ngrok-free.app/resident'
+const API_CHAT_URL = 'https://0cec-116-111-184-229.ngrok-free.app/chat'
+const API_SOCKET = 'https://0cec-116-111-184-229.ngrok-free.app'
 
 const login_url = `${API_URL}/login`
 const active_url = `${API_URL}/active`
@@ -16,6 +16,7 @@ const getResidentApartmentInfo_url = `${API_URL}/getResidentApartmentInfo`
 const getAllComplaints_url = `${API_URL}/getAllComplaints`
 const getAllChats_url = `${API_CHAT_URL}/getAllChats`
 const getAllMessagesByChatId_url = `${API_CHAT_URL}/getAllMessagesByChatId`
+const sendMessageAI_url = `${API_CHAT_URL}/sendChatBot`
 const sendMessages_url = `${API_CHAT_URL}/sendMessages`
 const deleteMessage_url = `${API_CHAT_URL}/deleteMessage`
 const getAllBuildingServices_url = `${API_URL}/getAllBuildingServices`
@@ -54,5 +55,6 @@ export default {
   createPayment_url,
   bookingService_url,
   cancelledPayment_url,
+  sendMessageAI_url,
   API_SOCKET
 }

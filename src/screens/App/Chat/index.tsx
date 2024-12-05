@@ -65,7 +65,7 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
   const filteredChats = chats?.length
     ? chats.filter((chat) =>
         selectedOption === 'common'
-          ? chat.chatType === 'apartment'
+          ? chat.chatType === 'apartment' || chat.chatType === 'bot'
           : chat.chatType === 'admin'
       )
     : []
@@ -77,12 +77,22 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
 
   const renderChatItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('ChatMessage', {
-          chatId: item.chatId,
-          chatName: item.chatType
-        })
-      }
+      onPress={() => {
+        if (item.chatType === 'bot') {
+          console.log(item.chatType === 'bot')
+          navigation.navigate('ChatBot', {
+            chatId: item.chatId,
+            chatType: item.chatType
+          })
+        } else {
+          console.log('123')
+
+          navigation.navigate('ChatMessage', {
+            chatId: item.chatId,
+            chatType: item.chatType
+          })
+        }
+      }}
       style={styles.chatItem}
     >
       <View style={styles.avatarContainer}>
@@ -99,7 +109,6 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
         </View>
         <View style={styles.chatFooter}>
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {/* Placeholder for last message */}
             Tin nhắn mới
           </Text>
         </View>

@@ -48,13 +48,13 @@ const Profile = ({ navigation }: ProfileProps) => {
       <View style={styles.profile}>
         <Image
           source={{
-            uri: 'https://media.hanamtv.vn/upload/image/202203/medium/73654_2f4fe64533b5115490e234952f1db0c6.jpg'
+            uri: userData.user.avatar
           }}
           style={styles.avatar}
         />
         <View>
-          <Text style={styles.textName}>Trương Văn Tuấn</Text>
-          <Text style={styles.textPhone}>03123213121</Text>
+          <Text style={styles.textName}>{userData.user.fullname}</Text>
+          <Text style={styles.textPhone}>{userData.resident.phonenumber}</Text>
         </View>
       </View>
       <View style={styles.setting}>
@@ -100,7 +100,6 @@ const Profile = ({ navigation }: ProfileProps) => {
         </TouchableOpacity>
       </View>
 
-      {/* Modal for Language Selection */}
       <Modal
         transparent={true}
         animationType="slide"
@@ -127,7 +126,6 @@ const Profile = ({ navigation }: ProfileProps) => {
         </View>
       </Modal>
 
-      {/* Other settings sections */}
       <View style={styles.setting}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="help-circle-outline" size={25} color="black" />

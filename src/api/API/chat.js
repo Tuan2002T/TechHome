@@ -101,3 +101,28 @@ export const deleteMessage = async (token, messageId) => {
     console.log(error)
   }
 }
+
+export const sendMessageAI = async (token, message) => {
+  try {
+    console.log('sendMessageAI', message)
+    console.log('token', token)
+
+    const response = await axios.post(
+      API_URL.sendMessageAI_url,
+      {
+        message: message
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    console.log('dddddddđ', response)
+
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}

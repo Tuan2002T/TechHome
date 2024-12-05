@@ -31,7 +31,6 @@ import PickMedia from '../../../Modal/Media/PickMedia'
 import Video from 'react-native-video'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
-import { ScrollView } from 'react-native-gesture-handler'
 import MessageActionModal from '../../../Modal/ActionMessage/ActionMessage'
 import Clipboard from '@react-native-clipboard/clipboard'
 
@@ -54,7 +53,7 @@ interface Messages {
 
 interface ChatMessageProps {
   navigation: NavigationProp<any>
-  route: RouteProp<any, any>
+  route: RouteProp<{ params: { chatId: number; chatType: String } }, 'params'>
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
@@ -359,6 +358,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#26938E" />
       <SpinnerLoading loading={loading} />
       <Notification
         loading={error}
@@ -381,7 +381,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         >
           <Icon name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Trò chuyện</Text>
+        <Text style={styles.headerText}>
+          {route.params.chatType === 'bot'
+            ? 'Trợ lý chung cư'
+            : route.params.chatType === 'apartment'
+            ? 'Trò chuyện chung'
+            : route.params.chatType === 'admin'
+            ? 'Quản lý chung cư'
+            : 'Xin chào, ' + userData.user.fullname}
+        </Text>
+
         <TouchableOpacity style={styles.headerButton}>
           <Icon name="ellipsis-v" size={20} color="white" />
         </TouchableOpacity>
@@ -448,18 +457,22 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       />
 
       <View style={styles.inputContainer}>
-        <TouchableOpacity
-          style={styles.attachmentButton}
-          onPress={() => openPickMedia()}
-        >
-          <FontAwesomeIcon name="camera" size={20} color="#666" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.attachmentButton}
-          onPress={() => handlePickFile()}
-        >
-          <EntypoIcon name="attachment" size={20} color="#666" />
-        </TouchableOpacity>
+        {route.params && route.params.chatType != 'bot' && (
+          <>
+            <TouchableOpacity
+              style={styles.attachmentButton}
+              onPress={() => openPickMedia()}
+            >
+              <FontAwesomeIcon name="camera" size={20} color="#666" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.attachmentButton}
+              onPress={() => handlePickFile()}
+            >
+              <EntypoIcon name="attachment" size={20} color="#666" />
+            </TouchableOpacity>
+          </>
+        )}
         <TextInput
           style={styles.input}
           placeholder="Nhập tin nhắn..."
