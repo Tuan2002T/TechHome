@@ -69,6 +69,7 @@ export const sendMessages = async (token, chatId, message) => {
         }
       }
     )
+
     return response.data
   } catch (error) {
     if (error.response) {

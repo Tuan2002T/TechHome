@@ -59,36 +59,38 @@ export default function BookService({ navigation, route }: BookServiceProps) {
   const [service, setService] = React.useState<Service>(route.params.item)
 
   const handleBookingService = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const bookingResponse = await bookingService(userData.token, service.id);
-      console.log('Booking Response:', bookingResponse);
-    
+      const bookingResponse = await bookingService(userData.token, service.id)
+      console.log('Booking Response:', bookingResponse)
+
       try {
-        const data = [bookingResponse.servicebookingid]
-        const paymentResponse = await createPayment(userData.token, data);
-        console.log('Payment Response:', paymentResponse);
-  
+        const data = {
+          billIds: [bookingResponse.bill.billId]
+        }
+        const paymentResponse = await createPayment(userData.token, data)
+        console.log('Payment Response:', paymentResponse)
+
         if (paymentResponse) {
-          navigation.navigate('Payment', { response: paymentResponse });
-          setNotification('Đặt dịch vụ thành công');
+          navigation.navigate('Payment', { response: paymentResponse })
+          setNotification('Đặt dịch vụ thành công')
         } else {
-          setError(true);
-          setNotification('Tạo thanh toán thất bại');
+          setError(true)
+          setNotification('Tạo thanh toán thất bại')
         }
       } catch (paymentError) {
-        console.error('Payment Error:', paymentError);
-        setError(true);
-        setNotification('Tạo thanh toán thất bại');
+        console.error('Payment Error:', paymentError)
+        setError(true)
+        setNotification('Tạo thanh toán thất bại')
       }
     } catch (bookingError) {
-      console.error('Booking Error:', bookingError);
-      setError(true);
-      setNotification('Đặt dịch vụ thất bại');
+      console.error('Booking Error:', bookingError)
+      setError(true)
+      setNotification('Đặt dịch vụ thất bại')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const ServiceInfoRow = ({ icon, title, value }: ServiceInfoRow) => (
     <View style={styles.infoRow}>

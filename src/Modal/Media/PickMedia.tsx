@@ -28,7 +28,13 @@ const PickMedia = ({
             style={[styles.option, styles.cameraButton]}
             onPress={onCameraPress}
           >
-            <Text style={styles.optionText}>Mở Camera</Text>
+            <Text style={styles.optionText}>Quay Video</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.option, styles.cameraButtonImage]}
+            onPress={onCameraPress}
+          >
+            <Text style={styles.optionText}>Chụp ảnh</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.option, styles.galleryButton]}
@@ -85,6 +91,9 @@ const styles = StyleSheet.create({
   },
   cameraButton: {
     backgroundColor: '#4CAF50'
+  },
+  cameraButtonImage: {
+    backgroundColor: '#FFC107'
   },
   galleryButton: {
     backgroundColor: '#2196F3'

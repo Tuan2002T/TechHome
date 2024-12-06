@@ -2,6 +2,8 @@ import axios from 'axios'
 import API from '../../config/API_URL'
 
 export const createPayment = async (token, data) => {
+  console.log('data', data)
+
   try {
     const response = await axios.post(API.createPayment_url, data, {
       headers: {

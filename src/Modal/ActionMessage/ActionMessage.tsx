@@ -24,7 +24,7 @@ const MessageActionModal = ({
       <TouchableRipple onPress={closeModal} style={styles.overlay}>
         <View style={styles.modalContainer}>
           <View style={styles.actionsContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[
                 styles.actionButton,
                 userId !== userData.user.userId ? styles.disabledButton : null
@@ -45,7 +45,7 @@ const MessageActionModal = ({
               >
                 Xoá
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={checkMessage}
               style={[

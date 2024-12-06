@@ -26,7 +26,10 @@ import {
 import { useSelector } from 'react-redux'
 import { NavigationProp, RouteProp } from '@react-navigation/native'
 import { socket } from '../../../Socket/socket'
-import pickFile, { openCamera } from '../../../file/PickFile'
+import pickFile, {
+  openCamera,
+  pickImagesAndVideos
+} from '../../../file/PickFile'
 import PickMedia from '../../../Modal/Media/PickMedia'
 import Video from 'react-native-video'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
@@ -80,13 +83,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     setPickMediaOpen(false)
   }
 
-  const handleCameraPress = () => {
-    openCamera()
+  const handleCameraPress = async () => {
+    const response = await openCamera('photo')
+    sendMessageForMedia(response[0])
     closePickMedia()
   }
 
-  const handleGalleryPress = () => {
-    console.log('Chọn từ Thư Viện')
+  const handleGalleryPress = async () => {
+    const response = await pickImagesAndVideos()
+    sendMessageForMedia(response[0])
     closePickMedia()
   }
 
@@ -135,7 +140,34 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       )
     })
   }, [socket])
+  const sendMessageForMedia = async (media: Files) => {
+    const message = {
+      inputText,
+      files: [media]
+    }
+    try {
+      const response = await sendMessages(
+        userData.token,
+        route.params.chatId,
+        message
+      )
 
+      if (response) {
+        socket.emit('sendMessage', response, route.params.chatId)
+        setMessages((prevMessages) => [...prevMessages, response])
+        setInputText('')
+        setListMedia([])
+        flatListRef.current.scrollToEnd({ animated: true })
+      } else {
+        setError(true)
+        setNotification('Gửi tin nhắn thất bại')
+      }
+    } catch (error) {
+      setError(true)
+      setNotification('Gửi tin nhắn thất bại')
+    } finally {
+    }
+  }
   const sendMessage = async () => {
     const message = {
       inputText,

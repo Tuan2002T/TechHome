@@ -1,6 +1,8 @@
-const API_URL = 'https://0cec-116-111-184-229.ngrok-free.app/resident'
-const API_CHAT_URL = 'https://0cec-116-111-184-229.ngrok-free.app/chat'
-const API_SOCKET = 'https://0cec-116-111-184-229.ngrok-free.app'
+const BASE_URL = 'http://192.168.2.23:3000'
+
+const API_URL = `${BASE_URL}/resident`
+const API_CHAT_URL = `${BASE_URL}/chat`
+const API_SOCKET = BASE_URL
 
 const login_url = `${API_URL}/login`
 const active_url = `${API_URL}/active`
