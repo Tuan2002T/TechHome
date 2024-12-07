@@ -15,12 +15,13 @@ import { useDispatch } from 'react-redux'
 import { login, residentApartmentInfo } from '../../../redux/Thunk/userThunk.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import { useTranslation } from 'react-i18next'
-import Notification from '../../../Modal/Notification/notification.js'
+import Notification from '../../../Modal/Notification/notification.tsx'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
 import requestUserPermission from '../../../FireBase/NotificationPush.js'
 import { socket } from '../../../Socket/socket.js'
 import DropDown from '../Custom/DropDownPicker.tsx'
 import { setRememberMe } from '../../../redux/Slice/userSlice.js'
+import { updateTokenFCM } from '../../../api/API/user.js'
 
 interface SignInData {
   username: string
@@ -41,6 +42,7 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
   const [selectedFruit, setSelectedFruit] = useState(null)
+  const [fcmToken, setFcmToken] = useState('')
 
   const { t } = useTranslation()
 
@@ -51,9 +53,11 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
       const token = response.token
 
       await dispatch(residentApartmentInfo(token)).unwrap()
+      if (fcmToken) {
+        const fcm = await updateTokenFCM(token, fcmToken)
+      }
 
       dispatch(setRememberMe(checked))
-
       socket.emit('userOnline', response.user.userId)
 
       navigation.dispatch(
@@ -76,7 +80,8 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   }
 
   useEffect(() => {
-    requestUserPermission()
+    console.log('123')
+
     const requestNotificationPermission = async () => {
       if (Platform.OS === 'android' && Platform.Version >= 33) {
         const granted = await PermissionsAndroid.request(
@@ -90,6 +95,8 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log('Quyền thông báo đã được cấp')
+          const fcmToken = await requestUserPermission()
+          setFcmToken(fcmToken)
         } else {
           console.log('Quyền thông báo đã bị từ chối')
         }
@@ -137,42 +144,15 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
             status={checked ? 'checked' : 'unchecked'}
             onPress={() => setChecked(!checked)}
           />
-          <Text>{t('login.remember')}</Text>
+          <Text style={styles.text}>{t('login.remember')}</Text>
         </View>
         <Text
           onPress={() => navigation.navigate('ForgotPassword')}
-          style={{ textDecorationLine: 'underline' }}
+          style={{ textDecorationLine: 'underline', color: '#999999' }}
         >
           {t('login.forgot')}
         </Text>
       </View>
-      {/* <DropDown
-        value={selectedFruit}
-        style={styles.input}
-        onValueChange={(value) => setSelectedFruit(value)}
-        items={[
-          { label: 'Apple', value: 'apple' },
-          { label: 'Banana', value: 'banana' },
-          { label: 'Pear', value: 'pear' },
-          { label: 'Orange', value: 'orange' },
-          { label: 'Grape', value: 'grape' },
-          { label: 'Mango', value: 'mango' },
-          { label: 'Pineapple', value: 'pineapple' },
-          { label: 'Strawberry', value: 'strawberry' },
-          { label: 'Blueberry', value: 'blueberry' },
-          { label: 'Peach', value: 'peach' },
-          { label: 'Watermelon', value: 'watermelon' },
-          { label: 'Cherry', value: 'cherry' },
-          { label: 'Apricot', value: 'apricot' },
-          { label: 'Plum', value: 'plum' },
-          { label: 'Lemon', value: 'lemon' },
-          { label: 'Kiwi', value: 'kiwi' },
-          { label: 'Papaya', value: 'papaya' },
-          { label: 'Melon', value: 'melon' },
-          { label: 'Coconut', value: 'coconut' },
-          { label: 'Dragonfruit', value: 'dragonfruit' }
-        ]}
-      /> */}
 
       <ButtonCustom onPress={handleLogin} title={t('login.button')} />
     </View>
@@ -209,6 +189,9 @@ const styles = StyleSheet.create({
   checkbox1: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  text: {
+    color: '#999999'
   }
 })
 

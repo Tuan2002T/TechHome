@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
@@ -13,6 +14,7 @@ interface TableBillHistoryProps {
 }
 
 const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
+  const { t } = useTranslation()
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: boolean
   }>({})
@@ -59,11 +61,12 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
   return (
     <View style={styles.container}>
       <View style={styles.tableHeader}>
-        <Text style={styles.feeType}>Loại phí</Text>
-        <Text style={styles.month}>Tháng</Text>
-        <Text style={styles.amount}>Thành tiền</Text>
+        <Text style={styles.feeType}>{t('screen.bill.table.type')}</Text>
+        <Text style={styles.month}>{t('screen.bill.table.month')}</Text>
+        <Text style={styles.amount}>{t('screen.bill.table.amount')}</Text>
       </View>
       <FlatList
+        nestedScrollEnabled={true}
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.billId}
@@ -100,13 +103,16 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   feeType: {
-    width: '35%'
+    width: '35%',
+    color: 'gray'
   },
   month: {
-    width: '30%'
+    width: '30%',
+    color: 'gray'
   },
   amount: {
-    width: '25%'
+    width: '25%',
+    color: 'gray'
   },
   text: {
     color: 'black',

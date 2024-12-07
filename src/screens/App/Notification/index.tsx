@@ -17,7 +17,7 @@ import {
 import { useSelector } from 'react-redux'
 import { NavigationProp } from '@react-navigation/native'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
-
+import PullToRefresh from 'react-native-pull-to-refresh'
 interface NotificationData {
   notificationId: string
   notificationTitle: string
@@ -38,38 +38,36 @@ const Notification: React.FC<NotificationProps> = ({ navigation }) => {
     NotificationData[]
   >([])
   const [loading, setLoading] = useState(false)
+  const handleRefresh = async () => {
+    fetchNotifications()
+  }
   useEffect(() => {
-    const fetchNotifications = async () => {
-      setLoading(true)
-      try {
-        const response = await getAllNotification(userData.token)
-        setNotificationsData(response)
-        checkReadNotifications(response)
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    const checkReadNotifications = (notifications: NotificationData[]) => {
-      try {
-        notifications.forEach((notification) => {
-          if (notification.ResidentNotifications.status === true) {
-            setReadNotifications((prev) => [
-              ...prev,
-              notification.notificationId
-            ])
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
     fetchNotifications()
   }, [userData.token])
+  const fetchNotifications = async () => {
+    setLoading(true)
+    try {
+      const response = await getAllNotification(userData.token)
+      setNotificationsData(response)
+      checkReadNotifications(response)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+  const checkReadNotifications = (notifications: NotificationData[]) => {
+    try {
+      notifications.forEach((notification) => {
+        if (notification.ResidentNotifications.status === true) {
+          setReadNotifications((prev) => [...prev, notification.notificationId])
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const [readNotifications, setReadNotifications] = useState<string[]>([])
 
@@ -203,30 +201,32 @@ const Notification: React.FC<NotificationProps> = ({ navigation }) => {
   const notificationsGrouped = renderNotifications()
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SpinnerLoading loading={loading} />
-      <View style={styles.header}>
-        <FontAwesome6Icon
-          name="arrow-left"
-          size={25}
-          color="#FFFFFF"
-          onPress={() => navigation.goBack()}
-        />
-        <Text style={styles.headertitle}>Thông báo</Text>
-        <Text style={{ color: '#F7F7F7' }}> </Text>
-      </View>
-      <ScrollView style={styles.scrollbar}>
-        {Object.entries(notificationsGrouped).map(([date, notifications]) => (
-          <View key={date}>
-            <Text style={styles.dateLabel}>{date}</Text>
-            {notifications}
-          </View>
-        ))}
-      </ScrollView>
-      <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
-        <Ionicons name="checkmark-done" size={30} color="#FFFFFF" />
-      </TouchableOpacity>
-    </SafeAreaView>
+    <PullToRefresh onRefresh={handleRefresh}>
+      <SafeAreaView style={styles.container}>
+        <SpinnerLoading loading={loading} />
+        <View style={styles.header}>
+          <FontAwesome6Icon
+            name="arrow-left"
+            size={25}
+            color="#FFFFFF"
+            onPress={() => navigation.goBack()}
+          />
+          <Text style={styles.headertitle}>Thông báo</Text>
+          <Text style={{ color: '#F7F7F7' }}> </Text>
+        </View>
+        <ScrollView style={styles.scrollbar}>
+          {Object.entries(notificationsGrouped).map(([date, notifications]) => (
+            <View key={date}>
+              <Text style={styles.dateLabel}>{date}</Text>
+              {notifications}
+            </View>
+          ))}
+        </ScrollView>
+        <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
+          <Ionicons name="checkmark-done" size={30} color="#FFFFFF" />
+        </TouchableOpacity>
+      </SafeAreaView>
+    </PullToRefresh>
   )
 }
 

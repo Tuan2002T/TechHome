@@ -1,8 +1,10 @@
 import { Text, View, StyleSheet, Animated, Easing } from 'react-native'
 import { PieChart } from 'react-native-gifted-charts'
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const SpendingChartComponent = () => {
+  const { t } = useTranslation()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0)).current
   const legendAnim = useRef(new Animated.Value(0)).current
@@ -107,7 +109,7 @@ const SpendingChartComponent = () => {
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <View style={styles.chartContainer}>
-        <Text style={styles.title}>Chi Tiêu Hàng Tháng</Text>
+        <Text style={styles.title}>{t('screen.home.dashboard.title')}</Text>
         <View style={styles.contentWrapper}>
           <Animated.View
             style={[

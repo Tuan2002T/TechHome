@@ -182,3 +182,29 @@ export const refreshToken = async (refreshToken) => {
     }
   }
 }
+
+export const updateTokenFCM = async (token, fcmToken) => {
+  try {
+    const response = await axios.put(
+      API.updateTokenFCM_url,
+      { fcmToken: fcmToken },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.log('Error updating FCM token:', error)
+    if (error.response) {
+      console.log(error.response.data)
+    } else if (error.request) {
+      console.log(error.request)
+    } else {
+      console.log(error.message)
+    }
+  }
+}

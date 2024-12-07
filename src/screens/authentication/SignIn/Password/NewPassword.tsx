@@ -5,7 +5,7 @@ import ButtonCustom from '../../Custom/ButtonCustom.tsx'
 import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
 import { forgotPassword } from '../../../../api/API/user.js'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
-import Notification from '../../../../Modal/Notification/notification.js'
+import Notification from '../../../../Modal/Notification/notification.tsx'
 import { useTranslation } from 'react-i18next'
 
 function NewPassword({ navigation, route }) {

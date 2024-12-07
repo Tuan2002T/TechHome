@@ -5,6 +5,7 @@ const API_CHAT_URL = `${BASE_URL}/chat`
 const API_SOCKET = BASE_URL
 
 const login_url = `${API_URL}/login`
+const updateTokenFCM_url = `${API_URL}/updateTokenFCM`
 const active_url = `${API_URL}/active`
 const update_url = `${API_URL}/update`
 const get_resident_no_active_by_idcard_url = `${API_URL}/getResidentNoActiveByIdcard`
@@ -33,6 +34,7 @@ const bookingService_url = `${API_URL}/bookingService`
 
 export default {
   login_url,
+  updateTokenFCM_url,
   refreshToken_url,
   active_url,
   update_url,

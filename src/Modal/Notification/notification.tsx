@@ -3,8 +3,9 @@ import { Text, TouchableOpacity } from 'react-native'
 import { View, StyleSheet, Modal } from 'react-native'
 
 interface NotificationProps {
-  loading: boolean;
-  onClose: () => void;
+  loading: boolean
+  message: string
+  onClose: () => void
 }
 
 function Notification({ loading, message, onClose }: NotificationProps) {
@@ -49,7 +50,8 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 18,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: '#999999'
   },
   button: {
     backgroundColor: '#FFFFFF',

@@ -10,12 +10,14 @@ import { useSelector } from 'react-redux'
 import FloatingActionComponent from '../Component/FloatingActionComponent.tsx'
 import SpendingChartComponent from './SpendingChart/SpendingChartComponent.tsx'
 import { NavigationProp } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
 
 interface HomeProps {
   navigation: NavigationProp<any>
 }
 
 const Home: React.FC<HomeProps> = ({ navigation }) => {
+  const { t } = useTranslation()
   const { userData } = useSelector((state: any) => state.auth)
 
   return (
@@ -23,7 +25,9 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       <StatusBar barStyle="light-content" backgroundColor="#26938E" />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.name}>Xin chào, {userData.user.fullname}</Text>
+          <Text style={styles.name}>
+            {t('screen.home.welcome')}, {userData.user.fullname}
+          </Text>
           <Fontisto
             style={styles.notificationIcon}
             name="bell"
@@ -58,28 +62,28 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         <View style={styles.floatActions}>
           <FloatingActionComponent
             icon={<FontAwesomeIcon name="home" size={35} color="#26938E" />}
-            title="Căn hộ"
+            title={t('screen.home.button.home')}
             style={{}}
             onPress={() => navigation.navigate('ApartmentDetails')}
           />
 
           <FloatingActionComponent
             icon={<MaterialIcons name="payment" size={30} color="#FF5722" />}
-            title="Thanh toán"
+            title={t('screen.home.button.payment')}
             style={{}}
             onPress={() => navigation.navigate('Bill')}
           />
 
           <FloatingActionComponent
             icon={<Fontisto name="bell" size={24} color="#FFC107" />}
-            title="Thông báo"
+            title={t('screen.home.button.notification')}
             style={{}}
             onPress={() => navigation.navigate('Notification')}
           />
 
           <FloatingActionComponent
             icon={<FontAwesomeIcon name="send" size={30} color="#673AB7" />}
-            title="Gửi ý kiến"
+            title={t('screen.home.button.sendFeedback')}
             style={{}}
             onPress={() => navigation.navigate('Feedback')}
           />

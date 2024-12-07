@@ -1,5 +1,5 @@
 import { Button } from '@rneui/themed'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import SwitchSelector from 'react-native-switch-selector'
@@ -10,9 +10,11 @@ function Authentication({ navigation }) {
   const { t, i18n } = useTranslation()
   const { userData } = useSelector((state: any) => state.auth)
 
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
 
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang)
+    setSelectedLanguage(lang)
   }
 
   const languageOptions = [
@@ -54,7 +56,9 @@ function Authentication({ navigation }) {
 
       <SwitchSelector
         options={languageOptions}
-        initial={0}
+        initial={languageOptions.findIndex(
+          (option) => option.value === selectedLanguage
+        )} // Đặt giá trị ban đầu
         onPress={(value) => changeLanguage(value)}
         textColor={'#26938E'}
         selectedColor={'white'}
@@ -125,8 +129,8 @@ const styles = StyleSheet.create({
   },
   switchSelector: {
     position: 'absolute',
-    top: 40, // khoảng cách từ phía trên
-    right: 20, // khoảng cách từ phía phải
+    top: 40,
+    right: 20,
     width: 120,
     elevation: 3,
     shadowColor: '#000',

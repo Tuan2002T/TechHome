@@ -6,36 +6,42 @@ import ButtonCustom from '../../Custom/ButtonCustom.tsx'
 import TextInputPasswordCustom from '../../Custom/TextInputPasswordCustom.tsx'
 import { activeResident } from '../../../../api/API/user.js'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
-import Notification from '../../../../Modal/Notification/notification.js'
+import Notification from '../../../../Modal/Notification/notification.tsx'
+import { CommonActions } from '@react-navigation/native'
 
 function ActiveAccount({ navigation, route }) {
   const residentData = route.params?.residentData
+  console.log(route.params?.residentData)
 
   const [idcard, setIdcard] = useState('')
+  const [username, setUsername] = useState('')
   const [fullname, setFullname] = useState('')
   const [phonenumber, setPhonenumber] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [notification, setNotification] = useState('')
   const [error, setError] = useState(false)
 
   const closeNotification = () => {
     setError(false)
   }
 
-  // Sử dụng useEffect để tự động điền dữ liệu khi residentData thay đổi
   useEffect(() => {
     if (residentData) {
       setIdcard(residentData.idcard)
       setFullname(residentData.fullname)
       setPhonenumber(residentData.phonenumber)
       setEmail(residentData.email)
+      setUsername(residentData.username)
     }
   }, [residentData])
 
   const handleActivate = async () => {
     const activeData = {
+      residentId: residentData.residentId,
       email,
+      username: username,
       fullname,
       idcard,
       phonenumber,
@@ -45,10 +51,16 @@ function ActiveAccount({ navigation, route }) {
     setLoading(true)
     try {
       const result = await activeResident(activeData)
+
       setLoading(false)
-      navigation.goBack()
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Authentication' }]
+        })
+      )
     } catch (error) {
-      console.log(error)
+      setNotification('Kích hoạt tài khoản không thành công')
       setError(true)
     } finally {
       setLoading(false)
@@ -57,7 +69,11 @@ function ActiveAccount({ navigation, route }) {
   return (
     <View style={styles.container}>
       <SpinnerLoading loading={loading} />
-      <Notification loading={error} onClose={closeNotification} />
+      <Notification
+        loading={error}
+        onClose={closeNotification}
+        message={notification}
+      />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}
@@ -73,23 +89,24 @@ function ActiveAccount({ navigation, route }) {
         value={fullname}
         onChangeText={setFullname}
       />
-
+      <TextInputCustom
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        editable={true}
+      />
       <TextInputCustom
         placeholder="Nhập CMND/CCCD"
         value={idcard}
         onChangeText={setIdcard}
         editable={false}
       />
-      <TextInputCustom
-        placeholder="Căn hộ"
-        value={fullname}
-        onChangeText={setFullname}
-        editable={false}
-      />
+
       <TextInputCustom
         placeholder="Nhập số điện thoại"
         value={phonenumber}
         onChangeText={setPhonenumber}
+        editable={false}
       />
       <TextInputCustom
         placeholder="Nhập email"

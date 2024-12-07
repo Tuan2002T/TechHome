@@ -12,6 +12,7 @@ import { getAllChats } from '../../../api/API/chat'
 import { useSelector } from 'react-redux'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
+import { useTranslation } from 'react-i18next'
 
 interface ChatList {
   chatId: number
@@ -24,6 +25,7 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
@@ -71,8 +73,8 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
     : []
 
   const options = [
-    { label: 'Chung', value: 'common' },
-    { label: 'Ban quản lý', value: 'admin' }
+    { label: t('screen.chat.select.all'), value: 'common' },
+    { label: t('screen.chat.select.admin'), value: 'admin' }
   ]
 
   const renderChatItem = ({ item }) => (
@@ -85,8 +87,6 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
             chatType: item.chatType
           })
         } else {
-          console.log('123')
-
           navigation.navigate('ChatMessage', {
             chatId: item.chatId,
             chatType: item.chatType
@@ -109,7 +109,7 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
         </View>
         <View style={styles.chatFooter}>
           <Text style={styles.lastMessage} numberOfLines={1}>
-            Tin nhắn mới
+            {t('screen.chat.newMessage')}
           </Text>
         </View>
       </View>
@@ -125,7 +125,7 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
         onClose={closeNotification}
       />
       <View style={styles.header}>
-        <Text style={styles.headerText}>Tin nhắn</Text>
+        <Text style={styles.headerText}>{t('screen.chat.title')}</Text>
       </View>
 
       <View style={styles.content}>

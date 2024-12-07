@@ -13,7 +13,7 @@ import TextInputPasswordCustom from '../../../authentication/Custom/TextInputPas
 import TextInputCustom from '../../../authentication/Custom/TextInputCustom.tsx'
 import { update } from '../../../../api/API/user.js'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
-import Notification from '../../../../Modal/Notification/notification.js'
+import Notification from '../../../../Modal/Notification/notification.tsx'
 import * as ImagePicker from 'react-native-image-picker'
 import { useSelector } from 'react-redux'
 

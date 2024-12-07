@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
@@ -11,29 +12,27 @@ interface BillItem {
 
 interface TableBillProps {
   data: BillItem[]
-  onSelectionChange: (selectedItems: BillItem[]) => void // Hàm callback truyền từ cha
+  onSelectionChange: (selectedItems: BillItem[]) => void
 }
 
 const TableBill: React.FC<TableBillProps> = ({ data, onSelectionChange }) => {
+  const { t } = useTranslation()
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: boolean
   }>({})
 
-  // Cập nhật trạng thái của checkbox
   const toggleCheckBox = (id: string) => {
     setSelectedItems((prev) => {
       const newSelectedItems = { ...prev, [id]: !prev[id] }
-      onSelectionChange(getSelectedItems(newSelectedItems)) // Gọi callback mỗi khi có sự thay đổi
+      onSelectionChange(getSelectedItems(newSelectedItems))
       return newSelectedItems
     })
   }
 
-  // Lấy danh sách các mục đã chọn
   const getSelectedItems = (selectedItems: { [key: string]: boolean }) => {
-    return data.filter((item) => selectedItems[item.billId]) // Lọc các mục đã được chọn
+    return data.filter((item) => selectedItems[item.billId])
   }
 
-  // Định dạng ngày
   const formatDate = (date: string) => {
     const d = new Date(date)
     return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
@@ -42,16 +41,18 @@ const TableBill: React.FC<TableBillProps> = ({ data, onSelectionChange }) => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
-      currency: 'VND',
-    }).format(amount);
-  };
+      currency: 'VND'
+    }).format(amount)
+  }
   const renderItem = ({ item }: { item: BillItem }) => (
     <View style={styles.row}>
       <Text style={[styles.feeType, styles.text]}>{item.billName}</Text>
       <Text style={[styles.month, styles.text]}>
         {formatDate(item.billDate)}
       </Text>
-      <Text style={[styles.amount, styles.text]}>{formatCurrency(item.billAmount)}</Text>
+      <Text style={[styles.amount, styles.text]}>
+        {formatCurrency(item.billAmount)}
+      </Text>
       <View>
         <Checkbox
           color="#32AE63"
@@ -66,15 +67,16 @@ const TableBill: React.FC<TableBillProps> = ({ data, onSelectionChange }) => {
   return (
     <View style={styles.container}>
       <View style={styles.tableHeader}>
-        <Text style={styles.feeType}>Loại phí</Text>
-        <Text style={styles.month}>Tháng</Text>
-        <Text style={styles.amount}>Thành tiền</Text>
+        <Text style={styles.feeType}>{t('screen.bill.table.type')}</Text>
+        <Text style={styles.month}>{t('screen.bill.table.month')}</Text>
+        <Text style={styles.amount}>{t('screen.bill.table.amount')}</Text>
         <Text style={styles.headerCell}></Text>
       </View>
       <FlatList
+        nestedScrollEnabled={true}
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.billId} // Thay thế keyExtractor thành billId thay vì id
+        keyExtractor={(item) => item.billId}
       />
     </View>
   )
@@ -108,13 +110,16 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   feeType: {
-    width: '35%'
+    width: '35%',
+    color: 'gray'
   },
   month: {
-    width: '30%'
+    width: '30%',
+    color: 'gray'
   },
   amount: {
-    width: '25%'
+    width: '25%',
+    color: 'gray'
   },
   text: {
     color: 'black',

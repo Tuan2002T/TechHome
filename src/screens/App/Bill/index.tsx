@@ -10,6 +10,7 @@ import TableBillHistory from './Component/tablehistory'
 import { createPayment } from '../../../api/API/payment'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
+import { useTranslation } from 'react-i18next'
 
 interface BillProps {
   navigation: NavigationProp<any>
@@ -25,6 +26,7 @@ interface BillItem {
 }
 
 const Bill: React.FC<BillProps> = ({ navigation }) => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
@@ -42,13 +44,17 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
   const [selectedItems, setSelectedItems] = useState<BillItem[]>([])
 
   const handleSelectionChange = (items: BillItem[]) => {
-    setTotal(items.reduce((acc, item) => acc + Number(item.billAmount || 0), 0))
-    setSelectedItems(items)
+    if (items !== selectedItems) {
+      setTotal(
+        items.reduce((acc, item) => acc + Number(item.billAmount || 0), 0)
+      )
+      setSelectedItems(items)
+    }
   }
 
   const options = [
-    { label: 'Thanh toán', value: '1' },
-    { label: 'Lịch sử giao dịch', value: '1.5' }
+    { label: t('screen.bill.select.payment'), value: '1' },
+    { label: t('screen.bill.select.history'), value: '1.5' }
   ]
 
   const getBills = async () => {
@@ -113,7 +119,7 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
         onClose={closeNotification}
       />
       <View style={styles.header}>
-        <Text style={styles.hearderText}>Hoá đơn</Text>
+        <Text style={styles.hearderText}>{t('screen.bill.title')}</Text>
       </View>
       <View style={styles.content}>
         <SwitchSelector
@@ -140,15 +146,15 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
       <View style={styles.pay}>
         <View>
           <Text style={{ color: '#94989B', marginBottom: 10 }}>
-            Tổng nợ dư:{formatCurrency(sumTotal)}
+            {t('screen.bill.total')}:{formatCurrency(sumTotal)}
           </Text>
           <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
-            Tạm tính: {formatCurrency(total)}
+            {t('screen.bill.provisional')}: {formatCurrency(total)}
           </Text>
         </View>
         <ButtonCustom
           onPress={() => handleCreatePayment()}
-          title="Thanh toán"
+          title={t('screen.bill.button')}
           buttonStyle={styles.payButton}
           titleStyle={{ color: 'white', fontSize: 15 }}
         />

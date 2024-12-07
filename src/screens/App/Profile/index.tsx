@@ -19,12 +19,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
 import { clearPersistedData } from '../../../redux/Persist/data'
 import { setRememberMe } from '../../../redux/Slice/userSlice'
+import { updateTokenFCM } from '../../../api/API/user'
+import { useTranslation } from 'react-i18next'
 
 interface ProfileProps {
   navigation: NavigationProp<any>
 }
 
 const Profile = ({ navigation }: ProfileProps) => {
+  const { t, i18n } = useTranslation()
   const { userData } = useSelector((state: any) => state.auth)
   const [value, setValue] = useState(false)
   const [language, setLanguage] = useState('Tiếng Việt')
@@ -36,14 +39,15 @@ const Profile = ({ navigation }: ProfileProps) => {
   }
 
   const handleLanguageChange = (lang) => {
-    setLanguage(lang)
+    i18n.changeLanguage(lang)
+    setLanguage(lang === 'vi' ? 'Tiếng Việt' : 'English')
     toggleModal()
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.hearderText}>Tài khoản</Text>
+        <Text style={styles.hearderText}>{t('screen.profile.title')}</Text>
       </View>
       <View style={styles.profile}>
         <Image
@@ -63,7 +67,9 @@ const Profile = ({ navigation }: ProfileProps) => {
           style={{ flexDirection: 'row', alignItems: 'center' }}
         >
           <AntDesign name="profile" size={20} color="black" />
-          <Text style={styles.textSetting}>Chỉnh sửa thông tin hồ sơ</Text>
+          <Text style={styles.textSetting}>
+            {t('screen.profile.editProfile')}
+          </Text>
         </TouchableOpacity>
         <View
           style={{
@@ -75,7 +81,9 @@ const Profile = ({ navigation }: ProfileProps) => {
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Fontisto name="bell" size={20} color="black" />
-            <Text style={styles.textSetting}>Thông báo</Text>
+            <Text style={styles.textSetting}>
+              {t('screen.profile.notification')}
+            </Text>
           </View>
           <Switch
             color="#2089dc"
@@ -93,7 +101,9 @@ const Profile = ({ navigation }: ProfileProps) => {
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="language" size={20} color="black" />
-              <Text style={styles.textSetting}>Ngôn ngữ</Text>
+              <Text style={styles.textSetting}>
+                {t('screen.profile.language')}
+              </Text>
             </View>
             <Text style={styles.textSettingForcus}>{language}</Text>
           </View>
@@ -109,16 +119,13 @@ const Profile = ({ navigation }: ProfileProps) => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Chọn ngôn ngữ</Text>
-            <TouchableOpacity
-              onPress={() => handleLanguageChange('Tiếng Việt')}
-            >
+            <TouchableOpacity onPress={() => handleLanguageChange('vi')}>
               <Text style={styles.modalText}>Tiếng Việt</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLanguageChange('English')}>
+            <TouchableOpacity onPress={() => handleLanguageChange('en')}>
               <Text style={styles.modalText}>English</Text>
             </TouchableOpacity>
 
-            {/* Custom Close Button */}
             <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
               <Text style={styles.closeButtonText}>Đóng</Text>
             </TouchableOpacity>
@@ -129,7 +136,9 @@ const Profile = ({ navigation }: ProfileProps) => {
       <View style={styles.setting}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="help-circle-outline" size={25} color="black" />
-          <Text style={styles.textSetting}>Trợ giúp & Hỗ trợ</Text>
+          <Text style={styles.textSetting}>
+            {t('screen.profile.supportandFeedback')}
+          </Text>
         </View>
         <View
           style={{
@@ -139,14 +148,16 @@ const Profile = ({ navigation }: ProfileProps) => {
           }}
         >
           <AntDesign name="contacts" size={23} color="black" />
-          <Text style={styles.textSetting}>Liên hệ</Text>
+          <Text style={styles.textSetting}>{t('screen.profile.contact')}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MaterialCommunityIcons name="lock-outline" size={25} color="black" />
-          <Text style={styles.textSetting}>Chính sách bảo mật</Text>
+          <Text style={styles.textSetting}>
+            {t('screen.profile.privacypolicy')}
+          </Text>
         </View>
       </View>
-      <View style={styles.setting}>
+      {/* <View style={styles.setting}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <MaterialCommunityIcons name="security" size={20} color="black" />
           <Text style={styles.textSetting}>Bảo mật</Text>
@@ -165,9 +176,9 @@ const Profile = ({ navigation }: ProfileProps) => {
           </View>
           <Text style={styles.textSettingForcus}>Sáng</Text>
         </View>
-      </View>
+      </View> */}
       <ButtonCustom
-        title="Đăng xuất"
+        title={t('screen.profile.logout')}
         buttonStyle={{ width: 260, backgroundColor: '#AE0000' }}
         containerStyle={{
           width: 260,
@@ -183,6 +194,7 @@ const Profile = ({ navigation }: ProfileProps) => {
             })
           )
           const userId = userData.user.userId
+          updateTokenFCM(userData.token, '')
           socket.emit('userOffline', userId)
           clearPersistedData()
           dispatch(setRememberMe(false))
@@ -214,11 +226,13 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20
+    marginBottom: 20,
+    color: 'gray'
   },
   modalText: {
     fontSize: 18,
-    marginVertical: 10
+    marginVertical: 10,
+    color: 'black'
   },
   closeButton: {
     marginTop: 20,

@@ -7,7 +7,7 @@ import { Checkbox } from 'react-native-paper'
 import ButtonCustom from '../Custom/ButtonCustom.tsx'
 import { getResidentNoActiveByIdcard } from '../../../api/API/user.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
-import Notification from '../../../Modal/Notification/notification.js'
+import Notification from '../../../Modal/Notification/notification.tsx'
 import { useTranslation } from 'react-i18next'
 
 function SignUp({ navigation }) {
@@ -16,6 +16,7 @@ function SignUp({ navigation }) {
   const [idcard, setIdcard] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
   const closeNotification = () => {
     setError(false)
   }
@@ -30,6 +31,7 @@ function SignUp({ navigation }) {
         setError(true)
       }
     } catch (error) {
+      setNotification('Không tìm thấy tài khoản')
       setLoading(false)
       setError(true)
     }
@@ -37,7 +39,11 @@ function SignUp({ navigation }) {
   return (
     <View style={styles.container}>
       <SpinnerLoading loading={loading} />
-      <Notification loading={error} onClose={closeNotification} />
+      <Notification
+        loading={error}
+        onClose={closeNotification}
+        message={notification}
+      />
       <MaterialIcons
         onPress={() => navigation.goBack()}
         style={styles.buttonLeft}

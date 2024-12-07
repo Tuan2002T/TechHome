@@ -1,4 +1,4 @@
-import i18n from 'i18next'
+import i18n, { t } from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import 'intl-pluralrules'
 
@@ -39,8 +39,80 @@ const resources = {
           confirmPassword: 'Re-enter password',
           button: 'Confirm',
           passwordError: 'Password does not match',
-          notificationSuccess: 'Change password successfully',
-          notificationError: 'Change password failed'
+          notificationSuccess: 'Password changed successfully',
+          notificationError: 'Failed to change password'
+        }
+      },
+      screen: {
+        home: {
+          welcome: 'Welcome',
+          button: {
+            home: 'Apartment',
+            payment: 'Payment',
+            notification: 'Notifications',
+            sendFeedback: 'Send Feedback'
+          },
+          dashboard: {
+            title: 'Monthly Expenses'
+          }
+        },
+        chat: {
+          title: 'Messages',
+          select: {
+            all: 'General',
+            admin: 'Management'
+          },
+          newMessage: 'New message'
+        },
+        service: {
+          title: 'Services and Facilities',
+          service: {
+            title: 'Services',
+            tv: 'TV Repair',
+            airConditioner: 'Air Conditioner Repair',
+            washingMachine: 'Washing Machine Repair',
+            plumbing: 'Plumbing Repair',
+            laundry: 'Laundry',
+            cleanup: 'Cleaning',
+            electricity: 'Electric Repair',
+            other: 'More'
+          },
+          facility: {
+            title: 'Facilities',
+            swimmingPool: 'Swimming Pool',
+            gym: 'Gym',
+            playground: 'Playground',
+            bbq: 'BBQ Area',
+            tenis: 'Tennis Court',
+            badminton: 'Badminton Court',
+            basketball: 'Basketball Court',
+            other: 'More'
+          }
+        },
+        bill: {
+          title: 'Bill',
+          select: {
+            payment: 'Payment',
+            history: 'Transaction History'
+          },
+          table: {
+            type: 'Fee Type',
+            month: 'Month',
+            amount: 'Amount'
+          },
+          total: 'Total Outstanding',
+          provisional: 'Provisional',
+          button: 'Pay'
+        },
+        profile: {
+          title: 'Profile',
+          editProfile: 'Edit Profile Information',
+          notification: 'Notifications',
+          language: 'Language',
+          supportandFeedback: 'Support and Feedback',
+          contact: 'Contact',
+          privacypolicy: 'Privacy Policy',
+          logout: 'Logout'
         }
       }
     }
@@ -83,6 +155,78 @@ const resources = {
           passwordError: 'Mật khẩu không khớp',
           notificationSuccess: 'Đổi mật khẩu thành công',
           notificationError: 'Đổi mật khẩu thất bại'
+        }
+      },
+      screen: {
+        home: {
+          welcome: 'Xin chào',
+          button: {
+            home: 'Căn hộ',
+            payment: 'Thanh toán',
+            notification: 'Thông báo',
+            sendFeedback: 'Gửi ý kiến'
+          },
+          dashboard: {
+            title: 'Chi Tiêu Hàng Tháng'
+          }
+        },
+        chat: {
+          title: 'Tin nhắn',
+          select: {
+            all: 'Chung',
+            admin: 'Ban quản lý'
+          },
+          newMessage: 'Tin nhắn mới'
+        },
+        service: {
+          title: 'Dịch vụ và tiện ích',
+          service: {
+            title: 'Dịch vụ',
+            tv: 'Sửa TV',
+            airConditioner: 'Sửa điều hòa',
+            washingMachine: 'Sửa máy giặt',
+            plumbing: 'Sửa ống nước',
+            laundry: 'Giặt là',
+            cleanup: 'Dọn dẹp',
+            electricity: 'Sửa điện',
+            other: 'Thêm'
+          },
+          facility: {
+            title: 'Tiện ích',
+            swimmingPool: 'Bể bơi',
+            gym: 'Phòng Gym',
+            playground: 'Khu vui chơi',
+            bbq: 'Khu BBQ',
+            tenis: 'Sân Tennis',
+            badminton: 'Sân cầu lông',
+            basketball: 'Sân bóng rổ',
+            other: 'Thêm'
+          }
+        },
+        bill: {
+          title: 'Hóa đơn',
+          select: {
+            payment: 'Thanh toán',
+            history: 'Lịch sử giao dịch'
+          },
+          table: {
+            type: 'Loại phí',
+            month: 'Tháng',
+            amount: 'Thành tiền'
+          },
+          total: 'Tổng nợ dư',
+          provisional: 'Tạm tính',
+          button: 'Thanh toán'
+        },
+        profile: {
+          title: 'Tài khoản',
+          editProfile: 'Chỉnh sửa thông tin hồ sơ',
+          notification: 'Thông báo',
+          language: 'Ngôn ngữ',
+          supportandFeedback: 'Hỗ trợ và góp ý',
+          contact: 'Liên hệ',
+          privacypolicy: 'Chính sách bảo mật',
+          logout: 'Đăng xuất'
         }
       }
     }
