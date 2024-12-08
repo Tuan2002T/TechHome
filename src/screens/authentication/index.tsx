@@ -1,6 +1,6 @@
 import { Button } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import SwitchSelector from 'react-native-switch-selector'
 import { useSelector } from 'react-redux'
@@ -35,6 +35,7 @@ function Authentication({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
       <Image style={styles.logo} source={require('../../img/Logo.png')} />
       <Text style={styles.slogan}>{t('welcome')}</Text>
       <Button
@@ -58,7 +59,7 @@ function Authentication({ navigation }) {
         options={languageOptions}
         initial={languageOptions.findIndex(
           (option) => option.value === selectedLanguage
-        )} // Đặt giá trị ban đầu
+        )}
         onPress={(value) => changeLanguage(value)}
         textColor={'#26938E'}
         selectedColor={'white'}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -6,18 +6,18 @@ import {
   TouchableWithoutFeedback,
   StyleProp,
   ViewStyle
-} from 'react-native';
-import { TextInput } from 'react-native-paper';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+} from 'react-native'
+import { TextInput } from 'react-native-paper'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 interface TextInputPasswordCustomProps {
-  label?: string;
-  placeholder?: string;
-  placeholderTextColor?: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  style?: StyleProp<ViewStyle>;
-  [key: string]: any;
+  label?: string
+  placeholder?: string
+  placeholderTextColor?: string
+  value: string
+  onChangeText: (text: string) => void
+  style?: StyleProp<ViewStyle>
+  [key: string]: any
 }
 
 const TextInputPasswordCustom: React.FC<TextInputPasswordCustomProps> = ({
@@ -28,23 +28,28 @@ const TextInputPasswordCustom: React.FC<TextInputPasswordCustomProps> = ({
   style,
   ...rest
 }) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[styles.textinputContainer, style]}>
         <TextInput
-          placeholder={placeholder}
-          placeholderTextColor={placeholderTextColor}
+          label={placeholder}
           mode="outlined"
           style={[styles.textinput, style]}
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
-          underlineColor="transparent"
-          outlineColor="transparent"
-          activeOutlineColor="transparent"
+          outlineStyle={{ borderWidth: 0 }}
+          activeOutlineColor="#A9A9A9"
           cursorColor="#A9A9A9"
+          theme={{
+            colors: {
+              primary: '#A9A9A9 !important',
+              text: '#A9A9A9 !important',
+              placeholder: '#A9A9A9 !important'
+            }
+          }}
           right={
             <TextInput.Icon
               icon={() => (
@@ -61,7 +66,7 @@ const TextInputPasswordCustom: React.FC<TextInputPasswordCustomProps> = ({
         />
       </View>
     </TouchableWithoutFeedback>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -80,6 +85,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     fontSize: 14
   }
-});
+})
 
-export default TextInputPasswordCustom;
+export default TextInputPasswordCustom

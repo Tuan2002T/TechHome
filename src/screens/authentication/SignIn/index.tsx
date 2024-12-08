@@ -41,7 +41,6 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
-  const [selectedFruit, setSelectedFruit] = useState(null)
   const [fcmToken, setFcmToken] = useState('')
 
   const { t } = useTranslation()
@@ -68,7 +67,7 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
       )
     } catch (error) {
       setError(true)
-      setNotification('Đăng nhập thất bại')
+      setNotification(t('notification.login.error'))
     } finally {
       setLoading(false)
     }
@@ -80,8 +79,6 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   }
 
   useEffect(() => {
-    console.log('123')
-
     const requestNotificationPermission = async () => {
       if (Platform.OS === 'android' && Platform.Version >= 33) {
         const granted = await PermissionsAndroid.request(
@@ -124,6 +121,7 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
       <Text style={styles.title}>{t('login.title')}</Text>
 
       <TextInputCustom
+        lable={t('login.username')}
         placeholder={t('login.username')}
         value={signInData.username}
         onChangeText={(text) =>

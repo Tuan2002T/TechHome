@@ -8,6 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { NavigationProp } from '@react-navigation/native'
 import { getResidentApartmentInfo } from '../../../api/API/info '
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 interface Vehicle {
   id: string
@@ -52,6 +53,7 @@ interface ApartmentDetailsProps {
 }
 
 const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
+  const { t } = useTranslation()
   const [index, setIndex] = useState(0)
   const { userData } = useSelector((state: any) => state.auth)
   const apartmentDetailsData = useSelector(
@@ -83,7 +85,7 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
           style={styles.iconleft}
           onPress={() => navigation.goBack()}
         />
-        <Text style={styles.headerText}>Chi tiết căn hộ</Text>
+        <Text style={styles.headerText}>{t('screen.home.aparment.title')}</Text>
       </View>
 
       <Tab
@@ -91,8 +93,14 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
         onChange={(e) => setIndex(e)}
         indicatorStyle={styles.indicator}
       >
-        <Tab.Item title="Thông tin căn hộ" titleStyle={styles.tabTitle} />
-        <Tab.Item title="Phương tiện" titleStyle={styles.tabTitle} />
+        <Tab.Item
+          title={t('screen.home.aparment.select.aparmentProfile')}
+          titleStyle={styles.tabTitle}
+        />
+        <Tab.Item
+          title={t('screen.home.aparment.select.vehicle')}
+          titleStyle={styles.tabTitle}
+        />
       </Tab>
 
       <TabView value={index} onChange={setIndex} animationType="spring">
@@ -101,30 +109,39 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <MaterialIcons name="apartment" size={30} color="#26938E" />
-                <Text style={styles.cardText}>Thông tin căn hộ</Text>
+                <Text style={styles.cardText}>
+                  {t('screen.home.aparment.aparmentProfile.title')}
+                </Text>
               </View>
               <View style={styles.cardBody}>
-                {/* Chi tiết thông tin căn hộ */}
                 <View style={styles.cardBodyContent}>
-                  <Text style={styles.cardBodyContentTitle}>Mã căn hộ:</Text>
+                  <Text style={styles.cardBodyContentTitle}>
+                    {t('screen.home.aparment.aparmentProfile.apartmentNumber')}:
+                  </Text>
                   <Text style={styles.cardBodyContentText}>
                     {apartmentDetails?.apartment.number}
                   </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
-                  <Text style={styles.cardBodyContentTitle}>Loại căn hộ:</Text>
+                  <Text style={styles.cardBodyContentTitle}>
+                    {t('screen.home.aparment.aparmentProfile.aparmentType')}:
+                  </Text>
                   <Text style={styles.cardBodyContentText}>
                     {apartmentDetails?.apartment.type}
                   </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
-                  <Text style={styles.cardBodyContentTitle}>Toà nhà:</Text>
+                  <Text style={styles.cardBodyContentTitle}>
+                    {t('screen.home.aparment.aparmentProfile.bulding')}:
+                  </Text>
                   <Text style={styles.cardBodyContentText}>
                     {apartmentDetails?.building.name}
                   </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
-                  <Text style={styles.cardBodyContentTitle}>Tầng:</Text>
+                  <Text style={styles.cardBodyContentTitle}>
+                    {t('screen.home.aparment.aparmentProfile.floor')}:
+                  </Text>
                   <Text style={styles.cardBodyContentText}>
                     {' '}
                     {apartmentDetails?.floor.number}
@@ -136,10 +153,9 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <FeatherIcon name="users" size={25} color="#26938E" />
-                <Text style={styles.cardText}>Thành viên</Text>
+                <Text style={styles.cardText}> </Text>
               </View>
               <View style={styles.cardBody}>
-                {/* Card cho từng thành viên */}
                 {apartmentDetails?.apartment.residents.map((resident) => (
                   <View style={styles.memberCard} key={resident.id}>
                     <Text style={styles.memberName}>{resident.fullname}</Text>
@@ -166,18 +182,23 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
                   size={30}
                   color="#26938E"
                 />
-                <Text style={styles.cardText}>Phương tiện đăng ký</Text>
+                <Text style={styles.cardText}>
+                  {t('screen.home.aparment.vehicle.title')}
+                </Text>
               </View>
               <View style={styles.cardBody}>
-                {/* Chi tiết thông tin căn hộ */}
                 <View style={styles.cardBodyContent}>
-                  <Text style={styles.cardBodyContentTitle}>Loại xe:</Text>
+                  <Text style={styles.cardBodyContentTitle}>
+                    {t('screen.home.aparment.vehicle.vehicleType')}:
+                  </Text>
                   <Text style={styles.cardBodyContentText}>
                     {apartmentDetails?.vehicle.type}
                   </Text>
                 </View>
                 <View style={styles.cardBodyContent}>
-                  <Text style={styles.cardBodyContentTitle}>Biển số:</Text>
+                  <Text style={styles.cardBodyContentTitle}>
+                    {t('screen.home.aparment.vehicle.licensePlate')}:
+                  </Text>
                   <Text style={styles.cardBodyContentText}>
                     {apartmentDetails?.apartment.number}
                   </Text>

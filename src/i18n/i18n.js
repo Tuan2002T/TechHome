@@ -5,40 +5,51 @@ import 'intl-pluralrules'
 const resources = {
   en: {
     translation: {
-      welcome: 'App for residents',
+      welcome: 'Resident App',
       button: {
-        login: 'Login',
-        active: 'Activate account'
+        login: 'Log in',
+        active: 'Activate Account'
       },
       login: {
-        title: 'Login',
+        title: 'Log in',
         username: 'Phone number or email',
         password: 'Enter password',
         remember: 'Remember password',
         forgot: 'Forgot password',
-        button: 'Login'
+        button: 'Log in'
       },
       active: {
-        title: 'Activate account',
+        title: 'Activate Account',
         title1: 'Enter the ID/Passport of the contract holder',
         code: 'Enter ID/Passport',
-        button: 'Activate'
+        button: 'Activate',
+        activeAccount: {
+          title: 'Activate Account',
+          title1: 'Enter account and password information',
+          fullname: 'Enter full name',
+          username: 'Enter username',
+          idcard: 'Enter ID/Passport',
+          phone: 'Enter phone number',
+          email: 'Enter email',
+          password: 'Enter password',
+          button: 'Activate'
+        }
       },
       forgotPassword: {
-        title: 'Forgot password',
+        title: 'Forgot Password',
         phoneOrEmail: 'Enter phone number or email',
         otp: 'Enter verification code',
         sendOTP: 'Send OTP',
         button: 'Next',
         notificationSuccessSendOTP: 'OTP code has been sent',
-        notificationErrorSendOTP: 'Send OTP code failed',
+        notificationErrorSendOTP: 'Failed to send OTP code',
         notificationErrorOTP: 'OTP code is incorrect',
         newPassword: {
-          title: 'Create new password',
+          title: 'Create New Password',
           password: 'Enter new password',
-          confirmPassword: 'Re-enter password',
+          confirmPassword: 'Re-enter new password',
           button: 'Confirm',
-          passwordError: 'Password does not match',
+          passwordError: 'Passwords do not match',
           notificationSuccess: 'Password changed successfully',
           notificationError: 'Failed to change password'
         }
@@ -51,6 +62,28 @@ const resources = {
             payment: 'Payment',
             notification: 'Notifications',
             sendFeedback: 'Send Feedback'
+          },
+          aparment: {
+            title: 'Apartment Details',
+            select: {
+              aparmentProfile: 'Apartment Information',
+              vehicle: 'Vehicle'
+            },
+            aparmentProfile: {
+              title: 'Apartment Information',
+              apartmentNumber: 'Apartment Number',
+              aparmentType: 'Apartment Type',
+              bulding: 'Building',
+              floor: 'Floor'
+            },
+            member: {
+              title: 'Member List'
+            },
+            vehicle: {
+              title: 'Registered Vehicles',
+              vehicleType: 'Vehicle Type',
+              licensePlate: 'License Plate'
+            }
           },
           dashboard: {
             title: 'Monthly Expenses'
@@ -114,6 +147,29 @@ const resources = {
           privacypolicy: 'Privacy Policy',
           logout: 'Logout'
         }
+      },
+      otp: {
+        verification: 'OTP Verification',
+        title: 'Please enter the OTP sent to your phone number',
+        timeRemain: 'Time remaining:',
+        code: 'Enter OTP',
+        submit: 'Submit',
+        close: 'Close',
+        resend: 'Resend'
+      },
+      notification: {
+        login: {
+          success: 'Login successful',
+          error: 'Login failed'
+        },
+        active: {
+          success: 'Account activation successful',
+          error: 'Account not found'
+        },
+        otp: {
+          success: 'OTP verification successful',
+          error: 'OTP verification failed'
+        }
       }
     }
   },
@@ -136,7 +192,18 @@ const resources = {
         title: 'Kích hoạt tài khoản',
         title1: 'Nhập CMND/CCCD của người đứng tên trên hợp đồng',
         code: 'Nhập CCCD/CMND',
-        button: 'Kích hoạt'
+        button: 'Kích hoạt',
+        activeAccount: {
+          title: 'Kích hoạt tài khoản',
+          title1: 'Nhập thông tin tài khoản mật khẩu',
+          fullname: 'Nhập họ tên',
+          username: 'Nhập tài khoản',
+          idcard: 'Nhập CMND/CCCD',
+          phone: 'Nhập số điện thoại',
+          email: 'Nhập email',
+          password: 'Nhập mật khẩu',
+          button: 'Kích hoạt'
+        }
       },
       forgotPassword: {
         title: 'Quên mật khẩu',
@@ -165,6 +232,28 @@ const resources = {
             payment: 'Thanh toán',
             notification: 'Thông báo',
             sendFeedback: 'Gửi ý kiến'
+          },
+          aparment: {
+            title: 'Chi tiết căn hộ',
+            select: {
+              aparmentProfile: 'Thông tin căn hộ',
+              vehicle: 'Phương tiện'
+            },
+            aparmentProfile: {
+              title: 'Thông tin căn hộ',
+              apartmentNumber: 'Mã căn hộ',
+              aparmentType: 'Loại căn hộ',
+              bulding: 'Tòa nhà',
+              floor: 'Tầng'
+            },
+            member: {
+              title: 'Danh sách thành viên'
+            },
+            vehicle: {
+              title: 'Phương tiện đăng ký',
+              vehicleType: 'Loại phương tiện',
+              licensePlate: 'Biển số'
+            }
           },
           dashboard: {
             title: 'Chi Tiêu Hàng Tháng'
@@ -228,12 +317,34 @@ const resources = {
           privacypolicy: 'Chính sách bảo mật',
           logout: 'Đăng xuất'
         }
+      },
+      otp: {
+        verification: 'Xác nhận mã OTP',
+        title: 'Vui lòng nhập mã OTP được gửi đến số điện thoại của bạn',
+        timeRemain: 'Thời gian còn lại:',
+        code: 'Nhập mã OTP',
+        submit: 'Xác nhận',
+        close: 'Đóng',
+        resend: 'Gửi lại'
+      },
+      notification: {
+        login: {
+          success: 'Đăng nhập thành công',
+          error: 'Đăng nhập thất bại'
+        },
+        active: {
+          success: 'Kích hoạt tài khoản thành công',
+          error: 'Không tìm thấy tài khoản'
+        },
+        otp: {
+          success: 'Xác nhận mã OTP thành công',
+          error: 'Xác nhận mã OTP thất bại'
+        }
       }
     }
   }
 }
 
-// Khởi tạo i18n
 i18n.use(initReactI18next).init({
   resources,
   lng: 'vi',

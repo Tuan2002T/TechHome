@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StatusBar, StyleSheet, Text, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../Custom/TextInputCustom.tsx'
 import TextInputPasswordCustom from '../Custom/TextInputPasswordCustom.tsx'
@@ -9,14 +9,17 @@ import { getResidentNoActiveByIdcard } from '../../../api/API/user.js'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import Notification from '../../../Modal/Notification/notification.tsx'
 import { useTranslation } from 'react-i18next'
+import OTPInput from '../../../Modal/OTPInput/OTPInput.tsx'
 
 function SignUp({ navigation }) {
   const { t, i18n } = useTranslation()
 
-  const [idcard, setIdcard] = useState('')
+  const [idcard, setIdcard] = useState('ID005')
   const [loading, setLoading] = useState(false)
+  const [modalOTP, setModalOTP] = useState(false)
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
+  const [residentData, setResidentData] = useState(null)
   const closeNotification = () => {
     setError(false)
   }
@@ -24,20 +27,38 @@ function SignUp({ navigation }) {
     setLoading(true)
     try {
       const residentData = await getResidentNoActiveByIdcard(idcard)
-      if (residentData) {
-        navigation.navigate('ActiveAccount', { residentData })
-      } else {
-        Alert.alert('Thông báo1', 'Không tìm thấy tài khoản')
-        setError(true)
-      }
+      setResidentData(residentData)
+
+      setModalOTP(true)
+      setLoading(false)
     } catch (error) {
-      setNotification('Không tìm thấy tài khoản')
+      setNotification(t('notification.active.error'))
       setLoading(false)
       setError(true)
     }
   }
+  const handleOpenOTPModal = () => {
+    setLoading(true)
+  }
+
+  const handleCloseOTPModal = () => {
+    setModalOTP(false)
+  }
+
+  const handleSubmitOTP = (otp: string) => {
+    console.log('OTP Submitted:', otp)
+    navigation.navigate('ActiveAccount', { residentData })
+    setModalOTP(false)
+  }
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
+      <OTPInput
+        loading={modalOTP}
+        message={t('otp.title')}
+        onClose={handleCloseOTPModal}
+        onSubmit={handleSubmitOTP}
+      />
       <SpinnerLoading loading={loading} />
       <Notification
         loading={error}

@@ -38,9 +38,9 @@ const styles = StyleSheet.create({
   buttoncustom: {
     flex: 0,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
     // backgroundColor: 'white',
-    // marginTop: 46
+    marginTop: 20
   },
   buttonContainer: {
     borderRadius: 100,

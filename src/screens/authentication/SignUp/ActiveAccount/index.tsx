@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../../Custom/TextInputCustom.tsx'
 import ButtonCustom from '../../Custom/ButtonCustom.tsx'
@@ -8,10 +15,11 @@ import { activeResident } from '../../../../api/API/user.js'
 import SpinnerLoading from '../../../../Spinner/spinnerloading.js'
 import Notification from '../../../../Modal/Notification/notification.tsx'
 import { CommonActions } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
 
 function ActiveAccount({ navigation, route }) {
+  const { t } = useTranslation()
   const residentData = route.params?.residentData
-  console.log(route.params?.residentData)
 
   const [idcard, setIdcard] = useState('')
   const [username, setUsername] = useState('')
@@ -47,12 +55,12 @@ function ActiveAccount({ navigation, route }) {
       phonenumber,
       password
     }
-    console.log(activeData)
     setLoading(true)
     try {
       const result = await activeResident(activeData)
 
       setLoading(false)
+      setNotification('Kích hoạt tài khoản thành công')
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -66,8 +74,9 @@ function ActiveAccount({ navigation, route }) {
       setLoading(false)
     }
   }
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollView}>
       <SpinnerLoading loading={loading} />
       <Notification
         loading={error}
@@ -81,42 +90,47 @@ function ActiveAccount({ navigation, route }) {
         size={38}
         color="#000000"
       />
-      <Text style={styles.title}>Kích hoạt tài khoản</Text>
-      <Text style={styles.text}>Nhập thông tin tài khoản mật khẩu</Text>
+      <Text style={styles.title}>{t('active.activeAccount.title')}</Text>
+      <Text style={styles.text}>{t('active.activeAccount.title1')}</Text>
 
       <TextInputCustom
-        placeholder="Nhập tên"
+        placeholder={t('active.activeAccount.fullname')}
         value={fullname}
         onChangeText={setFullname}
       />
       <TextInputCustom
-        placeholder="Username"
+        placeholder={t('active.activeAccount.username')}
         value={username}
         onChangeText={setUsername}
         editable={true}
       />
       <TextInputCustom
-        placeholder="Nhập CMND/CCCD"
+        placeholder={t('active.activeAccount.idcard')}
         value={idcard}
         onChangeText={setIdcard}
         editable={false}
       />
-
       <TextInputCustom
-        placeholder="Nhập số điện thoại"
+        placeholder={t('active.activeAccount.phone')}
         value={phonenumber}
         onChangeText={setPhonenumber}
         editable={false}
       />
       <TextInputCustom
-        placeholder="Nhập email"
+        placeholder={t('active.activeAccount.email')}
         value={email}
         onChangeText={setEmail}
       />
-      <TextInputPasswordCustom value={password} onChangeText={setPassword} />
-
-      <ButtonCustom title="Xác nhận" onPress={() => handleActivate()} />
-    </View>
+      <TextInputPasswordCustom
+        placeholder={t('active.activeAccount.password')}
+        value={password}
+        onChangeText={setPassword}
+      />
+      <ButtonCustom
+        title={t('active.activeAccount.button')}
+        onPress={() => handleActivate()}
+      />
+    </ScrollView>
   )
 }
 
@@ -124,6 +138,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  scrollView: {
+    paddingBottom: 20,
+    backgroundColor: 'white',
+    flexGrow: 1
   },
   buttonLeft: {
     borderRadius: 100,
