@@ -37,7 +37,7 @@ interface Apartment {
 }
 
 interface Complaint {
-  complainId: string
+  complaintId: string
   complaintTitle: string
   complaintDate: string
   complaintStatus: string
@@ -52,6 +52,8 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState('1')
   const [modalVisible, setModalVisible] = useState(false)
   const [complaints, setComplaints] = useState<Complaint[]>([])
+  const [complaintPedding, setComplaintPedding] = useState<Complaint[]>([])
+  const [complaintHistory, setComplaintHistory] = useState<Complaint[]>([])
   const [buildings, setBuildings] = useState<Building[]>([])
   const [floors, setFloors] = useState<Floor[]>([])
   const [apartments, setApartments] = useState<Apartment[]>([])
@@ -64,6 +66,20 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
     const getComplaints = async () => {
       try {
         const response = await getAllComplaints(userData.token)
+        setComplaintPedding(
+          response.filter(
+            (item) =>
+              item.complaintStatus === 'Pending' ||
+              item.complaintStatus === 'In Progress'
+          )
+        )
+        setComplaintHistory(
+          response.filter(
+            (item) =>
+              item.complaintStatus !== 'Pending' &&
+              item.complaintStatus !== 'In Progress'
+          )
+        )
         setComplaints(response)
       } catch (error) {
         console.error('Error:', error)
@@ -161,23 +177,18 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
         />
         {selectedOption === '1' ? (
           <FlatList
-            data={complaints.filter(
-              (item) => item.complaintStatus === 'Pending'
-            )}
+            data={complaintPedding || []}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
-            keyExtractor={(item) => item.complainId}
+            keyExtractor={(item) => item.complaintId}
             style={styles.list}
           />
         ) : (
           <FlatList
-            data={
-              complaints.filter((item) => item.complaintStatus !== 'Pending') ||
-              []
-            }
+            data={complaintHistory || []}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.complaintId}
             style={styles.list}
           />
         )}
@@ -217,7 +228,6 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
         />
       </SpeedDial>
 
-      {/* Modal để gửi ý kiến */}
       <Modal transparent={true} visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>

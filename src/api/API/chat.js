@@ -95,7 +95,6 @@ export const deleteMessage = async (token, messageId) => {
         }
       }
     )
-    console.log(response)
 
     return response.data
   } catch (error) {
@@ -105,9 +104,6 @@ export const deleteMessage = async (token, messageId) => {
 
 export const sendMessageAI = async (token, message) => {
   try {
-    console.log('sendMessageAI', message)
-    console.log('token', token)
-
     const response = await axios.post(
       API_URL.sendMessageAI_url,
       {
@@ -120,7 +116,6 @@ export const sendMessageAI = async (token, message) => {
         }
       }
     )
-    console.log('dddddddđ', response)
 
     return response.data
   } catch (error) {

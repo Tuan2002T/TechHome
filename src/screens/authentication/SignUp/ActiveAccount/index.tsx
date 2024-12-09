@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform
-} from 'react-native'
+import { StyleSheet, Text, ScrollView } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../../Custom/TextInputCustom.tsx'
 import ButtonCustom from '../../Custom/ButtonCustom.tsx'

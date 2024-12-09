@@ -6,12 +6,14 @@ interface PickMediaProps {
   onClose: () => void
   onCameraPress: () => void
   onGalleryPress: () => void
+  onVideoPress: () => void
 }
 
 const PickMedia = ({
   open,
   onClose,
   onCameraPress,
+  onVideoPress,
   onGalleryPress
 }: PickMediaProps) => {
   return (
@@ -26,7 +28,7 @@ const PickMedia = ({
           <Text style={styles.title}>Chọn Ảnh, Video hoặc Mở Camera</Text>
           <TouchableOpacity
             style={[styles.option, styles.cameraButton]}
-            onPress={onCameraPress}
+            onPress={onVideoPress}
           >
             <Text style={styles.optionText}>Quay Video</Text>
           </TouchableOpacity>

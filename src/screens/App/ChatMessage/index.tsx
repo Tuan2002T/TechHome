@@ -83,8 +83,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     setPickMediaOpen(false)
   }
 
-  const handleCameraPress = async () => {
-    const response = await openCamera('photo')
+  const handleCameraPress = async (a) => {
+    const response = await openCamera(a)
+    sendMessageForMedia(response[0])
+    closePickMedia()
+  }
+
+  const handleVideoPress = async () => {
+    const response = await openCamera('video')
     sendMessageForMedia(response[0])
     closePickMedia()
   }
@@ -97,7 +103,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   const handlePickFile = async () => {
     const file = await pickFile()
-    console.log(file)
     if (!file) return
     setListMedia((prevList) => [...prevList, file[0]])
   }
@@ -281,6 +286,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         onLongPress={() => {
           setModalVisible(true)
           setMessageAction(item.messageId)
+
           toggleModal()
         }}
         style={styles.messageWrapper}
@@ -360,10 +366,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   const handleDeleteMessage = async () => {
     try {
-      const response = await deleteMessage({
-        token: userData.token,
-        messageId: mesageAction
-      })
+      const response = await deleteMessage(userData.token, mesageAction)
 
       setMessages((prevMessages) =>
         prevMessages.filter((item) => item.messageId !== mesageAction)
@@ -401,6 +404,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         open={isPickMediaOpen}
         onClose={closePickMedia}
         onCameraPress={handleCameraPress}
+        onVideoPress={handleVideoPress}
         onGalleryPress={handleGalleryPress}
       />
       <View style={styles.header}>

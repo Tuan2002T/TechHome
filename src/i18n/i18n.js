@@ -63,6 +63,9 @@ const resources = {
             notification: 'Notifications',
             sendFeedback: 'Send Feedback'
           },
+          totalBills: 'Total monthly payment',
+          buttonDetail: 'Details',
+          buttonPay: 'Pay',
           aparment: {
             title: 'Apartment Details',
             select: {
@@ -169,6 +172,12 @@ const resources = {
         otp: {
           success: 'OTP verification successful',
           error: 'OTP verification failed'
+        },
+        payment: {
+          create: {
+            success: 'Payment created successfully',
+            error: 'Failed to create payment'
+          }
         }
       }
     }
@@ -233,6 +242,9 @@ const resources = {
             notification: 'Thông báo',
             sendFeedback: 'Gửi ý kiến'
           },
+          totalBills: 'Tổng thanh toán tháng',
+          buttonDetail: 'Chi tiết',
+          buttonPay: 'Thanh toán',
           aparment: {
             title: 'Chi tiết căn hộ',
             select: {
@@ -339,6 +351,12 @@ const resources = {
         otp: {
           success: 'Xác nhận mã OTP thành công',
           error: 'Xác nhận mã OTP thất bại'
+        },
+        payment: {
+          create: {
+            success: 'Tạo thanh toán thành công',
+            error: 'Tạo thanh toán thất bại'
+          }
         }
       }
     }

@@ -1,15 +1,15 @@
+import React, { useEffect, useRef } from 'react'
 import { Text, View, StyleSheet, Animated, Easing } from 'react-native'
-import { PieChart } from 'react-native-gifted-charts'
-import { useEffect, useRef } from 'react'
+import { PieChart, PieChartData } from 'react-native-gifted-charts'
 import { useTranslation } from 'react-i18next'
 
-const SpendingChartComponent = () => {
+const SpendingChartComponent: React.FC = () => {
   const { t } = useTranslation()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0)).current
   const legendAnim = useRef(new Animated.Value(0)).current
 
-  const pieData = [
+  const pieData: PieChartData[] = [
     {
       value: 47,
       color: '#009FFF',
@@ -60,7 +60,7 @@ const SpendingChartComponent = () => {
     ]).start()
   }, [])
 
-  const renderDot = (color) => {
+  const renderDot = (color: string) => {
     return (
       <View style={[styles.dot, { backgroundColor: color }]}>
         <View style={styles.dotInner} />

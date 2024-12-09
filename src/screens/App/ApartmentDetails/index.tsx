@@ -153,7 +153,9 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <FeatherIcon name="users" size={25} color="#26938E" />
-                <Text style={styles.cardText}> </Text>
+                <Text style={styles.cardText}>
+                  {t('screen.home.aparment.member.title')}
+                </Text>
               </View>
               <View style={styles.cardBody}>
                 {apartmentDetails?.apartment.residents.map((resident) => (
@@ -161,11 +163,6 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
                     <Text style={styles.memberName}>{resident.fullname}</Text>
                     <Text style={styles.memberRole}>{resident.idCard}</Text>
                     <Text style={styles.memberPhone}>{resident.phone}</Text>
-                    <TouchableOpacity
-                      onPress={() => handleDeleteMember(resident.fullname)}
-                    >
-                      <Ionicons name="trash-outline" size={20} color="red" />
-                    </TouchableOpacity>
                   </View>
                 ))}
               </View>

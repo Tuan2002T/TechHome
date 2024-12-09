@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -11,18 +11,107 @@ import FloatingActionComponent from '../Component/FloatingActionComponent.tsx'
 import SpendingChartComponent from './SpendingChart/SpendingChartComponent.tsx'
 import { NavigationProp } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
+import { getAllBills } from '../../../api/API/bill.js'
+import { createPayment } from '../../../api/API/payment.js'
+import Notification from '../../../Modal/Notification/notification.tsx'
+import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 
 interface HomeProps {
   navigation: NavigationProp<any>
 }
 
+interface BillProps {
+  billId: string
+  billAmount: number
+  billDate: string
+  billStatus: string
+}
+
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const { t } = useTranslation()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [notification, setNotification] = useState('')
+  const closeNotification = () => {
+    setError(false)
+    setLoading(false)
+  }
   const { userData } = useSelector((state: any) => state.auth)
+  const [total, setTotal] = useState(0)
+  const [billIds, setBillIds] = useState<Number[]>([])
 
+  useEffect(() => {
+    getTotalBills()
+  }, [])
+  const getTotalBills = async () => {
+    try {
+      const response = await getAllBills(userData.token)
+      let total = 0
+      let billIds: Number[] = []
+      const currentMonth = new Date().getMonth()
+      const currentYear = new Date().getFullYear()
+      response.forEach((bill: any) => {
+        const billDate = new Date(bill.billDate)
+        const billMonth = billDate.getMonth()
+        const billYear = billDate.getFullYear()
+
+        if (
+          bill.billStatus === 'UNPAID' &&
+          billMonth === currentMonth &&
+          billYear === currentYear
+        ) {
+          total += Number(bill.billAmount)
+          billIds.push(bill.billId)
+        }
+      })
+      setBillIds(billIds)
+      setTotal(total)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleCreatePayment = async () => {
+    setLoading(true)
+    try {
+      const data = { billIds: billIds }
+      const response = await createPayment(userData.token, data)
+      console.log(response)
+
+      setLoading(false)
+      if (response) {
+        navigation.navigate('Payment', { response })
+      } else {
+        setError(true)
+        console.log(t('screen.notification.payment.create.error'))
+
+        setNotification(t('notification.payment.create.error'))
+      }
+    } catch (error) {
+      setError(true)
+      setNotification(t('notification.payment.create.error'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
   return (
     <ScrollView style={styles.scrollbar}>
       <StatusBar barStyle="light-content" backgroundColor="#26938E" />
+      <SpinnerLoading loading={loading} />
+      <Notification
+        loading={error}
+        message={notification}
+        onClose={closeNotification}
+      />
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.name}>
@@ -37,24 +126,30 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         </View>
         <View style={styles.notification}>
           <Text style={styles.headerNotification}>
-            Tổng thanh toán tháng {new Date().getMonth() + 1}/
-            {new Date().getFullYear()}
+            {t('screen.home.totalBills')}
+            {new Date().getMonth() + 1}/{new Date().getFullYear()}
           </Text>
-          <Text style={styles.money}>1.000.000 vnđ</Text>
+          <Text style={styles.money}>{formatCurrency(total)}</Text>
           <View style={styles.cbbutton}>
             <Button
               containerStyle={styles.button}
               type="outline"
               buttonStyle={styles.button}
               titleStyle={styles.titlebutton}
-              title="Chi tiết"
+              title={t('screen.home.buttonDetail')}
             />
             <Button
+              onPress={handleCreatePayment}
               containerStyle={styles.button}
               type="outline"
-              buttonStyle={styles.button}
+              disabled={total === 0}
+              buttonStyle={
+                total === 0
+                  ? { ...styles.button, backgroundColor: '#74747474' }
+                  : styles.button
+              }
               titleStyle={styles.titlebutton}
-              title="Thanh toán"
+              title={t('screen.home.buttonPay')}
             />
           </View>
         </View>
