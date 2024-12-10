@@ -3,7 +3,6 @@ import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { Button } from '@rneui/base'
 
 import { useSelector } from 'react-redux'
@@ -117,12 +116,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           <Text style={styles.name}>
             {t('screen.home.welcome')}, {userData.user.fullname}
           </Text>
-          <Fontisto
-            style={styles.notificationIcon}
-            name="bell"
-            size={27}
-            color="white"
-          />
         </View>
         <View style={styles.notification}>
           <Text style={styles.headerNotification}>
@@ -163,10 +156,10 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           />
 
           <FloatingActionComponent
-            icon={<MaterialIcons name="payment" size={30} color="#FF5722" />}
-            title={t('screen.home.button.payment')}
+            icon={<MaterialIcons name="event" size={33} color="#FF5722" />}
+            title={t('screen.home.button.event')}
             style={{}}
-            onPress={() => navigation.navigate('Bill')}
+            onPress={() => navigation.navigate('Events')}
           />
 
           <FloatingActionComponent

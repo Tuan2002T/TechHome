@@ -59,7 +59,7 @@ const resources = {
           welcome: 'Welcome',
           button: {
             home: 'Apartment',
-            payment: 'Payment',
+            event: 'Events',
             notification: 'Notifications',
             sendFeedback: 'Send Feedback'
           },
@@ -238,7 +238,7 @@ const resources = {
           welcome: 'Xin chào',
           button: {
             home: 'Căn hộ',
-            payment: 'Thanh toán',
+            event: 'Sự kiện',
             notification: 'Thông báo',
             sendFeedback: 'Gửi ý kiến'
           },

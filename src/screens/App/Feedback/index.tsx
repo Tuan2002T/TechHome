@@ -12,6 +12,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import { SpeedDial } from '@rneui/themed'
 import { NavigationProp } from '@react-navigation/native'
 import {
+  deleteComplaint,
   getAllBuidlingsAndFloorsAndApartments,
   getAllComplaints,
   sendComplaint
@@ -41,6 +42,7 @@ interface Complaint {
   complaintTitle: string
   complaintDate: string
   complaintStatus: string
+  complaintDescription: string
 }
 interface FeedbackProps {
   navigation: NavigationProp<any>
@@ -51,9 +53,11 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   const [open, setOpen] = useState(false)
   const [selectedOption, setSelectedOption] = useState('1')
   const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisibleFeedback, setModalVisibleFeedback] = useState(false)
   const [complaints, setComplaints] = useState<Complaint[]>([])
   const [complaintPedding, setComplaintPedding] = useState<Complaint[]>([])
   const [complaintHistory, setComplaintHistory] = useState<Complaint[]>([])
+  const [complaintForcus, setComplaintForcus] = useState<Complaint>()
   const [buildings, setBuildings] = useState<Building[]>([])
   const [floors, setFloors] = useState<Floor[]>([])
   const [apartments, setApartments] = useState<Apartment[]>([])
@@ -115,8 +119,30 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
       }
       const response = await sendComplaint(userData.token, data)
       setComplaints([...complaints, response])
+      if (
+        response.complaintStatus === 'Pending' ||
+        response.complaintStatus === 'In Progress'
+      ) {
+        setComplaintPedding([...complaintPedding, response])
+      } else {
+        setComplaintHistory([...complaintHistory, response])
+      }
 
       handleAddFeedback()
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+    }
+  }
+
+  const handleDeleteComplaint = async (complaintId: string) => {
+    try {
+      const response = await deleteComplaint(userData.token, complaintId)
+      console.log(response)
+
+      setComplaintPedding(
+        complaints.filter((item) => item.complaintId !== complaintId)
+      )
     } catch (error) {
       console.error('Error:', error)
     } finally {
@@ -138,13 +164,19 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   }
 
   const renderItem = ({ item }) => (
-    <View style={styles.requestItem}>
+    <TouchableOpacity
+      onPress={() => {
+        setModalVisibleFeedback(true)
+        setComplaintForcus(item)
+      }}
+      style={styles.requestItem}
+    >
       <Text style={styles.requestContent}>{item.complaintTitle}</Text>
       <Text style={styles.requestTime}>{formatDate(item.complaintDate)}</Text>
       {item.complaintStatus && (
         <Text style={styles.requestStatus}>{item.complaintStatus}</Text>
       )}
-    </View>
+    </TouchableOpacity>
   )
 
   const handleAddFeedback = () => {
@@ -155,7 +187,21 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
     setComplaintTitle('')
     setComplaintDescription('')
   }
+  const isDeleteButtonDisabled = (complaintForcus) => {
+    if (!complaintForcus) {
+      return true
+    }
 
+    const complaintDate = new Date(complaintForcus.complaintDate)
+    const currentDate = new Date()
+    const timeDifference = Math.abs(currentDate - complaintDate)
+    const oneHourInMilliseconds = 3600000
+
+    return (
+      complaintForcus.complaintStatus !== 'Pending' ||
+      timeDifference > oneHourInMilliseconds
+    )
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -308,6 +354,134 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
               style={styles.closeButton}
             >
               <Text style={styles.closeButtonText}>Đóng</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        transparent={true}
+        visible={modalVisibleFeedback}
+        animationType="slide"
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)'
+          }}
+        >
+          <View
+            style={{
+              width: 350,
+              padding: 20,
+              backgroundColor: '#ffffff',
+              borderRadius: 12,
+              elevation: 10,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 5 },
+              shadowOpacity: 0.3,
+              shadowRadius: 6
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setModalVisibleFeedback(false)}
+              style={{
+                alignSelf: 'flex-end',
+                padding: 8,
+                borderRadius: 50,
+                backgroundColor: '#E0E0E0',
+                marginBottom: 15
+              }}
+            >
+              <Text style={{ color: '#333', fontSize: 16, fontWeight: '600' }}>
+                Đóng
+              </Text>
+            </TouchableOpacity>
+
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: '#2C3E50',
+                marginBottom: 15,
+                textAlign: 'center'
+              }}
+            >
+              Chi tiết ý kiến
+            </Text>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Tiêu đề: </Text>
+                <Text>{complaintForcus?.complaintTitle}</Text>
+              </Text>
+            </View>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Mô tả: </Text>
+                <Text>{complaintForcus?.complaintDescription}</Text>
+              </Text>
+            </View>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Ngày tạo: </Text>
+                <Text>{formatDate(complaintForcus?.complaintDate)}</Text>
+              </Text>
+            </View>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Tình trạng: </Text>
+                <Text style={{ color: '#E67E22' }}>
+                  {complaintForcus?.complaintStatus}
+                </Text>
+              </Text>
+            </View>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Tòa nhà ID: </Text>
+                <Text>1</Text>
+              </Text>
+            </View>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Tầng ID: </Text>
+                <Text>1</Text>
+              </Text>
+            </View>
+
+            <View style={{ marginBottom: 15 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#555' }}>
+                <Text style={{ fontWeight: 'bold' }}>Căn hộ ID: </Text>
+                <Text>1</Text>
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => {
+                handleDeleteComplaint(complaintForcus?.complaintId)
+                setModalVisibleFeedback(false)
+              }}
+              disabled={isDeleteButtonDisabled(complaintForcus) ? true : false}
+              style={{
+                backgroundColor: isDeleteButtonDisabled(complaintForcus)
+                  ? '#ccc'
+                  : '#E74C3C',
+                paddingVertical: 12,
+                borderRadius: 8,
+                alignItems: 'center',
+                marginTop: 10
+              }}
+            >
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                Xóa
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

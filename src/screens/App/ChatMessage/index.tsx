@@ -69,6 +69,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   const [error, setError] = useState(false)
   const [notification, setNotification] = useState('')
   const [listMedia, setListMedia] = useState<Files[]>([])
+  const [offset, setOffset] = useState(0)
+  const [limit, setLimit] = useState(20)
 
   const closeNotification = () => {
     setError(false)
@@ -83,16 +85,32 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     setPickMediaOpen(false)
   }
 
-  const handleCameraPress = async (a) => {
-    const response = await openCamera(a)
-    sendMessageForMedia(response[0])
-    closePickMedia()
+  const handleCameraPress = async () => {
+    try {
+      const response = await openCamera('photo')
+      if (response) {
+        sendMessageForMedia(response[0])
+        closePickMedia()
+      } else {
+        console.log('No media captured or user cancelled.')
+      }
+    } catch (error) {
+      console.error('Error while opening the camera:', error)
+    }
   }
 
   const handleVideoPress = async () => {
-    const response = await openCamera('video')
-    sendMessageForMedia(response[0])
-    closePickMedia()
+    try {
+      const response = await openCamera('video')
+      if (response && response.length > 0) {
+        sendMessageForMedia(response[0])
+        closePickMedia()
+      } else {
+        console.log('No video was selected or user canceled the action')
+      }
+    } catch (error) {
+      console.error('Error opening camera:', error)
+    }
   }
 
   const handleGalleryPress = async () => {
@@ -113,27 +131,27 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     socket.emit('joinChat', route.params.chatId)
-    const getMessages = async () => {
-      setLoading(true)
-      try {
-        const response = await getAllMessagesByChatId(
-          userData.token,
-          route.params.chatId,
-          0,
-          100
-        )
-        setMessages(response.messages)
-        setLoading(false)
-      } catch (error) {
-        setError(true)
-        setNotification('Lấy tin nhắn thất bại')
-      } finally {
-        setLoading(false)
-      }
-    }
+
     getMessages()
   }, [])
-
+  const getMessages = async () => {
+    setLoading(true)
+    try {
+      const response = await getAllMessagesByChatId(
+        userData.token,
+        route.params.chatId,
+        offset,
+        limit
+      )
+      setMessages(response.messages)
+      setLoading(false)
+    } catch (error) {
+      setError(true)
+      setNotification('Lấy tin nhắn thất bại')
+    } finally {
+      setLoading(false)
+    }
+  }
   useEffect(() => {
     socket.on('receiveMessage', (message: Messages) => {
       setMessages((prevMessages) => [...prevMessages, message])
@@ -209,7 +227,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         flatListRef.current.scrollToEnd({ animated: true })
       }
     )
-
     return () => {
       keyboardDidShowListener.remove()
     }
@@ -434,12 +451,19 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
       <FlatList
         ref={flatListRef}
+        onContentSizeChange={() => {
+          flatListRef.current.scrollToEnd({ animated: true })
+        }}
         showsVerticalScrollIndicator={false}
         data={messages}
         keyExtractor={(item) => item.messageId.toString()}
         style={styles.chatContainer}
         contentContainerStyle={styles.chatContent}
         renderItem={renderMessage}
+        onStartReached={() => {
+          console.log('onStartReached')
+        }}
+        onStartReachedThreshold={0.1}
       />
 
       <FlatList

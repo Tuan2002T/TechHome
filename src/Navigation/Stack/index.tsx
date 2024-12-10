@@ -19,6 +19,7 @@ import Facilities from '../../screens/App/Service/Facilities'
 import Payment from '../../screens/App/Payment'
 import BookingServiceList from '../../screens/App/Service/BookingServiceList/BookingServiceList'
 import ChatBot from '../../screens/App/Chatbot'
+import Events from '../../screens/App/Events'
 
 const Stack = createStackNavigator()
 
@@ -116,6 +117,11 @@ function TabScreens() {
       <Stack.Screen
         name="ChatBot"
         component={ChatBot}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Events"
+        component={Events}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
