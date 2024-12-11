@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   StyleSheet,
   Text,
@@ -169,7 +169,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
   useEffect(() => {
     socket.on('receiveMessage', (message: Messages) => {
       setMessages((prevMessages) => [...prevMessages, message])
-      flatListRef.current.scrollToEnd({ animated: true })
+      // flatListRef.current.scrollToEnd({ animated: true })
     })
     socket.on('deleteMessage', (messageId) => {
       setMessages((prevMessages) =>
@@ -194,7 +194,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         setMessages((prevMessages) => [...prevMessages, response])
         setInputText('')
         setListMedia([])
-        flatListRef.current.scrollToEnd({ animated: true })
+        // flatListRef.current.scrollToEnd({ animated: true })
       } else {
         setError(true)
         setNotification('Gửi tin nhắn thất bại')
@@ -218,11 +218,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       )
 
       if (response) {
-        socket.emit('sendMessage', response, route.params.chatId)
         setMessages((prevMessages) => [...prevMessages, response])
+
+        socket.emit('sendMessage', response, route.params.chatId)
         setInputText('')
         setListMedia([])
-        flatListRef.current.scrollToEnd({ animated: true })
+        // flatListRef.current.scrollToEnd({ animated: true })
       } else {
         setError(true)
         setNotification('Gửi tin nhắn thất bại')
@@ -238,7 +239,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        flatListRef.current.scrollToEnd({ animated: true })
+        // flatListRef.current.scrollToEnd({ animated: true })
       }
     )
     return () => {
@@ -259,11 +260,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     Linking.openURL(fileUrl)
   }
 
-  const renderFileContent = (file: Files) => {
+  const renderFileContent = useCallback((file: Files) => {
     if (file.fileType.includes('image')) {
       return (
         <Image
-          key={file.fileId}
           source={{ uri: file.fileUrl }}
           style={styles.messageImage}
           resizeMode="cover"
@@ -271,7 +271,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       )
     } else if (file.fileType.includes('video')) {
       return (
-        <View key={file.fileId} style={styles.videoContainer}>
+        <View style={styles.videoContainer}>
           <Video
             source={{ uri: file.fileUrl }}
             style={styles.videoPlayer}
@@ -287,7 +287,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     } else {
       return (
         <TouchableOpacity
-          key={file.fileId}
           style={styles.documentContainer}
           onPress={() => handleFilePress(file.fileUrl)}
         >
@@ -298,7 +297,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         </TouchableOpacity>
       )
     }
-  }
+  }, [])
 
   const renderMessage = ({ item, index }: any) => {
     const isCurrentUser = checkUser(item.senderId)
@@ -311,23 +310,26 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     const isLastInSequence =
       isLastMessage || nextMessageSenderId !== item.senderId
 
+    const handlePress = () => {
+      if (item.Files.length > 0) {
+        if (item.Files[0].fileType.includes('image')) {
+          openImageViewer(item.Files[0].fileUrl, 'image')
+        } else if (item.Files[0].fileType.includes('video')) {
+          openImageViewer(item.Files[0].fileUrl, 'video')
+        }
+      }
+    }
+
+    const handleLongPress = () => {
+      setModalVisible(true)
+      setMessageAction(item.messageId)
+      toggleModal()
+    }
+
     return (
       <TouchableOpacity
-        onLongPress={() => {
-          setModalVisible(true)
-          setMessageAction(item.messageId)
-
-          toggleModal()
-        }}
-        onPress={() => {
-          if (item.Files.length > 0) {
-            if (item.Files[0].fileType.includes('image')) {
-              openImageViewer(item.Files[0].fileUrl, 'image')
-            } else if (item.Files[0].fileType.includes('video')) {
-              openImageViewer(item.Files[0].fileUrl, 'video')
-            }
-          }
-        }}
+        onLongPress={handleLongPress}
+        onPress={handlePress}
         style={styles.messageWrapper}
       >
         <View
@@ -492,9 +494,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
       <FlatList
         ref={flatListRef}
-        onContentSizeChange={() => {
-          flatListRef.current.scrollToEnd({ animated: true })
-        }}
+        // onContentSizeChange={() => {
+        //   flatListRef.current.scrollToEnd({ animated: true })
+        // }}
         showsVerticalScrollIndicator={false}
         data={messages}
         keyExtractor={(item) => item.messageId.toString()}
