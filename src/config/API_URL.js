@@ -1,5 +1,5 @@
-// const BASE_URL = 'http://192.168.2.23:3000'
-const BASE_URL = 'https://d2a1-116-111-185-128.ngrok-free.app'
+const BASE_URL = 'http://192.168.2.23:3000'
+// const BASE_URL = 'https://d2a1-116-111-185-128.ngrok-free.app'
 
 const API_URL = `${BASE_URL}/resident`
 const API_CHAT_URL = `${BASE_URL}/chat`
