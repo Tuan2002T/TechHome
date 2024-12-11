@@ -170,6 +170,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     socket.on('receiveMessage', (message: Messages) => {
       setMessages((prevMessages) => [...prevMessages, message])
       // flatListRef.current.scrollToEnd({ animated: true })
+      scrollToBottom()
     })
     socket.on('deleteMessage', (messageId) => {
       setMessages((prevMessages) =>
@@ -195,6 +196,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         setInputText('')
         setListMedia([])
         // flatListRef.current.scrollToEnd({ animated: true })
+        scrollToBottom()
       } else {
         setError(true)
         setNotification('Gửi tin nhắn thất bại')
@@ -224,6 +226,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         setInputText('')
         setListMedia([])
         // flatListRef.current.scrollToEnd({ animated: true })
+        scrollToBottom()
       } else {
         setError(true)
         setNotification('Gửi tin nhắn thất bại')
@@ -444,6 +447,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
   const closeImageViewer = () => {
     setImageViewerVisible(false)
+  }
+
+  const scrollToBottom = () => {
+    if (flatListRef != null && flatListRef.current != null) {
+      flatListRef.current.scrollToEnd({ animated: true })
+    }
   }
 
   return (
