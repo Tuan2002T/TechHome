@@ -8,7 +8,6 @@ import {
   FlatList,
   Image,
   Keyboard,
-  Platform,
   SafeAreaView,
   StatusBar,
   Linking
@@ -36,6 +35,7 @@ import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
 import MessageActionModal from '../../../Modal/ActionMessage/ActionMessage'
 import Clipboard from '@react-native-clipboard/clipboard'
+import ImageViewerModal from '../Component/ImageViewerModal'
 
 interface Files {
   id: string
@@ -152,6 +152,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       setLoading(false)
     }
   }
+  const getMessagesAdd = async (offset, limit) => {
+    try {
+      const response = await getAllMessagesByChatId(
+        userData.token,
+        route.params.chatId,
+        offset,
+        limit
+      )
+      setMessages((prevMessages) => [...prevMessages, ...response.messages])
+    } catch (error) {
+      setNotification('Lấy tin nhắn thất bại')
+    } finally {
+    }
+  }
   useEffect(() => {
     socket.on('receiveMessage', (message: Messages) => {
       setMessages((prevMessages) => [...prevMessages, message])
@@ -261,10 +275,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
           <Video
             source={{ uri: file.fileUrl }}
             style={styles.videoPlayer}
-            controls={true}
+            controls={false}
             paused={true}
             resizeMode="cover"
-            poster="https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
           />
           <View style={styles.videoOverlay}>
             <MaterialIcon name="play-circle-filled" size={50} color="white" />
@@ -305,6 +318,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
           setMessageAction(item.messageId)
 
           toggleModal()
+        }}
+        onPress={() => {
+          if (item.Files.length > 0) {
+            if (item.Files[0].fileType.includes('image')) {
+              openImageViewer(item.Files[0].fileUrl, 'image')
+            } else if (item.Files[0].fileType.includes('video')) {
+              openImageViewer(item.Files[0].fileUrl, 'video')
+            }
+          }
         }}
         style={styles.messageWrapper}
       >
@@ -408,6 +430,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     closeModal()
   }
 
+  const [isImageViewerVisible, setImageViewerVisible] = useState(false)
+  const [imageUri, setImageUri] = useState('')
+  const [typeViewer, setTypeViewer] = useState('')
+
+  const openImageViewer = (uri: string, type: string) => {
+    setImageUri(uri)
+    setTypeViewer(type)
+    setImageViewerVisible(true)
+  }
+
+  const closeImageViewer = () => {
+    setImageViewerVisible(false)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26938E" />
@@ -444,7 +480,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
             : 'Xin chào, ' + userData.user.fullname}
         </Text>
 
-        <TouchableOpacity style={styles.headerButton}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('FileList', { chatId: route.params.chatId })
+          }}
+          style={styles.headerButton}
+        >
           <Icon name="ellipsis-v" size={20} color="white" />
         </TouchableOpacity>
       </View>
@@ -462,6 +503,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
         renderItem={renderMessage}
         onStartReached={() => {
           console.log('onStartReached')
+          // setOffset(offset + limit)
+          // if (offset === 0) return
+          // getMessagesAdd(offset + limit, limit)
         }}
         onStartReachedThreshold={0.1}
       />
@@ -573,6 +617,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
           messages.filter((item) => item.messageId === mesageAction)[0]
             ?.senderId
         }
+      />
+      <ImageViewerModal
+        isVisible={isImageViewerVisible}
+        imageUri={
+          imageUri ||
+          'https://techhomearchive.s3.ap-southeast-1.amazonaws.com/defautavatar.jpg'
+        }
+        onClose={closeImageViewer}
+        type={typeViewer}
       />
     </SafeAreaView>
   )
@@ -764,6 +817,16 @@ const styles = StyleSheet.create({
   videoPlayer: {
     width: '100%',
     height: '100%'
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)'
   }
 })
 

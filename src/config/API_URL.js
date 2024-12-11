@@ -1,4 +1,5 @@
-const BASE_URL = 'http://192.168.2.23:3000'
+// const BASE_URL = 'http://192.168.2.23:3000'
+const BASE_URL = 'https://d2a1-116-111-185-128.ngrok-free.app'
 
 const API_URL = `${BASE_URL}/resident`
 const API_CHAT_URL = `${BASE_URL}/chat`
@@ -19,6 +20,7 @@ const getResidentApartmentInfo_url = `${API_URL}/getResidentApartmentInfo`
 const getAllComplaints_url = `${API_URL}/getAllComplaints`
 const getAllChats_url = `${API_CHAT_URL}/getAllChats`
 const getAllMessagesByChatId_url = `${API_CHAT_URL}/getAllMessagesByChatId`
+const getAllFilesByChatId_url = `${API_CHAT_URL}/getAllFilesByChatId`
 const sendMessageAI_url = `${API_CHAT_URL}/sendChatBot`
 const sendMessages_url = `${API_CHAT_URL}/sendMessages`
 const deleteMessage_url = `${API_CHAT_URL}/deleteMessage`
@@ -31,6 +33,9 @@ const refreshToken_url = `${API_URL}/refreshToken`
 const createPayment_url = `${API_URL}/createPayment`
 const cancelledPayment_url = `${API_URL}/cancelledPayment`
 const bookingService_url = `${API_URL}/bookingService`
+const getBuildings_url = `${API_URL}/getBuildings`
+const getFloorsByBuildingId_url = `${API_URL}/getFloorsByBuildingId`
+const getApartmentsByFloorId_url = `${API_URL}/getApartmentsByFloorId`
 
 export default {
   login_url,
@@ -47,8 +52,12 @@ export default {
   readAllNotification_url,
   getResidentApartmentInfo_url,
   getAllComplaints_url,
+  getBuildings_url,
+  getFloorsByBuildingId_url,
+  getApartmentsByFloorId_url,
   getAllChats_url,
   getAllMessagesByChatId_url,
+  getAllFilesByChatId_url,
   sendMessages_url,
   deleteMessage_url,
   getAllBuildingServices_url,

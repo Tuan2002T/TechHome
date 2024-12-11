@@ -20,6 +20,7 @@ import Payment from '../../screens/App/Payment'
 import BookingServiceList from '../../screens/App/Service/BookingServiceList/BookingServiceList'
 import ChatBot from '../../screens/App/Chatbot'
 import Events from '../../screens/App/Events'
+import FileList from '../../screens/App/FileList'
 
 const Stack = createStackNavigator()
 
@@ -122,6 +123,11 @@ function TabScreens() {
       <Stack.Screen
         name="Events"
         component={Events}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FileList"
+        component={FileList}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

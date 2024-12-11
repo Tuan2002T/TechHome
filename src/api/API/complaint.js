@@ -109,3 +109,75 @@ export const deleteComplaint = async (token, complaintId) => {
     }
   }
 }
+
+export const getBuildings = async (token) => {
+  try {
+    console.log(token)
+
+    const response = await axios.get(API.getBuildings_url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    console.log('123', response.data)
+
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response)
+    } else if (error.request) {
+      console.log(error.request)
+    } else {
+      console.log(error.message)
+    }
+  }
+}
+
+export const getFloorsByBuildingId = async (token, buildingId) => {
+  try {
+    const response = await axios.get(
+      `${API.getFloorsByBuildingId_url}/${buildingId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    console.log(response.data)
+
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response)
+    } else if (error.request) {
+      console.log(error.request)
+    } else {
+      console.log(error.message)
+    }
+  }
+}
+
+export const getApartmentsByFloorId = async (token, floorId) => {
+  try {
+    const response = await axios.get(
+      `${API.getApartmentsByFloorId_url}/${floorId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response)
+    } else if (error.request) {
+      console.log(error.request)
+    } else {
+      console.log(error.message)
+    }
+  }
+}

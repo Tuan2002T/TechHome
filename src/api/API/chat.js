@@ -84,6 +84,24 @@ export const sendMessages = async (token, chatId, message) => {
   }
 }
 
+export const getFiles = async (token, chatId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL.getAllFilesByChatId_url}/${chatId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const deleteMessage = async (token, messageId) => {
   try {
     const response = await axios.delete(
