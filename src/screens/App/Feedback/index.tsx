@@ -254,19 +254,11 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
       >
         <SpeedDial.Action
           icon={{ name: 'add', color: '#fff' }}
-          title="Add"
+          title="Gửi ý kiến"
           onPress={() => {
-            setModalVisible(true), setOpen(!open)
+            setModalVisible(true)
+            setOpen(!open)
           }}
-          buttonStyle={{
-            backgroundColor: '#32AE63',
-            borderRadius: 25
-          }}
-        />
-        <SpeedDial.Action
-          icon={{ name: 'delete', color: '#fff' }}
-          title="Delete"
-          onPress={() => console.log('Delete Something')}
           buttonStyle={{
             backgroundColor: '#32AE63',
             borderRadius: 25

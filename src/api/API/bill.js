@@ -42,3 +42,24 @@ export const createBill = async (token, data) => {
     }
   }
 }
+
+export const getBills = async (token) => {
+  try {
+    const response = await axios.get(API.getBills_url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.data.message || 'Something went wrong')
+    } else if (error.request) {
+      console.log('No response received from the server')
+    } else {
+      console.log(error.message)
+    }
+  }
+}

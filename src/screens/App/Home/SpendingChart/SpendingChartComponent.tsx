@@ -1,41 +1,50 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Text, View, StyleSheet, Animated, Easing } from 'react-native'
 import { PieChart, PieChartData } from 'react-native-gifted-charts'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { getBills } from '../../../../api/API/bill'
 
 const SpendingChartComponent: React.FC = () => {
   const { t } = useTranslation()
+  const { userData } = useSelector((state: any) => state.auth)
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0)).current
   const legendAnim = useRef(new Animated.Value(0)).current
+  const [data, setData] = useState<PieChartData[]>([])
 
-  const pieData: PieChartData[] = [
-    {
-      value: 47,
-      color: '#009FFF',
-      gradientCenterColor: '#006DFF',
-      focused: true,
-      shiftRadius: 3
-    },
-    {
-      value: 40,
-      color: '#93FCF8',
-      gradientCenterColor: '#3BE9DE',
-      shiftRadius: 2
-    },
-    {
-      value: 16,
-      color: '#BDB2FA',
-      gradientCenterColor: '#8F80F3',
-      shiftRadius: 2
-    },
-    {
-      value: 3,
-      color: '#FFA5BA',
-      gradientCenterColor: '#FF7F97',
-      shiftRadius: 2
+  useEffect(() => {
+    getBillTotal()
+  }, [])
+
+  const getBillTotal = async () => {
+    try {
+      const response = await getBills(userData.token)
+
+      if (response?.total && Array.isArray(response.total)) {
+        const parsedData = response.total.map((item: any) => ({
+          value: parseFloat(item.percentage),
+          color: getRandomColor(),
+          name: item.billName
+        }))
+        setData(parsedData)
+      } else {
+        console.log('Invalid data structure:', response)
+        setData([])
+      }
+    } catch (error) {
+      console.log('Error fetching bills:', error)
     }
-  ]
+  }
+
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF'
+    let color = '#'
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)]
+    }
+    return color
+  }
 
   useEffect(() => {
     Animated.sequence([
@@ -86,22 +95,14 @@ const SpendingChartComponent: React.FC = () => {
           }
         ]}
       >
-        <View style={styles.legendItem}>
-          {renderDot('#009FFF')}
-          <Text style={styles.legendText}>Tiền điện: 47%</Text>
-        </View>
-        <View style={styles.legendItem}>
-          {renderDot('#3BE9DE')}
-          <Text style={styles.legendText}>Phí DV: 40%</Text>
-        </View>
-        <View style={styles.legendItem}>
-          {renderDot('#8F80F3')}
-          <Text style={styles.legendText}>Rác: 16%</Text>
-        </View>
-        <View style={styles.legendItem}>
-          {renderDot('#FF7F97')}
-          <Text style={styles.legendText}>Khác: 3%</Text>
-        </View>
+        {data.map((item, index) => (
+          <View key={index} style={styles.legendItem}>
+            {renderDot(item.color)}
+            <Text
+              style={styles.legendText}
+            >{`${item.name}: ${item.value}%`}</Text>
+          </View>
+        ))}
       </Animated.View>
     )
   }
@@ -120,7 +121,7 @@ const SpendingChartComponent: React.FC = () => {
             ]}
           >
             <PieChart
-              data={pieData}
+              data={data}
               donut
               showGradient
               sectionAutoFocus
@@ -134,8 +135,7 @@ const SpendingChartComponent: React.FC = () => {
               centerLabelComponent={() => {
                 return (
                   <View style={styles.centerLabel}>
-                    <Text style={styles.centerLabelText}>47%</Text>
-                    <Text style={styles.centerLabelSubText}>Điện</Text>
+                    <Text style={styles.centerLabelText}>Total</Text>
                   </View>
                 )
               }}
@@ -194,11 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: 'white',
     fontWeight: 'bold'
-  },
-  centerLabelSubText: {
-    fontSize: 14,
-    color: '#93FCF8',
-    marginTop: 2
   },
   legendContainer: {
     flex: 1,

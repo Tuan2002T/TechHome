@@ -19,7 +19,6 @@ import Notification from '../../../Modal/Notification/notification.tsx'
 import { CommonActions, NavigationProp } from '@react-navigation/native'
 import requestUserPermission from '../../../FireBase/NotificationPush.js'
 import { socket } from '../../../Socket/socket.js'
-import DropDown from '../Custom/DropDownPicker.tsx'
 import { setRememberMe } from '../../../redux/Slice/userSlice.js'
 import { updateTokenFCM } from '../../../api/API/user.js'
 

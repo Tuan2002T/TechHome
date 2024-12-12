@@ -37,6 +37,7 @@ const getBuildings_url = `${API_URL}/getBuildings`
 const getFloorsByBuildingId_url = `${API_URL}/getFloorsByBuildingId`
 const getApartmentsByFloorId_url = `${API_URL}/getApartmentsByFloorId`
 const getAllEvents_url = `${API_URL}/getAllEvents`
+const getBills_url = `${API_URL}/getBills`
 
 export default {
   login_url,
@@ -71,5 +72,6 @@ export default {
   cancelledPayment_url,
   sendMessageAI_url,
   getAllEvents_url,
+  getBills_url,
   API_SOCKET
 }

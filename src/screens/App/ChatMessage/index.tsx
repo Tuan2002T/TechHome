@@ -263,10 +263,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     Linking.openURL(fileUrl)
   }
 
-  const renderFileContent = useCallback((file: Files) => {
+  const renderFileContent = useCallback((file: Files, index) => {
     if (file.fileType.includes('image')) {
       return (
         <Image
+          key={index}
           source={{ uri: file.fileUrl }}
           style={styles.messageImage}
           resizeMode="cover"
@@ -274,7 +275,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
       )
     } else if (file.fileType.includes('video')) {
       return (
-        <View style={styles.videoContainer}>
+        <View key={index} style={styles.videoContainer}>
           <Video
             source={{ uri: file.fileUrl }}
             style={styles.videoPlayer}
@@ -290,6 +291,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
     } else {
       return (
         <TouchableOpacity
+          key={index}
           style={styles.documentContainer}
           onPress={() => handleFilePress(file.fileUrl)}
         >
@@ -384,7 +386,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ navigation, route }) => {
 
             {item.Files && item.Files.length > 0 && (
               <View style={styles.filesContainer}>
-                {item.Files.map((file) => renderFileContent(file))}
+                {item.Files.map((file, index) =>
+                  renderFileContent(file, index)
+                )}
               </View>
             )}
 

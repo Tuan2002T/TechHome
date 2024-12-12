@@ -21,7 +21,7 @@ import BookingServiceList from '../../screens/App/Service/BookingServiceList/Boo
 import ChatBot from '../../screens/App/Chatbot'
 import Events from '../../screens/App/Events'
 import FileList from '../../screens/App/FileList'
-
+import FlashMessage from 'react-native-flash-message'
 const Stack = createStackNavigator()
 
 function TabScreens() {
@@ -138,6 +138,7 @@ export default function Stacks() {
   return (
     <NavigationContainer>
       <TabScreens />
+      <FlashMessage position="top" />
     </NavigationContainer>
   )
 }

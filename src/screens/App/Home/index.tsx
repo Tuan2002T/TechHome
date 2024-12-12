@@ -14,6 +14,8 @@ import { getAllBills } from '../../../api/API/bill.js'
 import { createPayment } from '../../../api/API/payment.js'
 import Notification from '../../../Modal/Notification/notification.tsx'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
+import { socket } from '../../../Socket/socket.js'
+import { showMessage } from 'react-native-flash-message'
 
 interface HomeProps {
   navigation: NavigationProp<any>
@@ -42,6 +44,15 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   useEffect(() => {
     getTotalBills()
   }, [])
+  useEffect(() => {
+    socket.on('notification', (message) => {
+      showMessage({
+        message: 'Bạn có thông báo mới',
+        description: 'Tin nhắn từ phòng chat',
+        type: 'success'
+      })
+    })
+  }, [socket])
   const getTotalBills = async () => {
     try {
       const response = await getAllBills(userData.token)
