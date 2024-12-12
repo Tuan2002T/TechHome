@@ -53,29 +53,51 @@ const EventCard: React.FC<EventCardProps> = ({ item, onPress }) => {
     return `${day}/${month}/${year} - ${time} `
   }
 
+  const isEventPast = (eventDate: string): boolean => {
+    const currentDate = new Date()
+    const eventDateTime = new Date(eventDate)
+    return eventDateTime < currentDate
+  }
+
+  const isPastEvent = isEventPast(item.eventDate) // Check if the event is in the past
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
-      <Card style={styles.eventItem}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.cardContainer, isPastEvent && styles.fadedCard]}
+    >
+      <Card style={[styles.eventItem, isPastEvent && styles.fadedCard]}>
         <Card.Content>
           <View style={styles.cardHeader}>
-            <Title style={styles.eventTitle}>{item.eventName}</Title>
+            <Title style={[styles.eventTitle, isPastEvent && styles.fadedText]}>
+              {item.eventName}
+            </Title>
           </View>
 
           <View style={styles.eventDetailsContainer}>
             <View style={styles.eventDetailRow}>
               <Calendar size={20} color="#1a73e8" style={styles.icon} />
-              <Text style={styles.eventDetails}>
+              <Text
+                style={[styles.eventDetails, isPastEvent && styles.fadedText]}
+              >
                 {formatDate(item.eventDate)}
               </Text>
             </View>
 
             <View style={styles.eventDetailRow}>
               <MapPin size={20} color="#4CAF50" style={styles.icon} />
-              <Text style={styles.eventDetails}>{item.eventLocation}</Text>
+              <Text
+                style={[styles.eventDetails, isPastEvent && styles.fadedText]}
+              >
+                {item.eventLocation}
+              </Text>
             </View>
           </View>
 
-          <Text style={styles.eventDescription} numberOfLines={2}>
+          <Text
+            style={[styles.eventDescription, isPastEvent && styles.fadedText]}
+            numberOfLines={2}
+          >
             {item.eventDescription}
           </Text>
         </Card.Content>
@@ -110,7 +132,12 @@ const Events: React.FC<EventsProps> = ({ navigation }) => {
         apartmentDetailsData.building.id
       )
       setLoading(false)
-      setEvents(response)
+      // Sort the events by eventDate, newest first
+      const sortedEvents = response.sort(
+        (a: Event, b: Event) =>
+          new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
+      )
+      setEvents(sortedEvents)
     } catch (error) {
       setLoading(false)
       setError(true)
@@ -201,6 +228,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3
   },
+  fadedCard: {
+    opacity: 1
+  },
   cardHeader: {
     marginBottom: 8,
     borderBottomWidth: 1,
@@ -212,6 +242,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center'
+  },
+  fadedText: {
+    color: '#bbb'
   },
   eventDetailsContainer: {
     flexDirection: 'row',

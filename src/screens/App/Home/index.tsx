@@ -52,6 +52,14 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         type: 'success'
       })
     })
+
+    socket.on('notificationPayment', (message) => {
+      showMessage({
+        message: 'Bạn có thông báo mới',
+        description: 'Thanh toán hóa đơn thanh công',
+        type: 'success'
+      })
+    })
   }, [socket])
   const getTotalBills = async () => {
     try {

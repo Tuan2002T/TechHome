@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -16,9 +16,10 @@ import QRCode from 'react-native-qrcode-svg'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import IconFA from 'react-native-vector-icons/FontAwesome5'
 import Clipboard from '@react-native-clipboard/clipboard'
-import { NavigationProp } from '@react-navigation/native'
+import { CommonActions, NavigationProp } from '@react-navigation/native'
 import { cancelledPayment } from '../../../api/API/payment'
 import { useSelector } from 'react-redux'
+import { socket } from '../../../Socket/socket'
 
 const { width } = Dimensions.get('window')
 
@@ -66,13 +67,22 @@ const Payment = ({ navigation, route }) => {
   const [paymentLink, setPaymentLink] = useState<PaymentLink>(
     route.params.response.paymentLink
   )
-  console.log(route.params.response.paymentLink)
+  useEffect(() => {
+    socket.on('notificationPayment', (message) => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Home' }]
+        })
+      )
+    })
+  }, [socket])
 
   const paymentDetails = {
     recipientName: paymentLink.accountName,
     amount: paymentLink.amount,
     content: paymentLink.description,
-    bankName: 'Vietcombank',
+    bankName: 'ACB Bank',
     accountNumber: paymentLink.accountNumber,
     qrContent: paymentLink.qrCode
   }

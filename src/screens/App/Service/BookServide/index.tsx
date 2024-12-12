@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux'
 import SpinnerLoading from '../../../../Spinner/spinnerloading'
 import Notification from '../../../../Modal/Notification/notification'
 import { createPayment } from '../../../../api/API/payment'
+import { getAllBuildingServices } from '../../../../api/API/service'
 
 interface Service {
   id: number
@@ -57,6 +58,26 @@ export default function BookService({ navigation, route }: BookServiceProps) {
   const { userData } = useSelector((state: any) => state.auth)
 
   const [service, setService] = React.useState<Service>(route.params.item)
+  const [data, setData] = React.useState<Service[]>([])
+
+  useEffect(() => {
+    getAllService()
+  }, [])
+  const getAllService = async () => {
+    try {
+      const response = await getAllBuildingServices(userData.token)
+      response.buildingServices.map((item: Service) => {
+        console.log('Item:', item.serviceId)
+
+        if (item.serviceId == service.id) {
+          service.price = item.servicePrice
+        }
+      })
+      setData(response.buildingServices)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const handleBookingService = async () => {
     setLoading(true)
@@ -91,7 +112,12 @@ export default function BookService({ navigation, route }: BookServiceProps) {
       setLoading(false)
     }
   }
-
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount)
+  }
   const ServiceInfoRow = ({ icon, title, value }: ServiceInfoRow) => (
     <View style={styles.infoRow}>
       <FeatherIcon
@@ -134,7 +160,7 @@ export default function BookService({ navigation, route }: BookServiceProps) {
         </View>
 
         <Text style={styles.title}>{service.name}</Text>
-        <Text style={styles.price}>{service.price}</Text>
+        <Text style={styles.price}>{formatCurrency(service.price)}</Text>
 
         <Text style={styles.description}>{service.description}</Text>
 

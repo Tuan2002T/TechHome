@@ -24,8 +24,6 @@ function Authentication({ navigation }) {
 
   const rememberMe = useSelector((state: any) => state.auth.rememberMe)
 
-  console.log(rememberMe)
-
   useEffect(() => {
     if (rememberMe) {
       socket.emit('userOnline', userData.user.userId)

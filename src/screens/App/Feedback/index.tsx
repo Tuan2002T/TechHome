@@ -109,6 +109,11 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   }, [])
 
   const handleSendComplaint = async () => {
+    if (!complaintTitle.trim() || !complaintDescription.trim()) {
+      alert('Vui lòng nhập đầy đủ Tiêu đề và Nội dung.')
+      return
+    }
+
     try {
       const data = {
         complaintTitle: complaintTitle,
@@ -138,10 +143,9 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
   const handleDeleteComplaint = async (complaintId: string) => {
     try {
       const response = await deleteComplaint(userData.token, complaintId)
-      console.log(response)
 
       setComplaintPedding(
-        complaints.filter((item) => item.complaintId !== complaintId)
+        complaintPedding.filter((item) => item.complaintId !== complaintId)
       )
     } catch (error) {
       console.error('Error:', error)
