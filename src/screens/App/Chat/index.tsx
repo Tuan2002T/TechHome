@@ -56,7 +56,7 @@ const ChatList: React.FC<ChatListProps> = ({ navigation }) => {
     setLoading(true)
     try {
       const response = await getAllChats(userData.token)
-      setChats(response)
+      setChats(response.data)
     } catch (error) {
       setError(true)
       setNotification('Lấy danh sách cuộc trò chuyện thất bại')

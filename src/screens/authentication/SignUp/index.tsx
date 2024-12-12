@@ -28,7 +28,7 @@ function SignUp({ navigation }) {
     try {
       const residentData = await getResidentNoActiveByIdcard(idcard)
       setResidentData(residentData)
-
+      navigation.navigate('ActiveAccount', { residentData })
       setModalOTP(true)
       setLoading(false)
     } catch (error) {
@@ -53,12 +53,12 @@ function SignUp({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
-      <OTPInput
+      {/* <OTPInput
         loading={modalOTP}
         message={t('otp.title')}
         onClose={handleCloseOTPModal}
         onSubmit={handleSubmitOTP}
-      />
+      /> */}
       <SpinnerLoading loading={loading} />
       <Notification
         loading={error}

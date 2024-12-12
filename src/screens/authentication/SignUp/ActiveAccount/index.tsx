@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, ScrollView } from 'react-native'
+import { StyleSheet, Text, ScrollView, Alert, View } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import TextInputCustom from '../../Custom/TextInputCustom.tsx'
 import ButtonCustom from '../../Custom/ButtonCustom.tsx'
@@ -23,6 +23,7 @@ function ActiveAccount({ navigation, route }) {
   const [loading, setLoading] = useState(false)
   const [notification, setNotification] = useState('')
   const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const closeNotification = () => {
     setError(false)
@@ -38,7 +39,22 @@ function ActiveAccount({ navigation, route }) {
     }
   }, [residentData])
 
+  const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
   const handleActivate = async () => {
+    if (!fullname || !username || !email || !password) {
+      setErrorMessage('All fields are required')
+      return
+    }
+
+    if (!isEmailValid(email)) {
+      setErrorMessage('Please enter a valid email address')
+      return
+    }
+
     const activeData = {
       residentId: residentData.residentId,
       email,
@@ -119,6 +135,9 @@ function ActiveAccount({ navigation, route }) {
         value={password}
         onChangeText={setPassword}
       />
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
       <ButtonCustom
         title={t('active.activeAccount.button')}
         onPress={() => handleActivate()}
@@ -156,6 +175,11 @@ const styles = StyleSheet.create({
     color: '#94989B',
     marginLeft: 40,
     marginBottom: 45
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10
   }
 })
 

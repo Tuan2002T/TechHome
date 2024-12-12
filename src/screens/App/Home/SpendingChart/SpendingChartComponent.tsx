@@ -12,6 +12,8 @@ const SpendingChartComponent: React.FC = () => {
   const scaleAnim = useRef(new Animated.Value(0)).current
   const legendAnim = useRef(new Animated.Value(0)).current
   const [data, setData] = useState<PieChartData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     getBillTotal()
@@ -21,19 +23,29 @@ const SpendingChartComponent: React.FC = () => {
     try {
       const response = await getBills(userData.token)
 
-      if (response?.total && Array.isArray(response.total)) {
+      if (
+        response?.total &&
+        Array.isArray(response.total) &&
+        response.total.length > 0
+      ) {
         const parsedData = response.total.map((item: any) => ({
           value: parseFloat(item.percentage),
           color: getRandomColor(),
           name: item.billName
         }))
         setData(parsedData)
+        setIsLoading(false)
       } else {
-        console.log('Invalid data structure:', response)
+        console.log('No bill data available')
         setData([])
+        setIsLoading(false)
+        setError('Không có dữ liệu')
       }
     } catch (error) {
       console.log('Error fetching bills:', error)
+      setData([])
+      setIsLoading(false)
+      setError('Lỗi tải dữ liệu')
     }
   }
 
@@ -107,41 +119,65 @@ const SpendingChartComponent: React.FC = () => {
     )
   }
 
+  // Render view khi không có dữ liệu
+  const renderNoDataView = () => {
+    return (
+      <View style={styles.noDataContainer}>
+        <Text style={styles.noDataText}>{error || 'Không có dữ liệu'}</Text>
+      </View>
+    )
+  }
+
+  // Render view loading
+  const renderLoadingView = () => {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Đang tải...</Text>
+      </View>
+    )
+  }
+
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <View style={styles.chartContainer}>
         <Text style={styles.title}>{t('screen.home.dashboard.title')}</Text>
         <View style={styles.contentWrapper}>
-          <Animated.View
-            style={[
-              styles.pieChartContainer,
-              {
-                transform: [{ scale: scaleAnim }]
-              }
-            ]}
-          >
-            <PieChart
-              data={data}
-              donut
-              showGradient
-              sectionAutoFocus
-              radius={70}
-              innerRadius={40}
-              innerCircleColor={'#232B5D'}
-              strokeWidth={2}
-              strokeColor="#232B5D"
-              animate
-              animationDuration={1000}
-              centerLabelComponent={() => {
-                return (
-                  <View style={styles.centerLabel}>
-                    <Text style={styles.centerLabelText}>Total</Text>
-                  </View>
-                )
-              }}
-            />
-          </Animated.View>
-          {renderLegendComponent()}
+          {isLoading ? (
+            renderLoadingView()
+          ) : data.length > 0 ? (
+            <>
+              <Animated.View
+                style={[
+                  styles.pieChartContainer,
+                  {
+                    transform: [{ scale: scaleAnim }]
+                  }
+                ]}
+              >
+                <PieChart
+                  data={data}
+                  donut
+                  showGradient
+                  sectionAutoFocus
+                  radius={70}
+                  innerRadius={40}
+                  innerCircleColor={'#232B5D'}
+                  strokeWidth={2}
+                  strokeColor="#232B5D"
+                  animate
+                  animationDuration={1000}
+                  centerLabelComponent={() => (
+                    <View style={styles.centerLabel}>
+                      <Text style={styles.centerLabelText}>Total</Text>
+                    </View>
+                  )}
+                />
+              </Animated.View>
+              {renderLegendComponent()}
+            </>
+          ) : (
+            renderNoDataView()
+          )}
         </View>
       </View>
     </Animated.View>
@@ -225,6 +261,28 @@ const styles = StyleSheet.create({
     width: 5,
     borderRadius: 2.5,
     backgroundColor: 'rgba(255,255,255,0.4)'
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+  noDataText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+  loadingText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center'
   }
 })
 
