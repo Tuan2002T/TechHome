@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
 import ButtonCustom from '../../authentication/Custom/ButtonCustom'
 import { getAllBills } from '../../../api/API/bill'
 import { useSelector } from 'react-redux'
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, useFocusEffect } from '@react-navigation/native'
 import TableBill from './Component/table'
 import TableBillHistory from './Component/tablehistory'
 import { createPayment } from '../../../api/API/payment'
@@ -58,6 +58,7 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
   ]
 
   const getBills = async () => {
+    setLoading(true)
     try {
       const response = await getAllBills(userData.token)
       const unpaidBills = response.filter(
@@ -72,14 +73,27 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
       setSumTotal(totalUnpaid)
       setBills(unpaidBills)
       setHistory(paidBills)
+      setLoading(false)
     } catch (error) {
+      setError(true)
+      setNotification('Lấy danh sách hóa đơn thất bại')
+      setLoading(false)
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     getBills()
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      getBills()
+      return () => {}
+    }, [])
+  )
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -157,6 +171,7 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
           title={t('screen.bill.button')}
           buttonStyle={styles.payButton}
           titleStyle={{ color: 'white', fontSize: 15 }}
+          disabled={selectedItems.length === 0}
         />
       </View>
     </View>

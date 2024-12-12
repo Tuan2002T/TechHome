@@ -36,6 +36,7 @@ const bookingService_url = `${API_URL}/bookingService`
 const getBuildings_url = `${API_URL}/getBuildings`
 const getFloorsByBuildingId_url = `${API_URL}/getFloorsByBuildingId`
 const getApartmentsByFloorId_url = `${API_URL}/getApartmentsByFloorId`
+const getAllEvents_url = `${API_URL}/getAllEvents`
 
 export default {
   login_url,
@@ -69,5 +70,6 @@ export default {
   bookingService_url,
   cancelledPayment_url,
   sendMessageAI_url,
+  getAllEvents_url,
   API_SOCKET
 }

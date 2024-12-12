@@ -292,6 +292,7 @@ const Service: React.FC<ServiceProps> = ({ navigation }) => {
             <View key={item.id} style={styles.itemContainer}>
               <TouchableOpacity
                 style={styles.item}
+                disabled={item.id === '8'}
                 onPress={() =>
                   navigation.navigate('BookService', {
                     item: {
@@ -327,6 +328,7 @@ const Service: React.FC<ServiceProps> = ({ navigation }) => {
             <View key={item.id} style={styles.itemContainer}>
               <TouchableOpacity
                 style={styles.item}
+                disabled={item.id === '8'}
                 onPress={() =>
                   navigation.navigate('Facilities', {
                     item: {
