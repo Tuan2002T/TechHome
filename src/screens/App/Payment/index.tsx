@@ -20,6 +20,7 @@ import { CommonActions, NavigationProp } from '@react-navigation/native'
 import { cancelledPayment } from '../../../api/API/payment'
 import { useSelector } from 'react-redux'
 import { socket } from '../../../Socket/socket'
+import { showMessage } from 'react-native-flash-message'
 
 const { width } = Dimensions.get('window')
 
@@ -68,13 +69,22 @@ const Payment = ({ navigation, route }) => {
     route.params.response.paymentLink
   )
   useEffect(() => {
-    socket.on('notificationPayment', (message) => {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Home' }]
-        })
-      )
+    socket.on('webhookPayment', (message) => {
+      const navi =
+        navigation.getState().routes[navigation.getState().index].name
+      showMessage({
+        message: 'Bạn có thông báo mới',
+        description: message,
+        type: 'success'
+      })
+      if (navi === 'Payment') {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Tabs' }]
+          })
+        )
+      }
     })
   }, [socket])
 

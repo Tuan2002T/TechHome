@@ -201,32 +201,32 @@ const Notification: React.FC<NotificationProps> = ({ navigation }) => {
   const notificationsGrouped = renderNotifications()
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
-      <SafeAreaView style={styles.container}>
-        <SpinnerLoading loading={loading} />
-        <View style={styles.header}>
-          <FontAwesome6Icon
-            name="arrow-left"
-            size={25}
-            color="#FFFFFF"
-            onPress={() => navigation.goBack()}
-          />
-          <Text style={styles.headertitle}>Thông báo</Text>
-          <Text style={{ color: '#F7F7F7' }}> </Text>
-        </View>
-        <ScrollView style={styles.scrollbar}>
-          {Object.entries(notificationsGrouped).map(([date, notifications]) => (
-            <View key={date}>
-              <Text style={styles.dateLabel}>{date}</Text>
-              {notifications}
-            </View>
-          ))}
-        </ScrollView>
-        <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
-          <Ionicons name="checkmark-done" size={30} color="#FFFFFF" />
-        </TouchableOpacity>
-      </SafeAreaView>
-    </PullToRefresh>
+    // <PullToRefresh onRefresh={handleRefresh}>
+    <SafeAreaView style={styles.container}>
+      <SpinnerLoading loading={loading} />
+      <View style={styles.header}>
+        <FontAwesome6Icon
+          name="arrow-left"
+          size={25}
+          color="#FFFFFF"
+          onPress={() => navigation.goBack()}
+        />
+        <Text style={styles.headertitle}>Thông báo</Text>
+        <Text style={{ color: '#F7F7F7' }}> </Text>
+      </View>
+      <ScrollView style={styles.scrollbar}>
+        {Object.entries(notificationsGrouped).map(([date, notifications]) => (
+          <View key={date}>
+            <Text style={styles.dateLabel}>{date}</Text>
+            {notifications}
+          </View>
+        ))}
+      </ScrollView>
+      <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
+        <Ionicons name="checkmark-done" size={30} color="#FFFFFF" />
+      </TouchableOpacity>
+    </SafeAreaView>
+    // </PullToRefresh>
   )
 }
 

@@ -8,7 +8,11 @@ import { Button } from '@rneui/base'
 import { useSelector } from 'react-redux'
 import FloatingActionComponent from '../Component/FloatingActionComponent.tsx'
 import SpendingChartComponent from './SpendingChart/SpendingChartComponent.tsx'
-import { NavigationProp } from '@react-navigation/native'
+import {
+  CommonActions,
+  NavigationProp,
+  useFocusEffect
+} from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { getAllBills } from '../../../api/API/bill.js'
 import { createPayment } from '../../../api/API/payment.js'
@@ -44,6 +48,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   useEffect(() => {
     getTotalBills()
   }, [])
+
   useEffect(() => {
     socket.on('notification', (message) => {
       showMessage({
@@ -53,13 +58,9 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       })
     })
 
-    socket.on('notificationPayment', (message) => {
-      showMessage({
-        message: 'Bạn có thông báo mới',
-        description: 'Thanh toán hóa đơn thanh công',
-        type: 'success'
-      })
-    })
+    // socket.on('webhookPayment', (message) => {
+
+    // })
   }, [socket])
   const getTotalBills = async () => {
     try {

@@ -4,9 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { NavigationProp } from '@react-navigation/native'
-import { getResidentApartmentInfo } from '../../../api/API/info '
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
@@ -64,14 +62,6 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
   useEffect(() => {
     setApartmentDetails(apartmentDetailsData)
   }, [])
-
-  const handleDeleteMember = (name) => {
-    console.log(`Xóa thành viên: ${name}`)
-  }
-
-  const handleDeleteVehicle = (vehicle) => {
-    console.log(`Xóa phương tiện: ${vehicle}`)
-  }
 
   console.log(apartmentDetails)
 
@@ -197,7 +187,7 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({ navigation }) => {
                     {t('screen.home.aparment.vehicle.licensePlate')}:
                   </Text>
                   <Text style={styles.cardBodyContentText}>
-                    {apartmentDetails?.apartment.number}
+                    {apartmentDetails?.vehicle.number}
                   </Text>
                 </View>
               </View>
