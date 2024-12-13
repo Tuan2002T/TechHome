@@ -11,6 +11,7 @@ import { createPayment } from '../../../api/API/payment'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
 import { useTranslation } from 'react-i18next'
+import { socket } from '../../../Socket/socket'
 
 interface BillProps {
   navigation: NavigationProp<any>
@@ -42,6 +43,12 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
   const [total, setTotal] = useState(0)
   const [sumTotal, setSumTotal] = useState(0)
   const [selectedItems, setSelectedItems] = useState<BillItem[]>([])
+
+  useEffect(() => {
+    socket.on('webhookPayment', (message) => {
+      getBills()
+    })
+  }, [socket])
 
   const handleSelectionChange = (items: BillItem[]) => {
     if (items !== selectedItems) {

@@ -57,10 +57,27 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         type: 'success'
       })
     })
-
-    // socket.on('webhookPayment', (message) => {
-
-    // })
+    socket.on('notificationNotification', (notification) => {
+      showMessage({
+        message: 'Bạn có thông báo mới',
+        type: 'info',
+        duration: 3000
+      })
+    })
+    socket.on('notificationComplaint', (complaint) => {
+      showMessage({
+        message: 'Ý kiến của bạn đã được xử lý',
+        type: 'info',
+        duration: 3000
+      })
+    })
+    socket.on('notificationEvent', (event) => {
+      showMessage({
+        message: 'Sự kiện mới được tạo',
+        type: 'info',
+        duration: 3000
+      })
+    })
   }, [socket])
   const getTotalBills = async () => {
     try {

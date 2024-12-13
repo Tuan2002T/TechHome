@@ -19,6 +19,8 @@ import {
 } from '../../../api/API/complaint'
 import { useSelector } from 'react-redux'
 import DropDown from '../../authentication/Custom/DropDownPicker'
+import { socket } from '../../../Socket/socket'
+import { showMessage } from 'react-native-flash-message'
 
 interface Building {
   buildingId: string
@@ -107,6 +109,49 @@ const Feedback: React.FC<FeedbackProps> = ({ navigation }) => {
     getComplaints()
     complaintsBuidingsFloorsApartments()
   }, [])
+
+  useEffect(() => {
+    socket.on('notificationComplaint', (complaint) => {
+      console.log('complaint:', complaint.complaintStatus)
+
+      if (
+        complaint.complaintStatus === 'Pending' ||
+        complaint.complaintStatus === 'In Progress'
+      ) {
+        setComplaintHistory((prev) =>
+          prev.filter((item) => item.complaintId !== complaint.complaintId)
+        )
+        setComplaintPedding((prev) => {
+          const index = prev.findIndex(
+            (item) => item.complaintId === complaint.complaintId
+          )
+          if (index !== -1) {
+            const updatedList = [...prev]
+            updatedList[index] = complaint
+            return updatedList
+          } else {
+            return [...prev, complaint]
+          }
+        })
+      } else {
+        setComplaintPedding((prev) =>
+          prev.filter((item) => item.complaintId !== complaint.complaintId)
+        )
+        setComplaintHistory((prev) => {
+          const index = prev.findIndex(
+            (item) => item.complaintId === complaint.complaintId
+          )
+          if (index !== -1) {
+            const updatedList = [...prev]
+            updatedList[index] = complaint
+            return updatedList
+          } else {
+            return [...prev, complaint]
+          }
+        })
+      }
+    })
+  }, [socket])
 
   const handleSendComplaint = async () => {
     if (!complaintTitle.trim() || !complaintDescription.trim()) {

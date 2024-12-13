@@ -18,6 +18,8 @@ import { useSelector } from 'react-redux'
 import { NavigationProp } from '@react-navigation/native'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import PullToRefresh from 'react-native-pull-to-refresh'
+import { socket } from '../../../Socket/socket'
+import { showMessage } from 'react-native-flash-message'
 interface NotificationData {
   notificationId: string
   notificationTitle: string
@@ -44,6 +46,17 @@ const Notification: React.FC<NotificationProps> = ({ navigation }) => {
   useEffect(() => {
     fetchNotifications()
   }, [userData.token])
+
+  useEffect(() => {
+    socket.on('notificationNotification', (notification) => {
+      showMessage({
+        message: 'Bạn có thông báo mới',
+        type: 'info',
+        duration: 3000
+      })
+      setNotificationsData((prev) => [notification, ...prev])
+    })
+  }, [socket])
   const fetchNotifications = async () => {
     setLoading(true)
     try {

@@ -8,6 +8,7 @@ interface BillItem {
   billName: string
   billDate: string
   billAmount: string
+  billStatus: string
 }
 interface TableBillHistoryProps {
   data: BillItem[]
@@ -32,6 +33,14 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
       currency: 'VND'
     }).format(amount)
   }
+  const translateBillStatus = (status) => {
+    const statusTranslations = {
+      UNPAID: 'Chưa thanh toán',
+      PAID: 'Đã thanh toán',
+      CANCELLED: 'Đã hủy'
+    }
+    return statusTranslations[status]
+  }
   const renderItem = ({ item }: { item: BillItem }) => (
     <View style={styles.row}>
       <Text style={[styles.feeType, styles.text]}>{item.billName}</Text>
@@ -41,7 +50,10 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
       <Text style={[styles.amount, styles.text]}>
         {formatCurrency(item.billAmount)}
       </Text>
-      <View>
+      <Text style={[styles.amount, styles.text]}>
+        {translateBillStatus(item.billStatus)}
+      </Text>
+      {/* <View>
         <Checkbox
           color="#32AE63"
           uncheckedColor="#BDBDBD"
@@ -49,7 +61,7 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
           onPress={() => toggleCheckBox(item.billId)}
           disabled={true}
         />
-      </View>
+      </View> */}
     </View>
   )
 
@@ -64,6 +76,8 @@ const TableBillHistory: React.FC<TableBillHistoryProps> = ({ data }) => {
         <Text style={styles.feeType}>{t('screen.bill.table.type')}</Text>
         <Text style={styles.month}>{t('screen.bill.table.month')}</Text>
         <Text style={styles.amount}>{t('screen.bill.table.amount')}</Text>
+
+        <Text style={styles.status}>Trạng thái</Text>
       </View>
       <FlatList
         nestedScrollEnabled={true}
@@ -103,14 +117,18 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   feeType: {
-    width: '35%',
+    width: '28%',
     color: 'gray'
   },
   month: {
-    width: '30%',
+    width: '27%',
     color: 'gray'
   },
   amount: {
+    width: '25%',
+    color: 'gray'
+  },
+  status: {
     width: '25%',
     color: 'gray'
   },

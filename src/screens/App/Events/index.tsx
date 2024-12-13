@@ -13,6 +13,8 @@ import { getAllEvents } from '../../../api/API/events'
 import { useSelector } from 'react-redux'
 import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
+import { socket } from '../../../Socket/socket'
+import { showMessage } from 'react-native-flash-message'
 
 interface Event {
   eventId: string
@@ -124,6 +126,12 @@ const Events: React.FC<EventsProps> = ({ navigation }) => {
     getEvents()
   }, [])
 
+  useEffect(() => {
+    socket.on('notificationEvent', (event) => {
+      setEvents((prev) => [event, ...prev])
+    })
+  }, [socket])
+
   const getEvents = async () => {
     setLoading(true)
     try {
@@ -170,7 +178,7 @@ const Events: React.FC<EventsProps> = ({ navigation }) => {
 
       <FlatList
         data={events}
-        keyExtractor={(item) => item.eventId}
+        keyExtractor={(item, index) => `${item.eventId}-${index}`}
         renderItem={({ item }) => (
           <EventCard item={item} onPress={() => handleEventPress(item)} />
         )}
