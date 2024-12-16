@@ -54,7 +54,13 @@ const Notification: React.FC<NotificationProps> = ({ navigation }) => {
         type: 'info',
         duration: 3000
       })
-      setNotificationsData((prev) => [notification, ...prev])
+      const a = notificationsData.filter(
+        (notification1) =>
+          notification1.notificationId !== notification.notificationId
+      )
+      if (a) {
+        setNotificationsData((prev) => [notification, ...prev])
+      }
     })
   }, [socket])
   const fetchNotifications = async () => {
