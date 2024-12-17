@@ -22,6 +22,11 @@ import ChatBot from '../../screens/App/Chatbot'
 import Events from '../../screens/App/Events'
 import FileList from '../../screens/App/FileList'
 import FlashMessage from 'react-native-flash-message'
+import AddOutsourcingServiceScreen from '../../screens/App/OutsourcingService'
+import Advertisement from '../../screens/App/Advertisement'
+import ServiceAdvertisementScreen from '../../screens/App/ServiceAdvertisementScreen'
+import OutsourcingServiceUpdate from '../../screens/App/ServiceAdvertisementScreen/OutsourcingServiceUpdate'
+import AdvertisementUpdate from '../../screens/App/ServiceAdvertisementScreen/AdvertisementUpdate'
 const Stack = createStackNavigator()
 
 function TabScreens() {
@@ -128,6 +133,31 @@ function TabScreens() {
       <Stack.Screen
         name="FileList"
         component={FileList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddOutsourcingServiceScreen"
+        component={AddOutsourcingServiceScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Advertisement"
+        component={Advertisement}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ServiceAdvertisementScreen"
+        component={ServiceAdvertisementScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OutsourcingServiceUpdate"
+        component={OutsourcingServiceUpdate}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AdvertisementUpdate"
+        component={AdvertisementUpdate}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

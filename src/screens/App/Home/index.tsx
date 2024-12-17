@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { Button } from '@rneui/base'
 
 import { useSelector } from 'react-redux'
@@ -79,6 +81,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       })
     })
   }, [socket])
+
   const getTotalBills = async () => {
     try {
       const response = await getAllBills(userData.token)
@@ -139,6 +142,9 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       maximumFractionDigits: 0
     }).format(amount)
   }
+
+  const isServiceProvider = userData?.resident?.role === 'SERVICEPROVIDER'
+
   return (
     <ScrollView style={styles.scrollbar}>
       <StatusBar barStyle="light-content" backgroundColor="#26938E" />
@@ -149,71 +155,117 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         onClose={closeNotification}
       />
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View
+          style={[!isServiceProvider ? styles.header : styles.headerSerive]}
+        >
           <Text style={styles.name}>
             {t('screen.home.welcome')}, {userData.user.fullname}
           </Text>
         </View>
-        <View style={styles.notification}>
-          <Text style={styles.headerNotification}>
-            {t('screen.home.totalBills')}
-            {new Date().getMonth() + 1}/{new Date().getFullYear()}
-          </Text>
-          <Text style={styles.money}>{formatCurrency(total)}</Text>
-          <View style={styles.cbbutton}>
-            <Button
-              containerStyle={styles.button}
-              type="outline"
-              buttonStyle={styles.button}
-              titleStyle={styles.titlebutton}
-              title={t('screen.home.buttonDetail')}
-            />
-            <Button
-              onPress={handleCreatePayment}
-              containerStyle={styles.button}
-              type="outline"
-              disabled={total === 0}
-              buttonStyle={
-                total === 0
-                  ? { ...styles.button, backgroundColor: '#74747474' }
-                  : styles.button
-              }
-              titleStyle={styles.titlebutton}
-              title={t('screen.home.buttonPay')}
-            />
+
+        {!isServiceProvider && (
+          <View style={styles.notification}>
+            <Text style={styles.headerNotification}>
+              {t('screen.home.totalBills')}
+              {new Date().getMonth() + 1}/{new Date().getFullYear()}
+            </Text>
+            <Text style={styles.money}>{formatCurrency(total)}</Text>
+            <View style={styles.cbbutton}>
+              <Button
+                containerStyle={styles.button}
+                type="outline"
+                buttonStyle={styles.button}
+                titleStyle={styles.titlebutton}
+                title={t('screen.home.buttonDetail')}
+              />
+              <Button
+                onPress={handleCreatePayment}
+                containerStyle={styles.button}
+                type="outline"
+                disabled={total === 0}
+                buttonStyle={
+                  total === 0
+                    ? { ...styles.button, backgroundColor: '#74747474' }
+                    : styles.button
+                }
+                titleStyle={styles.titlebutton}
+                title={t('screen.home.buttonPay')}
+              />
+            </View>
           </View>
-        </View>
-
+        )}
         <View style={styles.floatActions}>
-          <FloatingActionComponent
-            icon={<FontAwesomeIcon name="home" size={35} color="#26938E" />}
-            title={t('screen.home.button.home')}
-            style={{}}
-            onPress={() => navigation.navigate('ApartmentDetails')}
-          />
-
-          <FloatingActionComponent
-            icon={<MaterialIcons name="event" size={33} color="#FF5722" />}
-            title={t('screen.home.button.event')}
-            style={{}}
-            onPress={() => navigation.navigate('Events')}
-          />
-
-          <FloatingActionComponent
-            icon={<Fontisto name="bell" size={24} color="#FFC107" />}
-            title={t('screen.home.button.notification')}
-            style={{}}
-            onPress={() => navigation.navigate('Notification')}
-          />
-
-          <FloatingActionComponent
-            icon={<FontAwesomeIcon name="send" size={30} color="#673AB7" />}
-            title={t('screen.home.button.sendFeedback')}
-            style={{}}
-            onPress={() => navigation.navigate('Feedback')}
-          />
+          {!isServiceProvider && (
+            <>
+              <FloatingActionComponent
+                icon={<FontAwesomeIcon name="home" size={35} color="#26938E" />}
+                title={t('screen.home.button.home')}
+                onPress={() => navigation.navigate('ApartmentDetails')}
+              />
+              <FloatingActionComponent
+                icon={<MaterialIcons name="event" size={33} color="#FF5722" />}
+                title={t('screen.home.button.event')}
+                onPress={() => navigation.navigate('Events')}
+              />
+              <FloatingActionComponent
+                icon={<Fontisto name="bell" size={24} color="#FFC107" />}
+                title={t('screen.home.button.notification')}
+                onPress={() => navigation.navigate('Notification')}
+              />
+              <FloatingActionComponent
+                icon={<FontAwesomeIcon name="send" size={30} color="#673AB7" />}
+                title={t('screen.home.button.sendFeedback')}
+                onPress={() => navigation.navigate('Feedback')}
+              />
+            </>
+          )}
+          {isServiceProvider && (
+            <>
+              <FloatingActionComponent
+                icon={
+                  <MaterialIcons name="add-box" size={35} color="#26938E" />
+                }
+                title="Thêm dịch vụ"
+                onPress={() =>
+                  navigation.navigate('AddOutsourcingServiceScreen')
+                }
+              />
+              <FloatingActionComponent
+                icon={
+                  <MaterialCommunityIcons
+                    name="advertisements"
+                    size={33}
+                    color="#FF5722"
+                  />
+                }
+                title="Thêm quảng cáo"
+                onPress={() => navigation.navigate('Advertisement')}
+              />
+              <FloatingActionComponent
+                icon={
+                  <FontAwesome5
+                    name="clipboard-list"
+                    size={30}
+                    color="#FFC107"
+                  />
+                }
+                title="Đơn hàng"
+                onPress={() => navigation.navigate('Notification')}
+              />
+              <FloatingActionComponent
+                icon={
+                  <FontAwesomeIcon name="th-list" size={30} color="#673AB7" />
+                }
+                title="Dich vụ và quảng cáo của bạn"
+                onPress={() =>
+                  navigation.navigate('ServiceAdvertisementScreen')
+                }
+              />
+            </>
+          )}
         </View>
-        <SpendingChartComponent />
+
+        {!isServiceProvider && <SpendingChartComponent />}
       </View>
     </ScrollView>
   )
@@ -233,6 +285,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#26938E',
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
+    alignItems: 'center'
+  },
+  headerSerive: {
+    width: '100%',
+    height: 130,
+    backgroundColor: '#26938E',
     alignItems: 'center'
   },
   name: {

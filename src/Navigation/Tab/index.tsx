@@ -13,17 +13,20 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Bill from '../../screens/App/Bill'
 import Profile from '../../screens/App/Profile'
 import Service from '../../screens/App/Service'
+import { useSelector } from 'react-redux'
 
 const Tab = createBottomTabNavigator()
 
 function Tabs() {
+  const { userData } = useSelector((state: any) => state.auth)
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
           backgroundColor: 'white',
           height: 60,
-          borderTopWidth: 0 // Remove the border
+          borderTopWidth: 0
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
@@ -113,16 +116,20 @@ function Tabs() {
         component={Home}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name="Chat"
-        component={Chat}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Service"
-        component={Service}
-        options={{ headerShown: false }}
-      />
+      {userData?.resident?.role !== 'SERVICEPROVIDER' && (
+        <Tab.Screen
+          name="Chat"
+          component={Chat}
+          options={{ headerShown: false }}
+        />
+      )}
+      {userData?.resident?.role !== 'SERVICEPROVIDER' && (
+        <Tab.Screen
+          name="Service"
+          component={Service}
+          options={{ headerShown: false }}
+        />
+      )}
       <Tab.Screen
         name="Bill"
         component={Bill}

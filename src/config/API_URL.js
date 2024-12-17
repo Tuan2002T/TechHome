@@ -4,6 +4,7 @@ const BASE_URL = 'http://192.168.2.23:3000'
 const API_URL = `${BASE_URL}/resident`
 const API_CHAT_URL = `${BASE_URL}/chat`
 const API_SOCKET = BASE_URL
+const API_ADVERTISEMENT_URL = `${BASE_URL}/advertisement`
 
 const login_url = `${API_URL}/login`
 const updateTokenFCM_url = `${API_URL}/updateTokenFCM`
@@ -38,6 +39,17 @@ const getFloorsByBuildingId_url = `${API_URL}/getFloorsByBuildingId`
 const getApartmentsByFloorId_url = `${API_URL}/getApartmentsByFloorId`
 const getAllEvents_url = `${API_URL}/getAllEvents`
 const getBills_url = `${API_URL}/getBills`
+//SERVICEPROVIDER
+const getAllAdvertisements_url = `${API_ADVERTISEMENT_URL}/getAllAdvertisements`
+const createAdvertisement_url = `${API_ADVERTISEMENT_URL}/createAdvertisement`
+const deleteAdvertisement_url = `${API_ADVERTISEMENT_URL}/deleteAdvertisement`
+const updateAdvertisement_url = `${API_ADVERTISEMENT_URL}/updateAdvertisement`
+
+//Our Services
+const getAllOutsourcingServices_url = `${API_ADVERTISEMENT_URL}/getAllOutsourcingServices`
+const createOutsourcingService_url = `${API_ADVERTISEMENT_URL}/createOutsourcingService`
+const deleteOutsourcingService_url = `${API_ADVERTISEMENT_URL}/deleteOutsourcingService`
+const updateOutsourcingService_url = `${API_ADVERTISEMENT_URL}/updateOutsourcingService`
 
 export default {
   login_url,
@@ -73,5 +85,17 @@ export default {
   sendMessageAI_url,
   getAllEvents_url,
   getBills_url,
+
+  //SERVICEPROVIDER
+  getAllAdvertisements_url,
+  createAdvertisement_url,
+  deleteAdvertisement_url,
+  updateAdvertisement_url,
+
+  //Our Services
+  getAllOutsourcingServices_url,
+  createOutsourcingService_url,
+  deleteOutsourcingService_url,
+  updateOutsourcingService_url,
   API_SOCKET
 }
