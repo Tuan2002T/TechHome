@@ -7,7 +7,8 @@ import {
   View,
   Image,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native'
 import Swiper from 'react-native-swiper'
 import Fontisto from 'react-native-vector-icons/Fontisto'
@@ -420,7 +421,13 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
                   />
                 }
                 title="Đơn hàng"
-                onPress={() => navigation.navigate('Notification')}
+                onPress={() =>
+                  showMessage({
+                    message: 'Chức năng đang phát triển',
+                    type: 'info',
+                    duration: 3000
+                  })
+                }
               />
               <FloatingActionComponent
                 icon={

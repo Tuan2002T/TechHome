@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { Text, Appbar, Button, Card } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -96,7 +97,15 @@ const OutsourcingServiceDetail: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={() => alert('Đặt dịch vụ thành công!')}
+            onPress={() =>
+              showMessage({
+                message: 'Đặt dịch vụ',
+                description: 'Chức năng đặt dịch vụ đang được phát triển',
+                type: 'info',
+                icon: 'info',
+                duration: 3000
+              })
+            }
             style={styles.bookButton}
             labelStyle={styles.bookButtonLabel}
           >
