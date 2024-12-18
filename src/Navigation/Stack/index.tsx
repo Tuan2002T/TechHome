@@ -27,6 +27,10 @@ import Advertisement from '../../screens/App/Advertisement'
 import ServiceAdvertisementScreen from '../../screens/App/ServiceAdvertisementScreen'
 import OutsourcingServiceUpdate from '../../screens/App/ServiceAdvertisementScreen/OutsourcingServiceUpdate'
 import AdvertisementUpdate from '../../screens/App/ServiceAdvertisementScreen/AdvertisementUpdate'
+import AdvertisementDetail from '../../screens/App/AdvertisementDetail'
+import AdvertisementList from '../../screens/App/AdvertisementList'
+import OutsourcingServiceList from '../../screens/App/OutsourcingServiceList'
+import OutsourcingServiceDetail from '../../screens/App/OutsourcingServiceDetail'
 const Stack = createStackNavigator()
 
 function TabScreens() {
@@ -158,6 +162,26 @@ function TabScreens() {
       <Stack.Screen
         name="AdvertisementUpdate"
         component={AdvertisementUpdate}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AdvertisementDetail"
+        component={AdvertisementDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AdvertisementList"
+        component={AdvertisementList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OutsourcingServiceList"
+        component={OutsourcingServiceList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OutsourcingServiceDetail"
+        component={OutsourcingServiceDetail}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

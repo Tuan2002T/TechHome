@@ -130,11 +130,13 @@ function Tabs() {
           options={{ headerShown: false }}
         />
       )}
-      <Tab.Screen
-        name="Bill"
-        component={Bill}
-        options={{ headerShown: false }}
-      />
+      {userData?.resident?.role !== 'SERVICEPROVIDER' && (
+        <Tab.Screen
+          name="Bill"
+          component={Bill}
+          options={{ headerShown: false }}
+        />
+      )}
       <Tab.Screen
         name="Profile"
         component={Profile}

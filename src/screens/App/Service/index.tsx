@@ -21,7 +21,7 @@ import { NavigationProp } from '@react-navigation/native'
 import { getAllBuildingServices } from '../../../api/API/service.js'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 interface ServiceProps {
   navigation: NavigationProp<any>
 }
@@ -347,6 +347,34 @@ const Service: React.FC<ServiceProps> = ({ navigation }) => {
             </View>
           ))}
         </View>
+      </View>
+      <View style={{ width: '90%' }}>
+        <Text style={styles.headerList}>Dịch vụ khác</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('OutsourcingServiceList')}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: 50,
+            backgroundColor: '#27A4F2',
+            borderRadius: 10,
+            marginTop: 10
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 17,
+              color: 'white',
+              fontWeight: 'bold',
+              marginRight: 10
+            }}
+          >
+            Đi đến trang dịch vụ khác
+          </Text>
+          <FontAwesome name="chevron-right" size={20} color="white" />
+        </TouchableOpacity>
       </View>
     </View>
   )

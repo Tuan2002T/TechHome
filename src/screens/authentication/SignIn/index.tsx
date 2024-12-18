@@ -36,6 +36,8 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [signInData, setSignInData] = useState<SignInData>({
     username: 'leminhcuong',
     password: 'pass3'
+    // username: 'dovane',
+    // password: 'pass5'
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)

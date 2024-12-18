@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  TouchableOpacity
+} from 'react-native'
+import Swiper from 'react-native-swiper'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -22,6 +32,7 @@ import Notification from '../../../Modal/Notification/notification.tsx'
 import SpinnerLoading from '../../../Spinner/spinnerloading.js'
 import { socket } from '../../../Socket/socket.js'
 import { showMessage } from 'react-native-flash-message'
+import { getAllAdvertisements } from '../../../api/API/advertisement.js'
 
 interface HomeProps {
   navigation: NavigationProp<any>
@@ -46,9 +57,11 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const { userData } = useSelector((state: any) => state.auth)
   const [total, setTotal] = useState(0)
   const [billIds, setBillIds] = useState<Number[]>([])
+  const [advertisements, setAdvertisements] = useState([])
 
   useEffect(() => {
     getTotalBills()
+    getAdvertisement()
   }, [])
 
   useEffect(() => {
@@ -105,6 +118,21 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       })
       setBillIds(billIds)
       setTotal(total)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getAdvertisement = async () => {
+    try {
+      const response = await getAllAdvertisements(userData.token)
+      const data = response.advertisements
+
+      const randomAdvertisements = data
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5)
+
+      setAdvertisements(randomAdvertisements)
     } catch (error) {
       console.error(error)
     }
@@ -194,6 +222,148 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
             </View>
           </View>
         )}
+
+        {!isServiceProvider && (
+          <View style={styles.swiperContainer}>
+            <Swiper
+              style={styles.wrapper}
+              showsButtons={false}
+              autoplay={true}
+              showsPagination={false}
+              autoplayTimeout={3}
+              dotColor="rgba(255,255,255,0.3)"
+              activeDotColor="#ffffff"
+              paginationStyle={styles.paginationStyle}
+            >
+              {advertisements[0] && (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AdvertisementDetail', {
+                      advertisement: advertisements[0]
+                    })
+                  }
+                  style={styles.slide}
+                >
+                  <Image
+                    source={{
+                      uri: advertisements[0]?.advertisementImage
+                    }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.slideTextContainer}>
+                    <Text style={styles.slideText}>
+                      {advertisements[0]?.advertisementName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {advertisements[1] && (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AdvertisementDetail', {
+                      advertisement: advertisements[1]
+                    })
+                  }
+                  style={styles.slide}
+                >
+                  <Image
+                    source={{
+                      uri: advertisements[1]?.advertisementImage
+                    }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.slideTextContainer}>
+                    <Text style={styles.slideText}>
+                      {advertisements[1]?.advertisementName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {advertisements[2] && (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AdvertisementDetail', {
+                      advertisement: advertisements[2]
+                    })
+                  }
+                  style={styles.slide}
+                >
+                  <Image
+                    source={{
+                      uri: advertisements[2]?.advertisementImage
+                    }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.slideTextContainer}>
+                    <Text style={styles.slideText}>
+                      {advertisements[2]?.advertisementName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {advertisements[3] && (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AdvertisementDetail', {
+                      advertisement: advertisements[3]
+                    })
+                  }
+                  style={styles.slide}
+                >
+                  <Image
+                    source={{
+                      uri: advertisements[3]?.advertisementImage
+                    }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.slideTextContainer}>
+                    <Text style={styles.slideText}>
+                      {advertisements[3]?.advertisementName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {advertisements[4] && (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AdvertisementDetail', {
+                      advertisement: advertisements[4]
+                    })
+                  }
+                  style={styles.slide}
+                >
+                  <Image
+                    source={{
+                      uri: advertisements[4]?.advertisementImage
+                    }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.slideTextContainer}>
+                    <Text style={styles.slideText}>
+                      {advertisements[4]?.advertisementName}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                onPress={() => navigation.navigate('AdvertisementList')}
+                style={styles.slide}
+              >
+                <View style={styles.slideTextSeeMore}>
+                  <Text style={styles.slideTextSeeMoreText}>
+                    Xem thêm quảng cáo
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </Swiper>
+          </View>
+        )}
+
         <View style={styles.floatActions}>
           {!isServiceProvider && (
             <>
@@ -270,6 +440,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     </ScrollView>
   )
 }
+
+const { width } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   scrollbar: {
@@ -380,6 +552,57 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 10,
     marginTop: 20
+  },
+  swiperContainer: {
+    height: 200,
+    marginTop: 20,
+    width: width - 30,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginHorizontal: 15
+  },
+  wrapper: {},
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative'
+  },
+  image: {
+    width: width - 30,
+    height: 200,
+    borderRadius: 15
+  },
+  slideTextContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingVertical: 10,
+    paddingHorizontal: 15
+  },
+  slideTextSeeMore: {
+    width: width - 30,
+    height: 200,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center'
+  },
+  slideTextSeeMoreText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  slideText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  paginationStyle: {
+    bottom: 10
   }
 })
 

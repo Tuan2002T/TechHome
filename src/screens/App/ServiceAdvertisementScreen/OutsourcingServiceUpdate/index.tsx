@@ -10,12 +10,9 @@ import {
   TouchableOpacity,
   Platform
 } from 'react-native'
-import axios from 'axios'
-import { useNavigation } from '@react-navigation/native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import { showMessage } from 'react-native-flash-message'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { createOutsourcingService } from '../../../api/API/outsourcingService'
 import { useSelector } from 'react-redux'
 import { updateOutsourcingService } from '../../../../api/API/outsourcingService'
 
