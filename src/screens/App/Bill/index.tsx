@@ -12,6 +12,7 @@ import SpinnerLoading from '../../../Spinner/spinnerloading'
 import Notification from '../../../Modal/Notification/notification'
 import { useTranslation } from 'react-i18next'
 import { socket } from '../../../Socket/socket'
+import { showMessage } from 'react-native-flash-message'
 
 interface BillProps {
   navigation: NavigationProp<any>
@@ -24,6 +25,8 @@ interface BillItem {
   billDate: string
   billName: string
   serviceBookingId: string
+  outsourceServiceId: string
+  canBePay: boolean
 }
 
 const Bill: React.FC<BillProps> = ({ navigation }) => {
@@ -113,8 +116,18 @@ const Bill: React.FC<BillProps> = ({ navigation }) => {
     setLoading(true)
     try {
       const data = { billIds: selectedItems.map((item) => item.billId) }
+      const check = selectedItems.every((item) => item.canBePay !== false)
+      if (!check) {
+        showMessage({
+          message:
+            'Tính năng thanh toán dịch vụ bên ngoài đang được phát triển',
+          type: 'info',
+          icon: 'info',
+          duration: 3000
+        })
+        return
+      }
       const response = await createPayment(userData.token, data)
-      console.log(response)
 
       setLoading(false)
       if (response) {

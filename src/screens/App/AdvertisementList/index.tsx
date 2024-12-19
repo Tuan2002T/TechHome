@@ -44,7 +44,7 @@ const AdvertisementList: React.FC = ({ navigation }) => {
     try {
       const response = await getAllAdvertisements(userData.token)
       console.log('API Response:', response)
-      const data = response.advertisements.filter(
+      const data = response.data.filter(
         (item: any) => item.advertisementStatus === 'ACTIVE'
       )
       setAdvertisements(data)

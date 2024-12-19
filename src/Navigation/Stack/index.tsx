@@ -31,6 +31,7 @@ import AdvertisementDetail from '../../screens/App/AdvertisementDetail'
 import AdvertisementList from '../../screens/App/AdvertisementList'
 import OutsourcingServiceList from '../../screens/App/OutsourcingServiceList'
 import OutsourcingServiceDetail from '../../screens/App/OutsourcingServiceDetail'
+import BillListScreen from '../../screens/App/BillListScreen'
 const Stack = createStackNavigator()
 
 function TabScreens() {
@@ -182,6 +183,11 @@ function TabScreens() {
       <Stack.Screen
         name="OutsourcingServiceDetail"
         component={OutsourcingServiceDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BillListScreen"
+        component={BillListScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

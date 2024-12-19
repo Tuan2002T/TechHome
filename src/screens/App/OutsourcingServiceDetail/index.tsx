@@ -10,6 +10,9 @@ import {
 import { showMessage } from 'react-native-flash-message'
 import { Text, Appbar, Button, Card } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { bookingServiceForOutsourcing } from '../../../api/API/bookingService'
+import { useSelector } from 'react-redux'
+import { CommonActions } from '@react-navigation/native'
 
 interface OutsourcingService {
   outsourcingServiceId: number
@@ -30,7 +33,7 @@ interface Props {
 
 const OutsourcingServiceDetail: React.FC<Props> = ({ route, navigation }) => {
   const { outsourcingService } = route.params
-
+  const { userData } = useSelector((state: any) => state.auth)
   const {
     outsourcingServiceName,
     outsourcingServiceDescription,
@@ -47,6 +50,48 @@ const OutsourcingServiceDetail: React.FC<Props> = ({ route, navigation }) => {
       style: 'currency',
       currency: 'VND'
     }).format(number)
+  }
+
+  const handleBookingService = async (id) => {
+    try {
+      const bookingResponse = await bookingServiceForOutsourcing(
+        userData.token,
+        id
+      )
+
+      if (bookingResponse) {
+        showMessage({
+          message: 'Đặt dịch vụ thành công',
+          type: 'success',
+          icon: 'success',
+          duration: 3000
+        })
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Tabs' }]
+          })
+        )
+      } else {
+        showMessage({
+          message: 'Đặt dịch vụ thất bại',
+          description: 'Vui lòng thử lại sau',
+          type: 'danger',
+          icon: 'danger',
+          duration: 3000
+        })
+      }
+    } catch (bookingError) {
+      console.error('Booking Error:', bookingError)
+      showMessage({
+        message: 'Đặt dịch vụ thất bại',
+        description: 'Vui lòng thử lại sau',
+        type: 'danger',
+        icon: 'danger',
+        duration: 3000
+      })
+    } finally {
+    }
   }
 
   return (
@@ -98,13 +143,7 @@ const OutsourcingServiceDetail: React.FC<Props> = ({ route, navigation }) => {
           <Button
             mode="contained"
             onPress={() =>
-              showMessage({
-                message: 'Đặt dịch vụ',
-                description: 'Chức năng đặt dịch vụ đang được phát triển',
-                type: 'info',
-                icon: 'info',
-                duration: 3000
-              })
+              handleBookingService(outsourcingService.outsourcingServiceId)
             }
             style={styles.bookButton}
             labelStyle={styles.bookButtonLabel}

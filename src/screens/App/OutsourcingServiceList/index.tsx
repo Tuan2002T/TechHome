@@ -54,7 +54,7 @@ const OutsourcingServiceList: React.FC = ({ navigation }) => {
     try {
       const response = await getAllOutsourcingServices(userData.token)
 
-      const data = response.outsourcingServices.filter(
+      const data = response.data.filter(
         (item: any) => item.outsourcingServiceStatus === 'ACTIVE'
       )
       setServices(data)

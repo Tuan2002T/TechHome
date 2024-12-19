@@ -127,7 +127,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const getAdvertisement = async () => {
     try {
       const response = await getAllAdvertisements(userData.token)
-      const data = response.advertisements
+      const data = response.data
 
       const randomAdvertisements = data
         .sort(() => Math.random() - 0.5)
@@ -422,11 +422,12 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
                 }
                 title="Đơn hàng"
                 onPress={() =>
-                  showMessage({
-                    message: 'Chức năng đang phát triển',
-                    type: 'info',
-                    duration: 3000
-                  })
+                  // showMessage({
+                  //   message: 'Chức năng đang phát triển',
+                  //   type: 'info',
+                  //   duration: 3000
+                  // })
+                  navigation.navigate('BillListScreen')
                 }
               />
               <FloatingActionComponent

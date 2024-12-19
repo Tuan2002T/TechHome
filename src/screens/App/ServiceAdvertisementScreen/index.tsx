@@ -63,7 +63,7 @@ const ServiceAdvertisementScreen: React.FC = ({ navigation }) => {
     try {
       const response = await getAllOutsourcingServices(userData.token)
 
-      const data = response.outsourcingServices.filter(
+      const data = response.data.filter(
         (item: any) => item.residentId === userData.resident.residentId
       )
       setServices(data)
@@ -75,7 +75,7 @@ const ServiceAdvertisementScreen: React.FC = ({ navigation }) => {
   const getAvertisement = async () => {
     try {
       const response = await getAllAdvertisements(userData.token)
-      const data = response.advertisements.filter(
+      const data = response.data.filter(
         (item: any) => item.residentId === userData.resident.residentId
       )
       setAdvertisements(data)
