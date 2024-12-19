@@ -8,14 +8,17 @@ export const loginResident = async (loginData) => {
         'Content-Type': 'application/json'
       }
     })
+
     return response.data
   } catch (error) {
     if (error.response) {
-      throw new Error(error.response.data.message || 'Something went wrong')
+      console.log(error.response.data.message || 'Something went wrong')
     } else if (error.request) {
-      throw new Error('No response received from the server')
+      console.log(error.request)
+
+      console.log('No response received from the server')
     } else {
-      throw new Error(error.message)
+      console.log(error.message)
     }
   }
 }

@@ -34,8 +34,8 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
   const [checked, setChecked] = useState(false)
   const dispatch = useDispatch()
   const [signInData, setSignInData] = useState<SignInData>({
-    username: 'leminhcuong',
-    password: 'pass3'
+    username: 'qqq',
+    password: '1'
     // username: 'dovane',
     // password: 'pass5'
   })
@@ -51,8 +51,9 @@ const SignIn: React.FC<SignInProps> = ({ navigation }) => {
     try {
       const response = await dispatch(login(signInData)).unwrap()
       const token = response.token
-
-      await dispatch(residentApartmentInfo(token)).unwrap()
+      if (response.resident.role !== 'SERVICEPROVIDER') {
+        await dispatch(residentApartmentInfo(token)).unwrap()
+      }
       if (fcmToken) {
         const fcm = await updateTokenFCM(token, fcmToken)
       }
