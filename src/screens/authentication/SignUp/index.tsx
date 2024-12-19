@@ -14,7 +14,7 @@ import OTPInput from '../../../Modal/OTPInput/OTPInput.tsx'
 function SignUp({ navigation }) {
   const { t, i18n } = useTranslation()
 
-  const [idcard, setIdcard] = useState('ID005')
+  const [idcard, setIdcard] = useState('')
   const [loading, setLoading] = useState(false)
   const [modalOTP, setModalOTP] = useState(false)
   const [error, setError] = useState(false)
