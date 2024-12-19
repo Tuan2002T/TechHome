@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -8,73 +8,8 @@ import {
   TouchableOpacity,
   TextInput
 } from 'react-native'
-
-// Sample data
-const SAMPLE_BILLS = [
-  {
-    billName: 'Trà sửa full topping',
-    billDate: '2024-12-19T13:27:00.445Z',
-    billAmount: '150000.00',
-    billStatus: 'UNPAID',
-    fullname: 'Đỗ Văn E',
-    email: 'e@example.com',
-    phonenumber: '0912345682'
-  },
-  {
-    billName: 'Cơm gà xối mỡ',
-    billDate: '2024-12-19T12:39:52.179Z',
-    billAmount: '45000.00',
-    billStatus: 'PAID',
-    fullname: 'Nguyễn Văn A',
-    email: 'a@example.com',
-    phonenumber: '0912345678'
-  },
-  {
-    billName: 'Bún bò Huế',
-    billDate: '2024-12-19T12:39:37.616Z',
-    billAmount: '55000.00',
-    billStatus: 'UNPAID',
-    fullname: 'Trần Thị B',
-    email: 'b@example.com',
-    phonenumber: '0912345679'
-  },
-  {
-    billName: 'Phở đặc biệt',
-    billDate: '2024-12-19T11:30:00.000Z',
-    billAmount: '65000.00',
-    billStatus: 'PAID',
-    fullname: 'Lê Văn C',
-    email: 'c@example.com',
-    phonenumber: '0912345680'
-  },
-  {
-    billName: 'Bánh mì thịt nguội',
-    billDate: '2024-12-19T10:15:00.000Z',
-    billAmount: '25000.00',
-    billStatus: 'UNPAID',
-    fullname: 'Phạm Thị D',
-    email: 'd@example.com',
-    phonenumber: '0912345681'
-  },
-  {
-    billName: 'Cà phê sữa đá',
-    billDate: '2024-12-19T09:00:00.000Z',
-    billAmount: '35000.00',
-    billStatus: 'PAID',
-    fullname: 'Hoàng Văn F',
-    email: 'f@example.com',
-    phonenumber: '0912345683'
-  },
-  {
-    billName: 'Sinh tố bơ',
-    billDate: '2024-12-19T08:45:00.000Z',
-    billAmount: '40000.00',
-    billStatus: 'UNPAID',
-    fullname: 'Vũ Thị G',
-    email: 'g@example.com',
-    phonenumber: '0912345684'
-  }
-]
+import { useSelector } from 'react-redux'
+import { getServiceBookingsByServiceProviders } from '../../../api/API/bookingService'
 
 const BillItem = ({ item }) => {
   const formatDate = (dateString) => {
@@ -151,8 +86,27 @@ const BillItem = ({ item }) => {
 
 const BillListScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('')
+  const { userData } = useSelector((state: any) => state.auth)
+  const [bills, setBills] = useState([])
 
-  const filteredBills = SAMPLE_BILLS.filter((bill) =>
+  const getAllBills = async () => {
+    try {
+      const response = await getServiceBookingsByServiceProviders(
+        userData.token
+      )
+      setBills(response.data) // Assuming response.data is the array of bills
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    if (userData?.token) {
+      getAllBills()
+    }
+  }, [userData]) // Only re-fetch when userData changes
+
+  const filteredBills = bills.filter((bill) =>
     bill.billName.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -218,7 +172,6 @@ const BillListScreen = ({ navigation }) => {
     </SafeAreaView>
   )
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

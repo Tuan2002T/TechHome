@@ -50,6 +50,7 @@ const getAllOutsourcingServices_url = `${API_ADVERTISEMENT_URL}/getAllOutsourcin
 const createOutsourcingService_url = `${API_ADVERTISEMENT_URL}/createOutsourcingService`
 const deleteOutsourcingService_url = `${API_ADVERTISEMENT_URL}/deleteOutsourcingService`
 const updateOutsourcingService_url = `${API_ADVERTISEMENT_URL}/updateOutsourcingService`
+const getServiceBookingsByServiceProviders_url = `${API_ADVERTISEMENT_URL}/getServiceBookingsByServiceProviders`
 
 export default {
   login_url,
@@ -97,5 +98,6 @@ export default {
   createOutsourcingService_url,
   deleteOutsourcingService_url,
   updateOutsourcingService_url,
+  getServiceBookingsByServiceProviders_url,
   API_SOCKET
 }
